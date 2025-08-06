@@ -5513,26 +5513,39 @@ function handleSidebarLayoutChange() {
     
     if (allModals.length === 0) return;
     
-    var trainingPlaceholder = document.querySelector('#default-placeholder') || document.querySelector('.training-placeholder');
-    if (!trainingPlaceholder) {
-        console.log('No training placeholder found');
+    // Use getCurrentContainer() to work across all sections (training-placeholder, warehouse-dashboard, etc.)
+    var currentContainer = getCurrentContainer();
+    if (!currentContainer) {
+        console.log('No current container found');
         return;
     }
+    
+    console.log('Current container:', currentContainer.id || currentContainer.className);
     
     // Check if sidebar is currently open
     var isSidebarOpen = document.body.classList.contains('sidebar-open');
     console.log('Sidebar is open:', isSidebarOpen);
     
-    // Get current training-placeholder position
-    var currentPlaceholderRect = trainingPlaceholder.getBoundingClientRect();
+    // Get current container position
+    var currentContainerRect = currentContainer.getBoundingClientRect();
+    var isWarehouseDashboard = currentContainer.id === 'warehouse-dashboard';
     
-    // Store training-placeholder position when sidebar closes (original position)
+    // Store container position when sidebar closes (original position)
     if (!isSidebarOpen && !trainingPlaceholderOriginalPosition) {
-        trainingPlaceholderOriginalPosition = {
-            left: currentPlaceholderRect.left,
-            top: currentPlaceholderRect.top
-        };
-        console.log('Stored training-placeholder original position:', trainingPlaceholderOriginalPosition);
+        if (isWarehouseDashboard) {
+            // For warehouse dashboard, use viewport-based position
+            trainingPlaceholderOriginalPosition = {
+                left: currentContainerRect.left,
+                top: currentContainerRect.top
+            };
+        } else {
+            // For other containers, use standard position
+            trainingPlaceholderOriginalPosition = {
+                left: currentContainerRect.left,
+                top: currentContainerRect.top
+            };
+        }
+        console.log('Stored container original position:', trainingPlaceholderOriginalPosition);
     }
     
     // For each visible modal, adjust its position to move exactly like training-placeholder
@@ -5557,25 +5570,25 @@ function handleSidebarLayoutChange() {
             return;
         }
         
-        // Handle maximized modals - they should fill the training-placeholder exactly
+        // Handle maximized modals - they should fill the container exactly
         if (modalContent.classList.contains('maximized')) {
             console.log('Modal is maximized');
-            var placeholderRect = trainingPlaceholder.getBoundingClientRect();
+            var containerRect = currentContainer.getBoundingClientRect();
             
             modalContent.style.position = 'fixed';
-            modalContent.style.left = placeholderRect.left + 'px';
-            modalContent.style.top = placeholderRect.top + 'px';
-            modalContent.style.width = placeholderRect.width + 'px';
-            modalContent.style.height = placeholderRect.height + 'px';
-            modalContent.style.maxWidth = placeholderRect.width + 'px';
-            modalContent.style.maxHeight = placeholderRect.height + 'px';
+            modalContent.style.left = containerRect.left + 'px';
+            modalContent.style.top = containerRect.top + 'px';
+            modalContent.style.width = containerRect.width + 'px';
+            modalContent.style.height = containerRect.height + 'px';
+            modalContent.style.maxWidth = containerRect.width + 'px';
+            modalContent.style.maxHeight = containerRect.height + 'px';
             return;
         }
         
-        var placeholderRect = trainingPlaceholder.getBoundingClientRect();
+        var containerRect = currentContainer.getBoundingClientRect();
         var modalRect = modalContent.getBoundingClientRect();
         
-        console.log('Placeholder rect:', placeholderRect);
+        console.log('Container rect:', containerRect);
         console.log('Modal rect:', modalRect);
         
         if (isSidebarOpen) {
@@ -5591,56 +5604,63 @@ function handleSidebarLayoutChange() {
                 console.log('Stored original position:', modalRect.left, modalRect.top);
             }
             
-            // Calculate the actual shift amount based on training-placeholder movement
+            // Calculate the actual shift amount based on container movement
             var originalPos = modalOriginalPositions.get(modalId);
             
-            // If we have the original training-placeholder position, calculate exact shift
-            var placeholderShift = 0;
-            if (trainingPlaceholderOriginalPosition) {
-                placeholderShift = placeholderRect.left - trainingPlaceholderOriginalPosition.left;
-                console.log('Exact training placeholder shift amount:', placeholderShift);
+            // Check if we're in warehouse dashboard for special handling
+            var isWarehouseDashboard = currentContainer.id === 'warehouse-dashboard';
+            var containerShift = 0;
+            
+            if (isWarehouseDashboard) {
+                // For warehouse dashboard, use fixed 198px shift (270px - 72px sidebar width difference)
+                containerShift = 198;
+                console.log('Using warehouse dashboard fixed shift amount:', containerShift);
+            } else if (trainingPlaceholderOriginalPosition) {
+                // For other containers, calculate exact shift based on movement
+                containerShift = containerRect.left - trainingPlaceholderOriginalPosition.left;
+                console.log('Exact container shift amount:', containerShift);
             } else {
                 // Fallback: use estimated shift based on typical sidebar behavior
-                placeholderShift = 200; // Significant shift to move modals right
-                console.log('Using estimated shift amount:', placeholderShift);
+                containerShift = 200; // Significant shift to move modals right
+                console.log('Using estimated shift amount:', containerShift);
             }
             
             // Apply the shift to the modal
-            var newLeft = originalPos.left + placeholderShift;
+            var newLeft = originalPos.left + containerShift;
             var newTop = originalPos.top;
             
-            console.log('Modal shifted by:', placeholderShift);
+            console.log('Modal shifted by:', containerShift);
             console.log('New position before bounds check:', newLeft, newTop);
             
-            // Ensure modal stays within training-placeholder bounds after shift
+            // Ensure modal stays within container bounds after shift
             var modalWidth = modalRect.width;
             var modalHeight = modalRect.height;
             
-            // Make sure modal doesn't go outside training-placeholder boundaries
-            if (newLeft + modalWidth > placeholderRect.right - 10) {
-                newLeft = placeholderRect.right - modalWidth - 10;
+            // Make sure modal doesn't go outside container boundaries
+            if (newLeft + modalWidth > containerRect.right - 10) {
+                newLeft = containerRect.right - modalWidth - 10;
                 console.log('Modal adjusted to stay within right boundary:', newLeft);
             }
             
-            if (newLeft < placeholderRect.left + 10) {
-                newLeft = placeholderRect.left + 10;
+            if (newLeft < containerRect.left + 10) {
+                newLeft = containerRect.left + 10;
                 console.log('Modal adjusted to stay within left boundary:', newLeft);
             }
             
-            if (newTop < placeholderRect.top + 10) {
-                newTop = placeholderRect.top + 10;
+            if (newTop < containerRect.top + 10) {
+                newTop = containerRect.top + 10;
                 console.log('Modal adjusted to stay within top boundary:', newTop);
             }
             
-            if (newTop + modalHeight > placeholderRect.bottom - 10) {
-                newTop = placeholderRect.bottom - modalHeight - 10;
+            if (newTop + modalHeight > containerRect.bottom - 10) {
+                newTop = containerRect.bottom - modalHeight - 10;
                 console.log('Modal adjusted to stay within bottom boundary:', newTop);
             }
             
-            // Additional safety check: ensure modal is completely within training-placeholder
+            // Additional safety check: ensure modal is completely within container
             var finalCheck = {
-                left: Math.max(placeholderRect.left + 10, Math.min(newLeft, placeholderRect.right - modalWidth - 10)),
-                top: Math.max(placeholderRect.top + 10, Math.min(newTop, placeholderRect.bottom - modalHeight - 10))
+                left: Math.max(containerRect.left + 10, Math.min(newLeft, containerRect.right - modalWidth - 10)),
+                top: Math.max(containerRect.top + 10, Math.min(newTop, containerRect.bottom - modalHeight - 10))
             };
             
             if (finalCheck.left !== newLeft || finalCheck.top !== newTop) {
@@ -5672,18 +5692,18 @@ function handleSidebarLayoutChange() {
                 console.log('No stored position found for modal:', modalId);
                 // If no stored position, ensure modal is at least within bounds
                 var modalRect = modalContent.getBoundingClientRect();
-                if (modalRect.left < placeholderRect.left + 10 || 
-                    modalRect.right > placeholderRect.right - 10 ||
-                    modalRect.top < placeholderRect.top + 10 ||
-                    modalRect.bottom > placeholderRect.bottom - 10) {
+                if (modalRect.left < containerRect.left + 10 || 
+                    modalRect.right > containerRect.right - 10 ||
+                    modalRect.top < containerRect.top + 10 ||
+                    modalRect.bottom > containerRect.bottom - 10) {
                     
-                    // Center modal in training-placeholder if it's outside bounds
-                    var newLeft = placeholderRect.left + (placeholderRect.width - modalRect.width) / 2;
-                    var newTop = placeholderRect.top + (placeholderRect.height - modalRect.height) / 2;
+                    // Center modal in container if it's outside bounds
+                    var newLeft = containerRect.left + (containerRect.width - modalRect.width) / 2;
+                    var newTop = containerRect.top + (containerRect.height - modalRect.height) / 2;
                     
                     modalContent.style.left = newLeft + 'px';
                     modalContent.style.top = newTop + 'px';
-                    console.log('Centered modal in training-placeholder:', newLeft, newTop);
+                    console.log('Centered modal in container:', newLeft, newTop);
                 }
             }
         }
@@ -5693,10 +5713,10 @@ function handleSidebarLayoutChange() {
         modalContent.style.transform = 'none';
     });
     
-    // Reset training-placeholder position when sidebar closes
+    // Reset container position when sidebar closes
     if (!isSidebarOpen) {
         trainingPlaceholderOriginalPosition = null;
-        console.log('Reset training-placeholder original position');
+        console.log('Reset container original position');
     }
 }
 
