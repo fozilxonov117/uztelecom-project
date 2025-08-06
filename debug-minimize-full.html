@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Minimize</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="css/window-manager.css" />
+    <link rel="stylesheet" href="css/chat-modal.css" />
+    <link rel="stylesheet" href="css/chat-modal-responsive.css" />
+    <link rel="stylesheet" href="css/main-page-custom.css" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+</head>
+<body>
+    <h1>Debug Minimize Functionality</h1>
+    
+    <!-- Copy the exact structure from main.html -->
+    <div class="training-placeholder" id="default-placeholder">
+        <div id="chat-modal" class="chat-modal opened-by-header show">
+            <div class="chat-modal-content">
+                <div class="chat-modal-drag-bar" id="chat-modal-drag-bar">
+                    <div class="chat-modal-controls">
+                        <span class="material-icons chat-modal-minimize" title="Свернуть">remove</span>
+                        <span class="material-icons chat-modal-maximize" title="На весь экран">fullscreen</span>
+                        <span class="material-icons chat-modal-close-btn" title="Закрыть">close</span>
+                    </div>
+                </div>
+                <div class="chat-modal-left">
+                    <div class="chat-modal-title">
+                        <input type="text" id="chat-user-search" class="chat-user-search-input" placeholder="Поиск " autocomplete="off" />
+                        <button id="chat-create-group-btn" class="chat-create-group-btn">+ Группа</button>
+                    </div>
+                    <div class="chat-modal-user-list" id="chat-modal-user-list"></div>
+                </div>
+                <div class="chat-modal-right">
+                    <div class="chat-modal-header">
+                        <div class="chat-modal-user-info">
+                            <div class="chat-modal-user-avatar">
+                                <span class="material-icons">person</span>
+                            </div>
+                            <div class="chat-modal-user-details">
+                                <span class="chat-modal-username">Test User</span>
+                                <span class="chat-modal-user-status">Онлайн</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-modal-messages" id="chat-modal-messages">
+                        <div class="message">Test message</div>
+                    </div>
+                    <div class="chat-modal-input-row">
+                        <div class="chat-input-container">
+                            <input type="text" id="chat-modal-message-input" placeholder="Введите сообщение..." />
+                            <button class="chat-modal-send-btn" id="chat-modal-send-btn">
+                                <span class="material-icons">send</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-modal-resize-handle"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load all the JavaScript files -->
+    <script src="js/charts.js"></script>
+    <script src="js/chat-modal.js"></script>
+    <script src="js/chat-modal-open.js"></script>
+    <script src="js/main-page-custom.js"></script>
+    <script src="debug-minimize.js"></script>
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        .training-placeholder {
+            width: 100%;
+            height: 600px;
+            position: relative;
+            background: white;
+            border: 1px solid #ccc;
+        }
+        .debug-buttons {
+            margin: 20px 0;
+        }
+        .debug-buttons button {
+            margin: 5px;
+            padding: 10px 15px;
+            background: #007cba;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+    
+    <div class="debug-buttons">
+        <button onclick="manualMinimize()">Manual Minimize</button>
+        <button onclick="manualMaximize()">Manual Maximize</button>
+        <button onclick="resetModal()">Reset Modal</button>
+        <button onclick="checkControlsEvents()">Check Controls Events</button>
+    </div>
+    
+    <script>
+        function manualMinimize() {
+            const modalContent = document.querySelector('.chat-modal-content');
+            console.log('Manual minimize - current classes:', modalContent.className);
+            modalContent.classList.add('minimized');
+            modalContent.classList.remove('maximized');
+            console.log('After minimize - classes:', modalContent.className);
+        }
+        
+        function manualMaximize() {
+            const modalContent = document.querySelector('.chat-modal-content');
+            console.log('Manual maximize - current classes:', modalContent.className);
+            modalContent.classList.add('maximized');
+            modalContent.classList.remove('minimized');
+            console.log('After maximize - classes:', modalContent.className);
+        }
+        
+        function resetModal() {
+            const modalContent = document.querySelector('.chat-modal-content');
+            console.log('Reset modal - removing all state classes');
+            modalContent.classList.remove('minimized', 'maximized');
+            console.log('After reset - classes:', modalContent.className);
+        }
+        
+        function checkControlsEvents() {
+            const minimizeBtn = document.querySelector('.chat-modal-minimize');
+            const maximizeBtn = document.querySelector('.chat-modal-maximize');
+            const closeBtn = document.querySelector('.chat-modal-close-btn');
+            
+            console.log('Controls event handlers:', {
+                minimize: minimizeBtn?.onclick || 'none',
+                maximize: maximizeBtn?.onclick || 'none',
+                close: closeBtn?.onclick || 'none'
+            });
+            
+            // Check if setupModalControls was called
+            const modal = document.getElementById('chat-modal');
+            console.log('Modal setup status:', {
+                hasOpenedByHeaderClass: modal?.classList.contains('opened-by-header'),
+                setupFunction: typeof setupModalControls
+            });
+        }
+        
+        // Initialize after page load
+        setTimeout(() => {
+            const modal = document.getElementById('chat-modal');
+            if (modal && typeof setupModalControls === 'function') {
+                console.log('Calling setupModalControls...');
+                setupModalControls(modal);
+            }
+        }, 500);
+    </script>
+</body>
+</html>

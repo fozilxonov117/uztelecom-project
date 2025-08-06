@@ -1,0 +1,20 @@
+.chat-reply-input-preview {
+  max-width: 100%;
+  transition: max-width 0.2s;
+}
+
+@media (max-width: 900px) {
+  .chat-reply-input-preview {
+    max-width: 60px !important;
+    min-width: 0 !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 700px) {
+  .chat-reply-input-preview {
+    max-width: 40px !important;
+  }
+}

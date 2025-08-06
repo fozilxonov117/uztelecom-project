@@ -1,0 +1,360 @@
+/* Warehouse Equipment Modal Styles */
+.warehouse-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  backdrop-filter: blur(4px);
+}
+
+.warehouse-modal-content {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  width: 50%;
+  max-width: 600px;
+  min-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.warehouse-modal-header {
+  padding: 24px 32px 16px;
+  border-bottom: 1px solid #e8eaed;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.warehouse-modal-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #202124;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.warehouse-modal-close {
+  background: none;
+  border: none;
+  padding: 8px;
+  border-radius: 50%;
+  cursor: pointer;
+  color: #5f6368;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.warehouse-modal-close:hover {
+  background: #f1f3f4;
+  color: #202124;
+}
+
+.warehouse-modal-close .material-icons {
+  font-size: 20px;
+}
+
+.warehouse-modal-body {
+  padding: 16px 32px 32px;
+}
+
+.warehouse-modal-subtitle {
+  color: #5f6368;
+  font-size: 14px;
+  margin: 0 0 24px 0;
+  line-height: 1.4;
+}
+
+.warehouse-form-section {
+  margin-bottom: 24px;
+}
+
+.warehouse-form-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #202124;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+/* Radio Button Styles */
+.warehouse-radio-group {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.warehouse-radio-option {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+}
+
+.warehouse-radio-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.warehouse-radio-custom {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #dadce0;
+  border-radius: 50%;
+  margin-right: 8px;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.warehouse-radio-option input[type="radio"]:checked + .warehouse-radio-custom {
+  border-color: #1a73e8;
+}
+
+.warehouse-radio-option input[type="radio"]:checked + .warehouse-radio-custom::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  background: #1a73e8;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.warehouse-radio-text {
+  font-size: 14px;
+  color: #202124;
+  line-height: 1.4;
+}
+
+/* Form Input Styles */
+.warehouse-form-input,
+.warehouse-form-select,
+.warehouse-form-textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.warehouse-form-input:focus,
+.warehouse-form-select:focus,
+.warehouse-form-textarea:focus {
+  outline: none;
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.1);
+}
+
+.warehouse-form-input::placeholder,
+.warehouse-form-textarea::placeholder {
+  color: #9aa0a6;
+}
+
+.warehouse-form-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.warehouse-form-hint {
+  display: block;
+  font-size: 12px;
+  color: #5f6368;
+  margin-top: 6px;
+  line-height: 1.3;
+}
+
+/* Toggle Switch Styles */
+.warehouse-toggle-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.warehouse-toggle {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+
+.warehouse-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.warehouse-toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #dadce0;
+  border-radius: 24px;
+  transition: all 0.3s ease;
+}
+
+.warehouse-toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.warehouse-toggle input:checked + .warehouse-toggle-slider {
+  background-color: #1a73e8;
+}
+
+.warehouse-toggle input:checked + .warehouse-toggle-slider:before {
+  transform: translateX(20px);
+}
+
+.warehouse-toggle-label {
+  font-size: 14px;
+  color: #202124;
+  line-height: 1.4;
+  transition: color 0.2s ease;
+}
+
+/* Form Actions */
+.warehouse-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #e8eaed;
+}
+
+.warehouse-btn {
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  font-family: inherit;
+  min-width: 80px;
+}
+
+.warehouse-btn-secondary {
+  background: #f8f9fa;
+  color: #202124;
+  border: 1px solid #dadce0;
+}
+
+.warehouse-btn-secondary:hover {
+  background: #f1f3f4;
+  border-color: #c4c7ca;
+}
+
+.warehouse-btn-primary {
+  background: #1a73e8;
+  color: white;
+}
+
+.warehouse-btn-primary:hover {
+  background: #1557b0;
+}
+
+.warehouse-btn-primary:active {
+  background: #1248a0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .warehouse-modal-content {
+    width: 90%;
+    min-width: auto;
+    margin: 20px;
+  }
+  
+  .warehouse-modal-header,
+  .warehouse-modal-body {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  
+  .warehouse-radio-group {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .warehouse-form-actions {
+    flex-direction: column-reverse;
+  }
+  
+  .warehouse-btn {
+    width: 100%;
+  }
+}
+
+/* Animation for quality toggle */
+.warehouse-toggle-container {
+  user-select: none;
+}
+
+/* Enhanced focus states */
+.warehouse-radio-option:focus-within .warehouse-radio-custom {
+  box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+}
+
+.warehouse-toggle:focus-within .warehouse-toggle-slider {
+  box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+}
+
+/* Scrollbar styling for modal */
+.warehouse-modal-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.warehouse-modal-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.warehouse-modal-content::-webkit-scrollbar-thumb {
+  background: #dadce0;
+  border-radius: 3px;
+}
+
+.warehouse-modal-content::-webkit-scrollbar-thumb:hover {
+  background: #bdc1c6;
+}

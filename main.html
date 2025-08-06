@@ -1,0 +1,2388 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Обучение | UZTELECOM</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="css/window-manager.css" />
+    <link rel="stylesheet" href="css/chat-modal.css" />
+    <link rel="stylesheet" href="css/chat-modal-responsive.css" />
+    <link rel="stylesheet" href="css/main-page-custom.css" />
+    <link rel="stylesheet" href="css/warehouse-dashboard.css" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="header-fixed">
+      <div class="header-title">Обучение</div>
+      <!-- Кнопки редактирования (скрыты по умолчанию) -->
+      <div class="header-editor-controls" id="header-editor-controls">
+        <button class="editor-btn save-btn" id="save-btn">
+          <span class="material-icons">save</span>
+          Сохранить
+        </button>
+        <button class="editor-btn cancel-btn" id="cancel-btn">
+          <span class="material-icons">close</span>
+          Отменить
+        </button>
+        <button class="editor-btn add-remove-btn" id="add-remove-btn">
+          <span class="material-icons">add_box</span>
+          Добавить/Убрать
+        </button>
+      </div>
+      <div class="header-group">
+        <div class="header-group-flex">
+          <!-- <span
+            class="material-icons"
+            id="chat-modal-btn"
+            style="font-size: 1.8em; cursor: pointer"
+            >chat</span
+          > -->
+          <span
+            id="chat-modal-btn"
+            class="material-icons header-chat-icon"
+            title="Открыть чат"
+            >chat</span
+          >
+          <div class="header-group-select">
+            <span class="header-group-selected">Группа 1000</span>
+            <span class="material-icons header-group-arrow"
+              >arrow_drop_down</span
+            >
+            <ul class="header-group-list">
+              <li data-value="Группа 1000" class="active">Группа 1000</li>
+              <li data-value="Группа 1242">Группа 1242</li>
+              <li data-value="Группа 1093">Группа 1093</li>
+              <li data-value="Группа 1170">Группа 1170</li>
+              <li data-value="Группа ДОП">Группа ДОП</li>
+            </ul>
+          </div>
+          <div class="header-user" id="header-user">
+            <img
+              src="assets/Аватар/Foto.jpg"
+              alt="user"
+              class="header-user-img"
+            />
+            <span>Рискиев Б.</span>
+            <div class="header-dropdown" id="header-dropdown">
+              <a href="#" id="editor-toggle"
+                ><span class="material-icons">edit</span> Редактор</a
+              >
+              <a href="#"
+                ><span class="material-icons">language</span> Изменить язык</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="main-layout">
+      <!-- Chat Modal -->
+      
+      <!-- Sidebar -->
+      <aside
+        class="sidebar sidebar-figma collapsible-sidebar"
+        onmouseenter="this.classList.add('open')"
+        onmouseleave="this.classList.remove('open')"
+      >
+        <div class="sidebar-logo">
+          <img
+            src="assets/mini.png"
+            alt="UZTELECOM Logo"
+            class="sidebar-logo-img"
+            id="sidebar-logo-img"
+          />
+          <div class="sidebar-logo-text">
+            <div class="sidebar-logo-title"></div>  
+            <div class="sidebar-logo-sub"></div>
+          </div>
+        </div>
+        <nav class="sidebar-menu-figma">
+          <a class="active" id="sidebar-training"
+            ><span class="material-icons">school</span>
+            <span class="sidebar-label">Обучение</span></a
+          >
+          <a href="http://192.168.42.172:5001/" target="_blank"
+            ><span class="material-icons">checklist</span>
+            <span class="sidebar-label">Лист контроль</span></a
+          >
+          <a
+            ><span class="material-icons">notifications</span>
+            <span class="sidebar-label">Уведомления</span>
+            <span class="sidebar-badge">1</span></a
+          >
+
+          <a id="sidebar-operators"
+            ><span class="material-icons">groups</span>
+            <span class="sidebar-label">Операторы</span></a
+          >
+          <a
+            ><span class="material-icons">assignment</span>
+            <span class="sidebar-label">Отработки</span></a
+          >
+
+          <a id="sidebar-tech-issue"
+            ><span class="material-icons">report_problem</span>
+            <span class="sidebar-label">Технический сбой</span></a
+          >
+          <a
+            ><span class="material-icons header-chat-icon">chat</span>
+            <span class="sidebar-label">Chat</span>
+          </a>
+          <a
+            ><span class="material-icons">person_add</span>
+            <span class="sidebar-label">Привлечение к работам</span></a
+          >
+          <a
+            ><span class="material-icons">bar_chart</span>
+            <span class="sidebar-label">Статистика супервайзера</span></a
+          >
+          <a
+            ><span class="material-icons">settings</span>
+            <span class="sidebar-label">Настройки</span></a
+          >
+        </nav>
+        <a class="sidebar-exit" href="index.html"
+          ><span class="material-icons">logout</span>
+          <span class="sidebar-label">Выйти</span></a
+        >
+      </aside>
+      <!-- Main Content -->
+      <main class="main-content training-page">
+        <div class="training-layout">
+          <div class="training-placeholder" id="default-placeholder">
+          </div>
+          
+          <!-- Chat Modal (hidden by default) -->
+          <div id="chat-modal" class="chat-modal" style="display: none;">
+        <div class="chat-modal-content">
+          <div class="chat-modal-drag-bar" id="chat-modal-drag-bar">
+            <div class="chat-modal-controls">
+              <span class="material-icons chat-modal-minimize" title="Свернуть"
+                >remove</span>
+              <span
+                class="material-icons chat-modal-maximize"
+                title="На весь экран"
+                >fullscreen</span
+              >
+              <span class="material-icons chat-modal-close-btn" title="Закрыть"
+                >close</span
+              >
+            </div>
+          </div>
+          <div class="chat-modal-left">
+            <div class="chat-modal-title">
+              <input
+                type="text"
+                id="chat-user-search"
+                class="chat-user-search-input"
+                placeholder="Поиск "
+                autocomplete="off"
+              />
+              <button id="chat-create-group-btn" class="chat-create-group-btn">
+                + Группа
+              </button>
+              <div class="chat-modal-filter-btns">
+                <button
+                  id="chat-filter-chats"
+                  title="Показать только чаты"
+                  class="chat-filter-btn chat-filter-chats"
+                >
+                  <span class="material-icons chat-filter-icon">person</span>
+                </button>
+                <button
+                  id="chat-filter-groups"
+                  title="Показать только группы"
+                  class="chat-filter-btn chat-filter-groups"
+                >
+                  <span class="material-icons chat-filter-icon">groups</span>
+                </button>
+              </div>
+            </div>
+            <div class="chat-modal-users-list">
+              <!-- Example user list, now with data-id attribute for each operator -->
+              <div class="chat-modal-user-item active" data-id="0485">
+                <img
+                  src="assets/Аватар/Foto.jpg"
+                  class="chat-modal-user-avatar"
+                  alt="User 1"
+                />
+                <span class="chat-modal-user-name">Bonur Riskiyev (0485)</span>
+              </div>
+              <div class="chat-modal-user-item" data-id="1023">
+                <img
+                  src="assets/Аватар/Foto.jpg"
+                  class="chat-modal-user-avatar"
+                  alt="User 2"
+                />
+                <span class="chat-modal-user-name">Maria Ivanova (1023)</span>
+              </div>
+              <div class="chat-modal-user-item" data-id="1007">
+                <img
+                  src="assets/Аватар/Foto.jpg"
+                  class="chat-modal-user-avatar"
+                  alt="User 3"
+                />
+                <span class="chat-modal-user-name">Alex Petrov (1007)</span>
+              </div>
+              <div class="chat-modal-user-item" data-id="1102">
+                <img
+                  src="assets/Аватар/Foto.jpg"
+                  class="chat-modal-user-avatar"
+                  alt="User 4"
+                />
+                <span class="chat-modal-user-name">Sofia Kim (1102)</span>
+              </div>
+            </div>
+          </div>
+          <div class="chat-modal-right">
+            <h2 class="chat-modal-title" id="chat-modal-title">Выберите пользователя для чата</h2>
+            <div class="chat-modal-messages" id="chat-modal-messages">
+              <div
+                class="chat-date-divider"
+                id="chat-date-divider"
+                style="display: none"
+              ></div>
+              Здесь будет чат...
+            </div>
+            <div class="chat-modal-input-row">
+              <div class="chat-input-container">
+                <label for="chat-attach-input" class="chat-attach-label">
+                  <span class="material-icons chat-attach-icon">attach_file</span>
+                  <input
+                    type="file"
+                    id="chat-attach-input"
+                    name="chat-attach-input"
+                    class="chat-attach-input"
+                    accept="image/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                  />
+                </label>
+                <input
+                  type="text"
+                  placeholder="Введите сообщение..."
+                  class="chat-modal-input"
+                  id="chat-modal-input"
+                />
+                <button class="chat-modal-send" id="chat-modal-send">
+                  <span class="material-icons">send</span>
+                </button>
+              </div>
+            </div>
+            <div id="chat-attach-preview" class="chat-attach-preview"></div>
+          </div>
+          
+          <!-- Group Info Page -->
+          <div class="chat-modal-group-info" id="chat-modal-group-info" style="display: none;">
+            <div class="group-info-header">
+              <button class="group-info-back-btn" id="group-info-back-btn">
+                <span class="material-icons">arrow_back</span>
+              </button>
+              <!-- <h2 class="group-info-title" id="group-info-title">Group Info</h2> -->
+              <button class="group-info-edit-btn" id="group-info-edit-btn">
+                <span class="material-icons">edit</span>
+              </button>
+            </div>
+            
+            <div class="group-info-content">
+              <div class="group-info-avatar-section">
+                <img src="assets/mini.png" class="group-info-avatar chat-modal-user-avatar" id="group-info-avatar" alt="Group Avatar" />
+                <div class="group-info-details">
+                  <h3 class="group-info-name" id="group-info-name">UZIMEI</h3>
+                  <p class="group-info-stats" id="group-info-stats">6 участников</p>
+                </div>
+              </div>
+              
+              <div class="group-info-add-member">
+                <div class="group-info-add-member-header">
+                  <span class="material-icons">person_add</span>
+                  <span class="group-info-add-member-text">Добавить участников</span>
+                </div>
+              </div>
+              
+              <div class="group-info-tabs">
+                <button class="group-info-tab active" data-tab="members">Members</button>
+                <button class="group-info-tab" data-tab="media">Media</button>
+              </div>
+              
+              <div class="group-info-members" id="group-info-members">
+                <!-- Members will be populated by JavaScript -->
+              </div>
+            </div>
+          </div>
+          
+          <!-- chat-modal-drag-btn removed: use chat-modal-drag-bar for moving modal -->
+          <div class="chat-modal-resize-handle" title="Изменить размер">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear-wide" viewBox="0 0 9.6 9.6">
+              <defs>
+                <clipPath id="top-left-clip">
+                  <rect x="0" y="0" width="9.6" height="9.6"/>
+                </clipPath>
+              </defs>
+              <g clip-path="url(#top-left-clip)">
+                <path d="M8.932.727c-.243-.97-1.62-.97-1.864 0l-.071.286a.96.96 0 0 1-1.622.434l-.205-.211c-.695-.719-1.888-.03-1.613.931l.08.284a.96.96 0 0 1-1.186 1.187l-.284-.081c-.96-.275-1.65.918-.931 1.613l.211.205a.96.96 0 0 1-.434 1.622l-.286.071c-.97.243-.97 1.62 0 1.864l.286.071a.96.96 0 0 1 .434 1.622l-.211.205c-.719.695-.03 1.888.931 1.613l.284-.08a.96.96 0 0 1 1.187 1.187l-.081.283c-.275.96.918 1.65 1.613.931l.205-.211a.96.96 0 0 1 1.622.434l.071.286c.243.97 1.62.97 1.864 0l.071-.286a.96.96 0 0 1 1.622-.434l.205.211c.695.719 1.888.03 1.613-.931l-.08-.284a.96.96 0 0 1 1.187-1.186l.283.081c.96.275 1.65-.918.931-1.613l-.211-.205a.96.96 0 0 1 .434-1.622l.286-.071c.97-.243.97-1.62 0-1.864l-.286-.071a.96.96 0 0 1-.434-1.622l.211-.205c.719-.695.03-1.888-.931-1.613l-.284.08a.96.96 0 0 1-1.186-1.187l.081-.283c.275-.96-.918-1.65-1.613-.931l-.205.211a.96.96 0 0 1-1.622-.434L8.932.727zM8 12.997a4.998 4.998 0 1 1 0-9.995 4.998 4.998 0 0 1 0 9.996z"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+      </div>
+      
+            <!-- Warehouse Management Dashboard Layout (Only visible in Tech Issue section) -->
+            <div id="warehouse-dashboard" class="warehouse-dashboard-layout" style="display: none;">
+              <div class="warehouse-dual-panel">
+                <!-- Left Panel - Add Equipment Form -->
+                <div class="warehouse-left-panel">
+                  <div class="add-equipment-dashboard">
+                    <div class="add-equipment-header">
+                      <h2 class="add-equipment-title">Добавить новое оборудование</h2>
+                      <p class="add-equipment-subtitle">Выберите тип оборудования для добавления деталей.</p>
+                    </div>
+                    
+                    <form id="add-equipment-form">
+                      <!-- Equipment Type Section -->
+                      <div class="add-equipment-form-section">
+                        <label class="add-equipment-form-label">Тип оборудования</label>
+                        <div class="add-equipment-radio-group">
+                          <label class="add-equipment-radio-option">
+                            <input type="radio" name="equipment-type" value="monitor" checked>
+                            <div class="equipment-type-card">
+                              <div class="equipment-type-icon">
+                                <span class="material-icons">monitor</span>
+                              </div>
+                              <div class="equipment-type-name">Монитор</div>
+                            </div>
+                          </label>
+                          <label class="add-equipment-radio-option">
+                            <input type="radio" name="equipment-type" value="keyboard">
+                            <div class="equipment-type-card">
+                              <div class="equipment-type-icon">
+                                <span class="material-icons">keyboard</span>
+                              </div>
+                              <div class="equipment-type-name">Клавиатура</div>
+                            </div>
+                          </label>
+                          <label class="add-equipment-radio-option">
+                            <input type="radio" name="equipment-type" value="mouse">
+                            <div class="equipment-type-card">
+                              <div class="equipment-type-icon">
+                                <span class="material-icons">mouse</span>
+                              </div>
+                              <div class="equipment-type-name">Мышь</div>
+                            </div>
+                          </label>
+                          <label class="add-equipment-radio-option">
+                            <input type="radio" name="equipment-type" value="extension-cord">
+                            <div class="equipment-type-card">
+                              <div class="equipment-type-icon">
+                                <span class="material-icons">electrical_services</span>
+                              </div>
+                              <div class="equipment-type-name">Удлинитель</div>
+                            </div>
+                          </label>
+                          <label class="add-equipment-radio-option">
+                            <input type="radio" name="equipment-type" value="cables">
+                            <div class="equipment-type-card">
+                              <div class="equipment-type-icon">
+                                <span class="material-icons">cable</span>
+                              </div>
+                              <div class="equipment-type-name">Кабели</div>
+                            </div>
+                          </label>
+                          <label class="add-equipment-radio-option">
+                            <input type="radio" name="equipment-type" value="pc-case">
+                            <div class="equipment-type-card">
+                              <div class="equipment-type-icon">
+                                <span class="material-icons">memory</span>
+                              </div>
+                              <div class="equipment-type-name">PC Case</div>
+                            </div>
+                          </label>
+                          <label class="add-equipment-radio-option">
+                            <input type="radio" name="equipment-type" value="earphones">
+                            <div class="equipment-type-card">
+                              <div class="equipment-type-icon">
+                                <span class="material-icons">headphones</span>
+                              </div>
+                              <div class="equipment-type-name">Наушники</div>
+                            </div>
+                          </label>
+                          <label class="add-equipment-radio-option">
+                            <input type="radio" name="equipment-type" value="other">
+                            <div class="equipment-type-card">
+                              <div class="equipment-type-icon">
+                                <span class="material-icons">tv</span>
+                              </div>
+                              <div class="equipment-type-name">Медиа</div>
+                            </div>
+                          </label>
+                          <label class="add-equipment-radio-option">
+                            <input type="radio" name="equipment-type" value="additional">
+                            <div class="equipment-type-card">
+                              <div class="equipment-type-icon">
+                                <span class="material-icons">devices_other</span>
+                              </div>
+                              <div class="equipment-type-name">Другое</div>
+                            </div>
+                          </label>
+                        </div>
+                      </div>
+                      
+                      <!-- PC Case Component Selection (only visible for PC Case) -->
+                      <div class="add-equipment-form-section" id="pc-case-component-section" style="display: none;">
+                        <label class="add-equipment-form-label">Выберите компонент для ПК</label>
+                        <div class="pc-component-grid">
+                          <label class="pc-component-option">
+                            <input type="radio" name="pc-component-type" value="processor">
+                            <span class="pc-component-card">
+                              <span class="material-icons">memory</span>
+                              <span class="pc-component-name">Процессор</span>
+                              <span class="pc-component-desc">CPU/Processor</span>
+                            </span>
+                          </label>
+                          <label class="pc-component-option">
+                            <input type="radio" name="pc-component-type" value="motherboard">
+                            <span class="pc-component-card">
+                              <span class="material-icons">developer_board</span>
+                              <span class="pc-component-name">Материнская плата</span>
+                              <span class="pc-component-desc">Motherboard</span>
+                            </span>
+                          </label>
+                          <label class="pc-component-option">
+                            <input type="radio" name="pc-component-type" value="ram">
+                            <span class="pc-component-card">
+                              <span class="material-icons">sd_storage</span>
+                              <span class="pc-component-name">ОЗУ</span>
+                              <span class="pc-component-desc">RAM Memory</span>
+                            </span>
+                          </label>
+                          <label class="pc-component-option">
+                            <input type="radio" name="pc-component-type" value="gpu">
+                            <span class="pc-component-card">
+                              <span class="material-icons">videogame_asset</span>
+                              <span class="pc-component-name">Видеокарта</span>
+                              <span class="pc-component-desc">Graphics Card</span>
+                            </span>
+                          </label>
+                          <label class="pc-component-option">
+                            <input type="radio" name="pc-component-type" value="storage">
+                            <span class="pc-component-card">
+                              <span class="material-icons">storage</span>
+                              <span class="pc-component-name">Накопитель</span>
+                              <span class="pc-component-desc">SSD/HDD</span>
+                            </span>
+                          </label>
+                          <label class="pc-component-option">
+                            <input type="radio" name="pc-component-type" value="power-supply">
+                            <span class="pc-component-card">
+                              <span class="material-icons">power</span>
+                              <span class="pc-component-name">Блок питания</span>
+                              <span class="pc-component-desc">Power Supply</span>
+                            </span>
+                          </label>
+                          <label class="pc-component-option">
+                            <input type="radio" name="pc-component-type" value="cooling">
+                            <span class="pc-component-card">
+                              <span class="material-icons">ac_unit</span>
+                              <span class="pc-component-name">Охлаждение</span>
+                              <span class="pc-component-desc">CPU Cooler</span>
+                            </span>
+                          </label>
+                          <label class="pc-component-option">
+                            <input type="radio" name="pc-component-type" value="case-component">
+                            <span class="pc-component-card">
+                              <span class="material-icons">computer</span>
+                              <span class="pc-component-name">Корпус</span>
+                              <span class="pc-component-desc">PC Case</span>
+                            </span>
+                          </label>
+                        </div>
+                        <small class="add-equipment-form-hint">Выберите тип компонента, который вы хотите добавить в инвентарь ПК.</small>
+                      </div>
+                      
+                      <!-- Cables Component Selection (only visible for Cables) -->
+                      <div class="add-equipment-form-section" id="cables-component-section" style="display: none;">
+                        <label class="add-equipment-form-label">Выберите тип кабеля</label>
+                        <div class="pc-component-grid">
+                          <label class="pc-component-option">
+                            <input type="radio" name="cable-component-type" value="cat45-connector">
+                            <span class="pc-component-card">
+                              <span class="material-icons">cable</span>
+                              <span class="pc-component-name">Cat45 Connector</span>
+                              <span class="pc-component-desc">RJ45 Connector</span>
+                            </span>
+                          </label>
+                          <label class="pc-component-option">
+                            <input type="radio" name="cable-component-type" value="usb-connector">
+                            <span class="pc-component-card">
+                              <span class="material-icons">usb</span>
+                              <span class="pc-component-name">USB Connector</span>
+                              <span class="pc-component-desc">USB Cable</span>
+                            </span>
+                          </label>
+                          <label class="pc-component-option">
+                            <input type="radio" name="cable-component-type" value="cat45-ethernet">
+                            <span class="pc-component-card">
+                              <span class="material-icons">settings_ethernet</span>
+                              <span class="pc-component-name">Cat45 Ethernet</span>
+                              <span class="pc-component-desc">Ethernet Cable</span>
+                            </span>
+                          </label>
+                          <label class="pc-component-option">
+                            <input type="radio" name="cable-component-type" value="vga-cable">
+                            <span class="pc-component-card">
+                              <span class="material-icons">monitor</span>
+                              <span class="pc-component-name">VGA Кабель</span>
+                              <span class="pc-component-desc">VGA Cable</span>
+                            </span>
+                          </label>
+                          <label class="pc-component-option">
+                            <input type="radio" name="cable-component-type" value="hdmi-cable">
+                            <span class="pc-component-card">
+                              <span class="material-icons">hd</span>
+                              <span class="pc-component-name">HDMI Кабель</span>
+                              <span class="pc-component-desc">HDMI Cable</span>
+                            </span>
+                          </label>
+                          <label class="pc-component-option">
+                            <input type="radio" name="cable-component-type" value="hdmi-to-dp">
+                            <span class="pc-component-card">
+                              <span class="material-icons">transform</span>
+                              <span class="pc-component-name">HDMI to DP</span>
+                              <span class="pc-component-desc">HDMI to DisplayPort</span>
+                            </span>
+                          </label>
+                          <label class="pc-component-option">
+                            <input type="radio" name="cable-component-type" value="vga-to-hdmi">
+                            <span class="pc-component-card">
+                              <span class="material-icons">transform</span>
+                              <span class="pc-component-name">VGA to HDMI</span>
+                              <span class="pc-component-desc">VGA to HDMI Adapter</span>
+                            </span>
+                          </label>
+                          <label class="pc-component-option">
+                            <input type="radio" name="cable-component-type" value="vga-to-dp">
+                            <span class="pc-component-card">
+                              <span class="material-icons">transform</span>
+                              <span class="pc-component-name">VGA to DP</span>
+                              <span class="pc-component-desc">VGA to DisplayPort</span>
+                            </span>
+                          </label>
+                          <label class="pc-component-option">
+                            <input type="radio" name="cable-component-type" value="power-cable">
+                            <span class="pc-component-card">
+                              <span class="material-icons">power_settings_new</span>
+                              <span class="pc-component-name">Блок питания кабель</span>
+                              <span class="pc-component-desc">Power Cable</span>
+                            </span>
+                          </label>
+                          <label class="pc-component-option">
+                            <input type="radio" name="cable-component-type" value="headphone-adapter">
+                            <span class="pc-component-card">
+                              <span class="material-icons">headphones</span>
+                              <span class="pc-component-name">Адаптер наушника</span>
+                              <span class="pc-component-desc">Headphone Adapter</span>
+                            </span>
+                          </label>
+                          <label class="pc-component-option">
+                            <input type="radio" name="cable-component-type" value="printer-cable">
+                            <span class="pc-component-card">
+                              <span class="material-icons">print</span>
+                              <span class="pc-component-name">Принтер кабель</span>
+                              <span class="pc-component-desc">Printer Cable</span>
+                            </span>
+                          </label>
+                          <label class="pc-component-option">
+                            <input type="radio" name="cable-component-type" value="headphone-cable">
+                            <span class="pc-component-card">
+                              <span class="material-icons">headset</span>
+                              <span class="pc-component-name">Наушник кабель</span>
+                              <span class="pc-component-desc">Headphone Cable</span>
+                            </span>
+                          </label>
+                        </div>
+                        <small class="add-equipment-form-hint">Выберите тип кабеля, который вы хотите добавить в инвентарь.</small>
+                      </div>
+                      
+                      <!-- Other Equipment Component Selection (only visible for Other) -->
+                      <div class="add-equipment-form-section" id="other-component-section" style="display: none;">
+                        <label class="add-equipment-form-label">Выберите тип оборудования</label>
+                        <div class="pc-component-grid">
+                          <label class="pc-component-option">
+                            <input type="radio" name="other-component-type" value="switch">
+                            <span class="pc-component-card">
+                              <span class="material-icons">hub</span>
+                              <span class="pc-component-name">Switch</span>
+                              <span class="pc-component-desc">Switch/Hub</span>
+                            </span>
+                          </label>
+                          <label class="pc-component-option">
+                            <input type="radio" name="other-component-type" value="ups">
+                            <span class="pc-component-card">
+                              <span class="material-icons">battery_charging_full</span>
+                              <span class="pc-component-name">ИБП</span>
+                              <span class="pc-component-desc">UPS</span>
+                            </span>
+                          </label>
+                          <label class="pc-component-option">
+                            <input type="radio" name="other-component-type" value="ip-telephony">
+                            <span class="pc-component-card">
+                              <span class="material-icons">phone</span>
+                              <span class="pc-component-name">IP-телефония</span>
+                              <span class="pc-component-desc">IP Telephone</span>
+                            </span>
+                          </label>
+                          <label class="pc-component-option">
+                            <input type="radio" name="other-component-type" value="projector">
+                            <span class="pc-component-card">
+                              <span class="material-icons">videocam</span>
+                              <span class="pc-component-name">Проектор</span>
+                              <span class="pc-component-desc">Projector</span>
+                            </span>
+                          </label>
+                          <label class="pc-component-option">
+                            <input type="radio" name="other-component-type" value="notebook">
+                            <span class="pc-component-card">
+                              <span class="material-icons">laptop</span>
+                              <span class="pc-component-name">Ноутбук</span>
+                              <span class="pc-component-desc">Notebook</span>
+                            </span>
+                          </label>
+                          <label class="pc-component-option">
+                            <input type="radio" name="other-component-type" value="printer">
+                            <span class="pc-component-card">
+                              <span class="material-icons">print</span>
+                              <span class="pc-component-name">Принтер</span>
+                              <span class="pc-component-desc">Printer/Cartridge</span>
+                            </span>
+                          </label>
+                          <label class="pc-component-option">
+                            <input type="radio" name="other-component-type" value="tv">
+                            <span class="pc-component-card">
+                              <span class="material-icons">tv</span>
+                              <span class="pc-component-name">Телевизор</span>
+                              <span class="pc-component-desc">TV</span>
+                            </span>
+                          </label>
+                          <label class="pc-component-option">
+                            <input type="radio" name="other-component-type" value="switch-media">
+                            <span class="pc-component-card">
+                              <span class="material-icons">router</span>
+                              <span class="pc-component-name">Switch</span>
+                              <span class="pc-component-desc">Switch Kommutator</span>
+                            </span>
+                          </label>
+                        </div>
+                        <small class="add-equipment-form-hint">Выберите тип оборудования, который вы хотите добавить в инвентарь.</small>
+                      </div>
+                      
+                      <!-- Name Section -->
+                      <div class="add-equipment-form-section">
+                        <label class="add-equipment-form-label" for="equipment-name">Название</label>
+                        <input type="text" id="equipment-name" name="equipment-name" class="add-equipment-form-input" placeholder="Введите название оборудования" required>
+                        <small class="add-equipment-form-hint">например, Dell UltraSharp U2723QE, Logitech MX Keys</small>
+                      </div>
+                      
+                      <!-- Size and Quantity Section (side by side) -->
+                      <div class="add-equipment-form-section add-equipment-form-row">
+                        <div class="add-equipment-form-column">
+                          <label class="add-equipment-form-label" for="equipment-size">Размер (дюймы)</label>
+                          <input type="text" id="equipment-size" name="equipment-size" class="add-equipment-form-input" placeholder="например, 27">
+                          <small class="add-equipment-form-hint">Введите размер экрана в дюймах.</small>
+                        </div>
+                        <div class="add-equipment-form-column">
+                          <label class="add-equipment-form-label" for="equipment-quantity">Количество</label>
+                          <input type="number" id="equipment-quantity" name="equipment-quantity" class="add-equipment-form-input" placeholder="например, 1" min="1" required>
+                          <small class="add-equipment-form-hint">Введите количество элементов для добавления.</small>
+                        </div>
+                      </div>
+                      
+                      <!-- Quality Section -->
+                      <div class="add-equipment-form-section">
+                        <label class="add-equipment-form-label">Качество (Высокое / Стандартное)</label>
+                        <div class="add-equipment-toggle-container">
+                          <label class="add-equipment-toggle">
+                            <input type="checkbox" id="quality-toggle" name="quality-toggle">
+                            <span class="add-equipment-toggle-slider"></span>
+                          </label>
+                          <span class="add-equipment-toggle-label" id="quality-label">Стандартное качество</span>
+                        </div>
+                        <small class="add-equipment-form-hint">Переключите для высокого или стандартного качества товара.</small>
+                      </div>
+                      
+                      <!-- Condition Section -->
+                      <div class="add-equipment-form-section">
+                        <label class="add-equipment-form-label" for="equipment-condition">Состояние</label>
+                        <select id="equipment-condition" name="equipment-condition" class="add-equipment-form-select" required>
+                          <option value="new">Новое</option>
+                          <option value="used">Б/у</option>
+                          <option value="refurbished">Восстановленное</option>
+                        </select>
+                        <small class="add-equipment-form-hint">Укажите, новый предмет или б/у.</small>
+                      </div>
+                      
+                      <!-- Connectivity Section -->
+                      <div class="add-equipment-form-section">
+                        <label class="add-equipment-form-label" for="equipment-connectivity">Тип подключения</label>
+                        <select id="equipment-connectivity" name="equipment-connectivity" class="add-equipment-form-select" required>
+                          <option value="wired">Проводное</option>
+                          <option value="wireless">Беспроводное</option>
+                          <option value="both">Проводное/Беспроводное</option>
+                          <option value="integrated">Встроенное</option>
+                          <option value="not-applicable">Не применимо</option>
+                        </select>
+                        <small class="add-equipment-form-hint">Укажите тип подключения оборудования.</small>
+                      </div>
+                      
+                      <!-- Keyboard Buttons Section (only visible for keyboards) -->
+                      <div class="add-equipment-form-section" id="keyboard-buttons-section" style="display: none;">
+                        <label class="add-equipment-form-label" for="keyboard-buttons">Количество клавиш</label>
+                        <select id="keyboard-buttons" name="keyboard-buttons" class="add-equipment-form-select">
+                          <option value="61">61 клавиша (60%)</option>
+                          <option value="68">68 клавиш (65%)</option>
+                          <option value="87">87 клавиш (TKL)</option>
+                          <option value="96">96 клавиш (96%)</option>
+                          <option value="97">97 клавиш (97%)</option>
+                          <option value="98">98 клавиш (98%)</option>
+                          <option value="104" selected>104 клавиши (Полноразмерная)</option>
+                          <option value="108">108 клавиш (Расширенная)</option>
+                          <option value="other">Другое</option>
+                        </select>
+                        <small class="add-equipment-form-hint">Выберите количество клавиш на клавиатуре.</small>
+                      </div>
+                      
+                      <!-- Characteristics Sections - Equipment Specific -->
+                      
+                      <!-- Earphones Characteristics -->
+                      <div class="equipment-specific-section" id="earphones-section" style="display: none;">
+                        <h4 class="section-title">Характеристики наушников</h4>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="earphones-id">ID/Серийный номер</label>
+                            <input type="text" id="earphones-id" name="earphones-id" class="add-equipment-form-input" placeholder="например, SN123456">
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="earphones-driver-size">Размер драйвера (мм)</label>
+                            <input type="text" id="earphones-driver-size" name="earphones-driver-size" class="add-equipment-form-input" placeholder="например, 40мм">
+                          </div>
+                        </div>
+                        
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label">Микрофон</label>
+                            <div class="add-equipment-toggle-container">
+                              <label class="add-equipment-toggle">
+                                <input type="checkbox" id="earphones-microphone" name="earphones-microphone">
+                                <span class="add-equipment-toggle-slider"></span>
+                              </label>
+                              <span class="add-equipment-toggle-label">Есть микрофон</span>
+                            </div>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="earphones-audio-type">Аудио тип</label>
+                            <select id="earphones-audio-type" name="earphones-audio-type" class="add-equipment-form-select">
+                              <option value="stereo">Стерео</option>
+                              <option value="mono">Моно</option>
+                              <option value="surround">Объемный звук</option>
+                            </select>
+                          </div>
+                        </div>
+                        
+                        <div class="add-equipment-form-row" id="microphone-details" style="display: none;">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="microphone-type">Тип микрофона</label>
+                            <select id="microphone-type" name="microphone-type" class="add-equipment-form-select">
+                              <option value="built-in">Встроенный</option>
+                              <option value="detachable">Съемный</option>
+                              <option value="boom">Поворотный</option>
+                              <option value="inline">Встроенный в кабель</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label">Кнопка отключения микрофона</label>
+                            <div class="add-equipment-toggle-container">
+                              <label class="add-equipment-toggle">
+                                <input type="checkbox" id="microphone-mute" name="microphone-mute">
+                                <span class="add-equipment-toggle-slider"></span>
+                              </label>
+                              <span class="add-equipment-toggle-label">Есть кнопка отключения</span>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="earphones-connector">Тип разъема</label>
+                            <select id="earphones-connector" name="earphones-connector" class="add-equipment-form-select">
+                              <option value="usb-a">USB-A</option>
+                              <option value="usb-c">USB-C</option>
+                              <option value="3.5mm">3.5мм джек</option>
+                              <option value="lightning">Lightning</option>
+                              <option value="wireless">Беспроводные</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="earphones-frequency">Частотный диапазон</label>
+                            <input type="text" id="earphones-frequency" name="earphones-frequency" class="add-equipment-form-input" placeholder="например, 20Hz-20kHz">
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Cable Characteristics Sections -->
+                      
+                      <!-- Cat45 Connector Characteristics -->
+                      <div class="equipment-specific-section" id="cat45-connector-section" style="display: none;">
+                        <h4 class="section-title">Характеристики Cat45 Connector</h4>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="cat45-connector-id">ID/Серийный номер</label>
+                            <input type="text" id="cat45-connector-id" name="cat45-connector-id" class="add-equipment-form-input" placeholder="например, CNT123456">
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="cat45-connector-category">Категория</label>
+                            <select id="cat45-connector-category" name="cat45-connector-category" class="add-equipment-form-select">
+                              <option value="cat5">Cat5</option>
+                              <option value="cat5e">Cat5e</option>
+                              <option value="cat6">Cat6</option>
+                              <option value="cat6a">Cat6a</option>
+                              <option value="cat7">Cat7</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="cat45-connector-shielding">Экранирование</label>
+                            <select id="cat45-connector-shielding" name="cat45-connector-shielding" class="add-equipment-form-select">
+                              <option value="utp">UTP (Неэкранированная)</option>
+                              <option value="stp">STP (Экранированная)</option>
+                              <option value="ftp">FTP (Фольгированная)</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="cat45-connector-pins">Количество контактов</label>
+                            <select id="cat45-connector-pins" name="cat45-connector-pins" class="add-equipment-form-select">
+                              <option value="8">8 контактов (RJ45)</option>
+                              <option value="4">4 контакта (RJ11)</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- USB Connector Characteristics -->
+                      <div class="equipment-specific-section" id="usb-connector-section" style="display: none;">
+                        <h4 class="section-title">Характеристики USB Connector</h4>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="usb-connector-id">ID/Серийный номер</label>
+                            <input type="text" id="usb-connector-id" name="usb-connector-id" class="add-equipment-form-input" placeholder="например, USB123456">
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="usb-connector-version">Версия USB</label>
+                            <select id="usb-connector-version" name="usb-connector-version" class="add-equipment-form-select">
+                              <option value="usb-1.1">USB 1.1</option>
+                              <option value="usb-2.0">USB 2.0</option>
+                              <option value="usb-3.0">USB 3.0</option>
+                              <option value="usb-3.1">USB 3.1</option>
+                              <option value="usb-3.2">USB 3.2</option>
+                              <option value="usb-c">USB-C</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="usb-connector-length">Длина (м)</label>
+                            <input type="number" id="usb-connector-length" name="usb-connector-length" class="add-equipment-form-input" placeholder="например, 1.5" step="0.1">
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="usb-connector-type">Тип разъема</label>
+                            <select id="usb-connector-type" name="usb-connector-type" class="add-equipment-form-select">
+                              <option value="a-to-b">USB-A to USB-B</option>
+                              <option value="a-to-c">USB-A to USB-C</option>
+                              <option value="c-to-c">USB-C to USB-C</option>
+                              <option value="a-to-micro">USB-A to Micro-USB</option>
+                              <option value="a-to-mini">USB-A to Mini-USB</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Cat45 Ethernet Characteristics -->
+                      <div class="equipment-specific-section" id="cat45-ethernet-section" style="display: none;">
+                        <h4 class="section-title">Характеристики Cat45 Ethernet</h4>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="cat45-ethernet-id">ID/Серийный номер</label>
+                            <input type="text" id="cat45-ethernet-id" name="cat45-ethernet-id" class="add-equipment-form-input" placeholder="например, ETH123456">
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="cat45-ethernet-length">Длина (м)</label>
+                            <input type="number" id="cat45-ethernet-length" name="cat45-ethernet-length" class="add-equipment-form-input" placeholder="например, 5" step="0.5">
+                          </div>
+                        </div>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="cat45-ethernet-category">Категория</label>
+                            <select id="cat45-ethernet-category" name="cat45-ethernet-category" class="add-equipment-form-select">
+                              <option value="cat5">Cat5</option>
+                              <option value="cat5e">Cat5e</option>
+                              <option value="cat6">Cat6</option>
+                              <option value="cat6a">Cat6a</option>
+                              <option value="cat7">Cat7</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="cat45-ethernet-speed">Скорость передачи</label>
+                            <select id="cat45-ethernet-speed" name="cat45-ethernet-speed" class="add-equipment-form-select">
+                              <option value="10mbps">10 Mbps</option>
+                              <option value="100mbps">100 Mbps</option>
+                              <option value="1gbps">1 Gbps</option>
+                              <option value="10gbps">10 Gbps</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- VGA Cable Characteristics -->
+                      <div class="equipment-specific-section" id="vga-cable-section" style="display: none;">
+                        <h4 class="section-title">Характеристики VGA кабеля</h4>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="vga-cable-id">ID/Серийный номер</label>
+                            <input type="text" id="vga-cable-id" name="vga-cable-id" class="add-equipment-form-input" placeholder="например, VGA123456">
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="vga-cable-length">Длина (м)</label>
+                            <input type="number" id="vga-cable-length" name="vga-cable-length" class="add-equipment-form-input" placeholder="например, 2" step="0.5">
+                          </div>
+                        </div>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="vga-cable-resolution">Поддерживаемое разрешение</label>
+                            <select id="vga-cable-resolution" name="vga-cable-resolution" class="add-equipment-form-select">
+                              <option value="640x480">640x480 (VGA)</option>
+                              <option value="800x600">800x600 (SVGA)</option>
+                              <option value="1024x768">1024x768 (XGA)</option>
+                              <option value="1280x1024">1280x1024 (SXGA)</option>
+                              <option value="1920x1080">1920x1080 (Full HD)</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="vga-cable-connector">Тип разъема</label>
+                            <select id="vga-cable-connector" name="vga-cable-connector" class="add-equipment-form-select">
+                              <option value="male-male">Male to Male</option>
+                              <option value="male-female">Male to Female</option>
+                              <option value="female-female">Female to Female</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- HDMI Cable Characteristics -->
+                      <div class="equipment-specific-section" id="hdmi-cable-section" style="display: none;">
+                        <h4 class="section-title">Характеристики HDMI кабеля</h4>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="hdmi-cable-id">ID/Серийный номер</label>
+                            <input type="text" id="hdmi-cable-id" name="hdmi-cable-id" class="add-equipment-form-input" placeholder="например, HDMI123456">
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="hdmi-cable-length">Длина (м)</label>
+                            <input type="number" id="hdmi-cable-length" name="hdmi-cable-length" class="add-equipment-form-input" placeholder="например, 2" step="0.5">
+                          </div>
+                        </div>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="hdmi-cable-version">Версия HDMI</label>
+                            <select id="hdmi-cable-version" name="hdmi-cable-version" class="add-equipment-form-select">
+                              <option value="hdmi-1.4">HDMI 1.4</option>
+                              <option value="hdmi-2.0">HDMI 2.0</option>
+                              <option value="hdmi-2.1">HDMI 2.1</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="hdmi-cable-resolution">Поддерживаемое разрешение</label>
+                            <select id="hdmi-cable-resolution" name="hdmi-cable-resolution" class="add-equipment-form-select">
+                              <option value="1920x1080">1920x1080 (Full HD)</option>
+                              <option value="2560x1440">2560x1440 (QHD)</option>
+                              <option value="3840x2160">3840x2160 (4K UHD)</option>
+                              <option value="7680x4320">7680x4320 (8K UHD)</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- HDMI to DP Characteristics -->
+                      <div class="equipment-specific-section" id="hdmi-to-dp-section" style="display: none;">
+                        <h4 class="section-title">Характеристики HDMI to DP</h4>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="hdmi-to-dp-id">ID/Серийный номер</label>
+                            <input type="text" id="hdmi-to-dp-id" name="hdmi-to-dp-id" class="add-equipment-form-input" placeholder="например, HDMI2DP123456">
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="hdmi-to-dp-length">Длина (м)</label>
+                            <input type="number" id="hdmi-to-dp-length" name="hdmi-to-dp-length" class="add-equipment-form-input" placeholder="например, 1.8" step="0.1">
+                          </div>
+                        </div>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="hdmi-to-dp-hdmi-version">Версия HDMI</label>
+                            <select id="hdmi-to-dp-hdmi-version" name="hdmi-to-dp-hdmi-version" class="add-equipment-form-select">
+                              <option value="hdmi-1.4">HDMI 1.4</option>
+                              <option value="hdmi-2.0">HDMI 2.0</option>
+                              <option value="hdmi-2.1">HDMI 2.1</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="hdmi-to-dp-dp-version">Версия DisplayPort</label>
+                            <select id="hdmi-to-dp-dp-version" name="hdmi-to-dp-dp-version" class="add-equipment-form-select">
+                              <option value="dp-1.2">DisplayPort 1.2</option>
+                              <option value="dp-1.4">DisplayPort 1.4</option>
+                              <option value="dp-2.0">DisplayPort 2.0</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- VGA to HDMI Characteristics -->
+                      <div class="equipment-specific-section" id="vga-to-hdmi-section" style="display: none;">
+                        <h4 class="section-title">Характеристики VGA to HDMI</h4>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="vga-to-hdmi-id">ID/Серийный номер</label>
+                            <input type="text" id="vga-to-hdmi-id" name="vga-to-hdmi-id" class="add-equipment-form-input" placeholder="например, VGA2HDMI123456">
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="vga-to-hdmi-length">Длина (м)</label>
+                            <input type="number" id="vga-to-hdmi-length" name="vga-to-hdmi-length" class="add-equipment-form-input" placeholder="например, 1.5" step="0.1">
+                          </div>
+                        </div>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="vga-to-hdmi-audio">Поддержка аудио</label>
+                            <div class="add-equipment-toggle-container">
+                              <label class="add-equipment-toggle">
+                                <input type="checkbox" id="vga-to-hdmi-audio" name="vga-to-hdmi-audio">
+                                <span class="add-equipment-toggle-slider"></span>
+                              </label>
+                              <span class="add-equipment-toggle-label">Передача аудио</span>
+                            </div>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="vga-to-hdmi-resolution">Поддерживаемое разрешение</label>
+                            <select id="vga-to-hdmi-resolution" name="vga-to-hdmi-resolution" class="add-equipment-form-select">
+                              <option value="1920x1080">1920x1080 (Full HD)</option>
+                              <option value="1280x1024">1280x1024 (SXGA)</option>
+                              <option value="1024x768">1024x768 (XGA)</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- VGA to DP Characteristics -->
+                      <div class="equipment-specific-section" id="vga-to-dp-section" style="display: none;">
+                        <h4 class="section-title">Характеристики VGA to DP</h4>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="vga-to-dp-id">ID/Серийный номер</label>
+                            <input type="text" id="vga-to-dp-id" name="vga-to-dp-id" class="add-equipment-form-input" placeholder="например, VGA2DP123456">
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="vga-to-dp-length">Длина (м)</label>
+                            <input type="number" id="vga-to-dp-length" name="vga-to-dp-length" class="add-equipment-form-input" placeholder="например, 1.8" step="0.1">
+                          </div>
+                        </div>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="vga-to-dp-dp-version">Версия DisplayPort</label>
+                            <select id="vga-to-dp-dp-version" name="vga-to-dp-dp-version" class="add-equipment-form-select">
+                              <option value="dp-1.2">DisplayPort 1.2</option>
+                              <option value="dp-1.4">DisplayPort 1.4</option>
+                              <option value="dp-2.0">DisplayPort 2.0</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="vga-to-dp-resolution">Поддерживаемое разрешение</label>
+                            <select id="vga-to-dp-resolution" name="vga-to-dp-resolution" class="add-equipment-form-select">
+                              <option value="1920x1080">1920x1080 (Full HD)</option>
+                              <option value="2560x1440">2560x1440 (QHD)</option>
+                              <option value="3840x2160">3840x2160 (4K UHD)</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Power Cable Characteristics -->
+                      <div class="equipment-specific-section" id="power-cable-section" style="display: none;">
+                        <h4 class="section-title">Характеристики блок питания кабель</h4>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="power-cable-id">ID/Серийный номер</label>
+                            <input type="text" id="power-cable-id" name="power-cable-id" class="add-equipment-form-input" placeholder="например, PWR123456">
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="power-cable-length">Длина (м)</label>
+                            <input type="number" id="power-cable-length" name="power-cable-length" class="add-equipment-form-input" placeholder="например, 1.8" step="0.1">
+                          </div>
+                        </div>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="power-cable-voltage">Напряжение (В)</label>
+                            <select id="power-cable-voltage" name="power-cable-voltage" class="add-equipment-form-select">
+                              <option value="220v">220V</option>
+                              <option value="110v">110V</option>
+                              <option value="universal">Универсальный</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="power-cable-connector">Тип разъема</label>
+                            <select id="power-cable-connector" name="power-cable-connector" class="add-equipment-form-select">
+                              <option value="c13">C13 (Standard)</option>
+                              <option value="c5">C5 (Clover/Mickey Mouse)</option>
+                              <option value="c7">C7 (Figure 8)</option>
+                              <option value="schuko">Schuko (CEE 7/7)</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Headphone Adapter Characteristics -->
+                      <div class="equipment-specific-section" id="headphone-adapter-section" style="display: none;">
+                        <h4 class="section-title">Характеристики адаптера наушника</h4>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="headphone-adapter-id">ID/Серийный номер</label>
+                            <input type="text" id="headphone-adapter-id" name="headphone-adapter-id" class="add-equipment-form-input" placeholder="например, HPA123456">
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="headphone-adapter-input">Входной разъем</label>
+                            <select id="headphone-adapter-input" name="headphone-adapter-input" class="add-equipment-form-select">
+                              <option value="usb-c">USB-C</option>
+                              <option value="lightning">Lightning</option>
+                              <option value="usb-a">USB-A</option>
+                              <option value="6.35mm">6.35мм jack</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="headphone-adapter-output">Выходной разъем</label>
+                            <select id="headphone-adapter-output" name="headphone-adapter-output" class="add-equipment-form-select">
+                              <option value="3.5mm">3.5мм jack</option>
+                              <option value="6.35mm">6.35мм jack</option>
+                              <option value="2.5mm">2.5мм jack</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="headphone-adapter-dac">Встроенный ЦАП</label>
+                            <div class="add-equipment-toggle-container">
+                              <label class="add-equipment-toggle">
+                                <input type="checkbox" id="headphone-adapter-dac" name="headphone-adapter-dac">
+                                <span class="add-equipment-toggle-slider"></span>
+                              </label>
+                              <span class="add-equipment-toggle-label">Есть встроенный ЦАП</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Printer Cable Characteristics -->
+                      <div class="equipment-specific-section" id="printer-cable-section" style="display: none;">
+                        <h4 class="section-title">Характеристики принтер кабель</h4>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="printer-cable-id">ID/Серийный номер</label>
+                            <input type="text" id="printer-cable-id" name="printer-cable-id" class="add-equipment-form-input" placeholder="например, PRT123456">
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="printer-cable-length">Длина (м)</label>
+                            <input type="number" id="printer-cable-length" name="printer-cable-length" class="add-equipment-form-input" placeholder="например, 3" step="0.5">
+                          </div>
+                        </div>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="printer-cable-type">Тип кабеля</label>
+                            <select id="printer-cable-type" name="printer-cable-type" class="add-equipment-form-select">
+                              <option value="usb-a-to-b">USB-A to USB-B</option>
+                              <option value="usb-c">USB-C</option>
+                              <option value="parallel">Parallel (LPT)</option>
+                              <option value="ethernet">Ethernet</option>
+                              <option value="serial">Serial</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="printer-cable-version">Версия USB</label>
+                            <select id="printer-cable-version" name="printer-cable-version" class="add-equipment-form-select">
+                              <option value="usb-2.0">USB 2.0</option>
+                              <option value="usb-3.0">USB 3.0</option>
+                              <option value="usb-3.1">USB 3.1</option>
+                              <option value="not-applicable">Не применимо</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Headphone Cable Characteristics -->
+                      <div class="equipment-specific-section" id="headphone-cable-section" style="display: none;">
+                        <h4 class="section-title">Характеристики наушник кабель</h4>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="headphone-cable-id">ID/Серийный номер</label>
+                            <input type="text" id="headphone-cable-id" name="headphone-cable-id" class="add-equipment-form-input" placeholder="например, HPC123456">
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="headphone-cable-length">Длина (м)</label>
+                            <input type="number" id="headphone-cable-length" name="headphone-cable-length" class="add-equipment-form-input" placeholder="например, 2" step="0.1">
+                          </div>
+                        </div>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="headphone-cable-connector">Тип разъема</label>
+                            <select id="headphone-cable-connector" name="headphone-cable-connector" class="add-equipment-form-select">
+                              <option value="3.5mm">3.5мм jack</option>
+                              <option value="6.35mm">6.35мм jack</option>
+                              <option value="2.5mm">2.5мм jack</option>
+                              <option value="xlr">XLR</option>
+                              <option value="usb">USB</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="headphone-cable-channels">Каналы</label>
+                            <select id="headphone-cable-channels" name="headphone-cable-channels" class="add-equipment-form-select">
+                              <option value="stereo">Стерео</option>
+                              <option value="mono">Моно</option>
+                              <option value="balanced">Балансный</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Monitor Characteristics -->
+                      <div class="equipment-specific-section" id="monitor-section" style="display: none;">
+                        <h4 class="section-title">Характеристики монитора</h4>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="monitor-resolution">Разрешение</label>
+                            <select id="monitor-resolution" name="monitor-resolution" class="add-equipment-form-select">
+                              <option value="1920x1080">1920x1080 (Full HD)</option>
+                              <option value="2560x1440">2560x1440 (2K QHD)</option>
+                              <option value="3840x2160">3840x2160 (4K UHD)</option>
+                              <option value="1366x768">1366x768 (HD)</option>
+                              <option value="other">Другое</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="monitor-panel">Тип матрицы</label>
+                            <select id="monitor-panel" name="monitor-panel" class="add-equipment-form-select">
+                              <option value="ips">IPS</option>
+                              <option value="va">VA</option>
+                              <option value="tn">TN</option>
+                              <option value="oled">OLED</option>
+                              <option value="qled">QLED</option>
+                            </select>
+                          </div>
+                        </div>
+                        
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="monitor-refresh">Частота обновления (Гц)</label>
+                            <select id="monitor-refresh" name="monitor-refresh" class="add-equipment-form-select">
+                              <option value="60">60 Гц</option>
+                              <option value="75">75 Гц</option>
+                              <option value="120">120 Гц</option>
+                              <option value="144">144 Гц</option>
+                              <option value="240">240 Гц</option>
+                              <option value="360">360 Гц</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="monitor-ports">Порты подключения</label>
+                            <input type="text" id="monitor-ports" name="monitor-ports" class="add-equipment-form-input" placeholder="например, HDMI x2, DisplayPort, USB-C">
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Keyboard Characteristics -->
+                      <div class="equipment-specific-section" id="keyboard-section" style="display: none;">
+                        <h4 class="section-title">Характеристики клавиатуры</h4>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="keyboard-switch">Тип переключателей</label>
+                            <select id="keyboard-switch" name="keyboard-switch" class="add-equipment-form-select">
+                              <option value="mechanical">Механические</option>
+                              <option value="membrane">Мембранные</option>
+                              <option value="optical">Оптические</option>
+                              <option value="scissor">Ножничные</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="keyboard-layout">Раскладка</label>
+                            <select id="keyboard-layout" name="keyboard-layout" class="add-equipment-form-select">
+                              <option value="qwerty-ru">QWERTY (RU)</option>
+                              <option value="qwerty-en">QWERTY (EN)</option>
+                              <option value="dvorak">Dvorak</option>
+                              <option value="colemak">Colemak</option>
+                            </select>
+                          </div>
+                        </div>
+                        
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label">Подсветка</label>
+                            <div class="add-equipment-toggle-container">
+                              <label class="add-equipment-toggle">
+                                <input type="checkbox" id="keyboard-backlight" name="keyboard-backlight">
+                                <span class="add-equipment-toggle-slider"></span>
+                              </label>
+                              <span class="add-equipment-toggle-label">Есть подсветка</span>
+                            </div>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="keyboard-interface">Интерфейс</label>
+                            <select id="keyboard-interface" name="keyboard-interface" class="add-equipment-form-select">
+                              <option value="usb">USB</option>
+                              <option value="usb-c">USB-C</option>
+                              <option value="ps2">PS/2</option>
+                              <option value="bluetooth">Bluetooth</option>
+                              <option value="wireless-2.4">Беспроводная 2.4ГГц</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Mouse Characteristics -->
+                      <div class="equipment-specific-section" id="mouse-section" style="display: none;">
+                        <h4 class="section-title">Характеристики мыши</h4>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="mouse-dpi">DPI/CPI</label>
+                            <input type="text" id="mouse-dpi" name="mouse-dpi" class="add-equipment-form-input" placeholder="например, 800-12000">
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="mouse-buttons">Количество кнопок</label>
+                            <select id="mouse-buttons" name="mouse-buttons" class="add-equipment-form-select">
+                              <option value="2">2 кнопки</option>
+                              <option value="3">3 кнопки</option>
+                              <option value="5">5 кнопок</option>
+                              <option value="7">7 кнопок</option>
+                              <option value="12+">12+ кнопок</option>
+                            </select>
+                          </div>
+                        </div>
+                        
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="mouse-sensor">Тип сенсора</label>
+                            <select id="mouse-sensor" name="mouse-sensor" class="add-equipment-form-select">
+                              <option value="optical">Оптический</option>
+                              <option value="laser">Лазерный</option>
+                              <option value="ball">Шариковый</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="mouse-polling">Частота опроса (Гц)</label>
+                            <select id="mouse-polling" name="mouse-polling" class="add-equipment-form-select">
+                              <option value="125">125 Гц</option>
+                              <option value="250">250 Гц</option>
+                              <option value="500">500 Гц</option>
+                              <option value="1000">1000 Гц</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- PC Component Sections -->
+                      
+                      <!-- Processor Characteristics -->
+                      <div class="equipment-specific-section" id="processor-component-section" style="display: none;">
+                        <h4 class="section-title">Характеристики процессора</h4>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="processor-brand">Производитель</label>
+                            <select id="processor-brand" name="processor-brand" class="add-equipment-form-select">
+                              <option value="intel">Intel</option>
+                              <option value="amd">AMD</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="processor-model">Модель</label>
+                            <input type="text" id="processor-model" name="processor-model" class="add-equipment-form-input" placeholder="например, Core i7-13700K">
+                          </div>
+                        </div>
+                        
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="processor-cores">Количество ядер</label>
+                            <input type="number" id="processor-cores" name="processor-cores" class="add-equipment-form-input" placeholder="например, 16">
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="processor-threads">Количество потоков</label>
+                            <input type="number" id="processor-threads" name="processor-threads" class="add-equipment-form-input" placeholder="например, 24">
+                          </div>
+                        </div>
+                        
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="processor-base-clock">Базовая частота (ГГц)</label>
+                            <input type="text" id="processor-base-clock" name="processor-base-clock" class="add-equipment-form-input" placeholder="например, 3.4">
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="processor-boost-clock">Макс. частота (ГГц)</label>
+                            <input type="text" id="processor-boost-clock" name="processor-boost-clock" class="add-equipment-form-input" placeholder="например, 5.4">
+                          </div>
+                        </div>
+                        
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="processor-socket">Сокет</label>
+                            <select id="processor-socket" name="processor-socket" class="add-equipment-form-select">
+                              <option value="lga1700">LGA1700</option>
+                              <option value="lga1200">LGA1200</option>
+                              <option value="am5">AM5</option>
+                              <option value="am4">AM4</option>
+                              <option value="other">Другой</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="processor-tdp">TDP (Вт)</label>
+                            <input type="number" id="processor-tdp" name="processor-tdp" class="add-equipment-form-input" placeholder="например, 125">
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Motherboard Characteristics -->
+                      <div class="equipment-specific-section" id="motherboard-component-section" style="display: none;">
+                        <h4 class="section-title">Характеристики материнской платы</h4>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="motherboard-form-factor">Форм-фактор</label>
+                            <select id="motherboard-form-factor" name="motherboard-form-factor" class="add-equipment-form-select">
+                              <option value="atx">ATX</option>
+                              <option value="micro-atx">Micro-ATX</option>
+                              <option value="mini-itx">Mini-ITX</option>
+                              <option value="e-atx">E-ATX</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="motherboard-socket">Сокет</label>
+                            <select id="motherboard-socket" name="motherboard-socket" class="add-equipment-form-select">
+                              <option value="lga1700">LGA1700</option>
+                              <option value="lga1200">LGA1200</option>
+                              <option value="am5">AM5</option>
+                              <option value="am4">AM4</option>
+                            </select>
+                          </div>
+                        </div>
+                        
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="motherboard-chipset">Чипсет</label>
+                            <input type="text" id="motherboard-chipset" name="motherboard-chipset" class="add-equipment-form-input" placeholder="например, Z790">
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="motherboard-ram-slots">Слоты ОЗУ</label>
+                            <select id="motherboard-ram-slots" name="motherboard-ram-slots" class="add-equipment-form-select">
+                              <option value="2">2 слота</option>
+                              <option value="4">4 слота</option>
+                              <option value="8">8 слотов</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- RAM Characteristics -->
+                      <div class="equipment-specific-section" id="ram-component-section" style="display: none;">
+                        <h4 class="section-title">Характеристики ОЗУ</h4>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="ram-type">Тип</label>
+                            <select id="ram-type" name="ram-type" class="add-equipment-form-select">
+                              <option value="ddr5">DDR5</option>
+                              <option value="ddr4">DDR4</option>
+                              <option value="ddr3">DDR3</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="ram-capacity">Объем (ГБ)</label>
+                            <select id="ram-capacity" name="ram-capacity" class="add-equipment-form-select">
+                              <option value="8">8 ГБ</option>
+                              <option value="16">16 ГБ</option>
+                              <option value="32">32 ГБ</option>
+                              <option value="64">64 ГБ</option>
+                              <option value="128">128 ГБ</option>
+                            </select>
+                          </div>
+                        </div>
+                        
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="ram-speed">Частота (МГц)</label>
+                            <input type="number" id="ram-speed" name="ram-speed" class="add-equipment-form-input" placeholder="например, 3200">
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="ram-modules">Количество модулей</label>
+                            <select id="ram-modules" name="ram-modules" class="add-equipment-form-select">
+                              <option value="1">1 модуль</option>
+                              <option value="2">2 модуля</option>
+                              <option value="4">4 модуля</option>
+                              <option value="8">8 модулей</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- GPU Characteristics -->
+                      <div class="equipment-specific-section" id="gpu-component-section" style="display: none;">
+                        <h4 class="section-title">Характеристики видеокарты</h4>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="gpu-brand">Производитель GPU</label>
+                            <select id="gpu-brand" name="gpu-brand" class="add-equipment-form-select">
+                              <option value="nvidia">NVIDIA</option>
+                              <option value="amd">AMD</option>
+                              <option value="intel">Intel</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="gpu-model">Модель GPU</label>
+                            <input type="text" id="gpu-model" name="gpu-model" class="add-equipment-form-input" placeholder="например, RTX 4080">
+                          </div>
+                        </div>
+                        
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="gpu-vram">Объем VRAM (ГБ)</label>
+                            <select id="gpu-vram" name="gpu-vram" class="add-equipment-form-select">
+                              <option value="1">1 ГБ</option>
+                              <option value="2">2 ГБ</option>
+                              <option value="4">4 ГБ</option>
+                              <option value="6">6 ГБ</option>
+                              <option value="8">8 ГБ</option>
+                              <option value="12">12 ГБ</option>
+                              <option value="16">16 ГБ</option>
+                              <option value="24">24 ГБ</option>
+                              <option value="512">512 ГБ</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="gpu-length">Длина карты (мм)</label>
+                            <input type="number" id="gpu-length" name="gpu-length" class="add-equipment-form-input" placeholder="например, 320">
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Storage Characteristics -->
+                      <div class="equipment-specific-section" id="storage-component-section" style="display: none;">
+                        <h4 class="section-title">Характеристики накопителя</h4>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="storage-type">Тип накопителя</label>
+                            <select id="storage-type" name="storage-type" class="add-equipment-form-select">
+                              <option value="ssd">SSD</option>
+                              <option value="hdd">HDD</option>
+                              <option value="nvme">NVMe M.2</option>
+                              <option value="sata">SATA SSD</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="storage-capacity">Объем</label>
+                            <select id="storage-capacity" name="storage-capacity" class="add-equipment-form-select">
+                              <option value="256">256 ГБ</option>
+                              <option value="512">512 ГБ</option>
+                              <option value="1000">1 ТБ</option>
+                              <option value="2000">2 ТБ</option>
+                              <option value="4000">4 ТБ</option>
+                            </select>
+                          </div>
+                        </div>
+                        
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="storage-interface">Интерфейс</label>
+                            <select id="storage-interface" name="storage-interface" class="add-equipment-form-select">
+                              <option value="m2-nvme">M.2 NVMe</option>
+                              <option value="sata-3">SATA III</option>
+                              <option value="pcie">PCIe</option>
+                              <option value="usb">USB</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="storage-speed">Скорость чтения (МБ/с)</label>
+                            <input type="number" id="storage-speed" name="storage-speed" class="add-equipment-form-input" placeholder="например, 7000">
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Power Supply Characteristics -->
+                      <div class="equipment-specific-section" id="power-supply-component-section" style="display: none;">
+                        <h4 class="section-title">Характеристики блока питания</h4>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="psu-wattage">Мощность (Вт)</label>
+                            <select id="psu-wattage" name="psu-wattage" class="add-equipment-form-select">
+                              <option value="450">450 Вт</option>
+                              <option value="550">550 Вт</option>
+                              <option value="650">650 Вт</option>
+                              <option value="750">750 Вт</option>
+                              <option value="850">850 Вт</option>
+                              <option value="1000">1000 Вт</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="psu-efficiency">Эффективность</label>
+                            <select id="psu-efficiency" name="psu-efficiency" class="add-equipment-form-select">
+                              <option value="80plus">80 PLUS</option>
+                              <option value="80plus-bronze">80 PLUS Bronze</option>
+                              <option value="80plus-silver">80 PLUS Silver</option>
+                              <option value="80plus-gold">80 PLUS Gold</option>
+                              <option value="80plus-platinum">80 PLUS Platinum</option>
+                            </select>
+                          </div>
+                        </div>
+                        
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="psu-modular">Модульность</label>
+                            <select id="psu-modular" name="psu-modular" class="add-equipment-form-select">
+                              <option value="non-modular">Немодульный</option>
+                              <option value="semi-modular">Полумодульный</option>
+                              <option value="fully-modular">Полностью модульный</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="psu-form-factor">Форм-фактор</label>
+                            <select id="psu-form-factor" name="psu-form-factor" class="add-equipment-form-select">
+                              <option value="atx">ATX</option>
+                              <option value="sfx">SFX</option>
+                              <option value="flex-atx">Flex ATX</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Cooling Characteristics -->
+                      <div class="equipment-specific-section" id="cooling-component-section" style="display: none;">
+                        <h4 class="section-title">Характеристики охлаждения</h4>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="cooling-type">Тип охлаждения</label>
+                            <select id="cooling-type" name="cooling-type" class="add-equipment-form-select">
+                              <option value="air-tower">Башенный кулер</option>
+                              <option value="air-low-profile">Низкопрофильный</option>
+                              <option value="aio-120">AIO 120мм</option>
+                              <option value="aio-240">AIO 240мм</option>
+                              <option value="aio-360">AIO 360мм</option>
+                              <option value="custom-loop">Кастомная СВО</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="cooling-height">Высота (мм)</label>
+                            <input type="number" id="cooling-height" name="cooling-height" class="add-equipment-form-input" placeholder="например, 158">
+                          </div>
+                        </div>
+                        
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="cooling-socket-support">Поддержка сокетов</label>
+                            <input type="text" id="cooling-socket-support" name="cooling-socket-support" class="add-equipment-form-input" placeholder="например, LGA1700, AM5">
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="cooling-tdp">Макс. TDP (Вт)</label>
+                            <input type="number" id="cooling-tdp" name="cooling-tdp" class="add-equipment-form-input" placeholder="например, 180">
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- PC Case Characteristics (for case component) -->
+                      <div class="equipment-specific-section" id="case-component-section" style="display: none;">
+                        <h4 class="section-title">Характеристики корпуса ПК</h4>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="case-motherboard">Поддержка материнских плат</label>
+                            <select id="case-motherboard" name="case-motherboard" class="add-equipment-form-select">
+                              <option value="atx">ATX</option>
+                              <option value="micro-atx">Micro-ATX</option>
+                              <option value="mini-itx">Mini-ITX</option>
+                              <option value="e-atx">E-ATX</option>
+                              <option value="multiple">Несколько форматов</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="case-gpu-length">Макс. длина GPU (мм)</label>
+                            <input type="text" id="case-gpu-length" name="case-gpu-length" class="add-equipment-form-input" placeholder="например, 360">
+                          </div>
+                        </div>
+                        
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="case-cooler-height">Макс. высота кулера (мм)</label>
+                            <input type="text" id="case-cooler-height" name="case-cooler-height" class="add-equipment-form-input" placeholder="например, 170">
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="case-fans">Предустановленные вентиляторы</label>
+                            <input type="text" id="case-fans" name="case-fans" class="add-equipment-form-input" placeholder="например, 2x120мм спереди">
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Switch/Hub Characteristics -->
+                      <div class="equipment-specific-section" id="switch-other-section" style="display: none;">
+                        <h4 class="section-title">Характеристики коммутатора</h4>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="switch-ports">Количество портов</label>
+                            <select id="switch-ports" name="switch-ports" class="add-equipment-form-select">
+                              <option value="8">8 портов</option>
+                              <option value="16">16 портов</option>
+                              <option value="24">24 порта</option>
+                              <option value="48">48 портов</option>
+                              <option value="other">Другое</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="switch-speed">Скорость портов</label>
+                            <select id="switch-speed" name="switch-speed" class="add-equipment-form-select">
+                              <option value="100mb">100 Мбит/с</option>
+                              <option value="1gb">1 Гбит/с</option>
+                              <option value="10gb">10 Гбит/с</option>
+                              <option value="mixed">Смешанные</option>
+                            </select>
+                          </div>
+                        </div>
+                        
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="switch-managed">Управляемый</label>
+                            <select id="switch-managed" name="switch-managed" class="add-equipment-form-select">
+                              <option value="managed">Управляемый</option>
+                              <option value="unmanaged">Неуправляемый</option>
+                              <option value="smart">Частично управляемый</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="switch-poe">Поддержка PoE</label>
+                            <select id="switch-poe" name="switch-poe" class="add-equipment-form-select">
+                              <option value="no">Нет</option>
+                              <option value="poe">PoE</option>
+                              <option value="poe-plus">PoE+</option>
+                              <option value="poe-plus-plus">PoE++</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- UPS Characteristics -->
+                      <div class="equipment-specific-section" id="ups-other-section" style="display: none;">
+                        <h4 class="section-title">Характеристики ИБП</h4>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="ups-power">Мощность (ВА)</label>
+                            <input type="text" id="ups-power" name="ups-power" class="add-equipment-form-input" placeholder="например, 1500">
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="ups-runtime">Время работы (мин)</label>
+                            <input type="text" id="ups-runtime" name="ups-runtime" class="add-equipment-form-input" placeholder="например, 15">
+                          </div>
+                        </div>
+                        
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="ups-type">Тип ИБП</label>
+                            <select id="ups-type" name="ups-type" class="add-equipment-form-select">
+                              <option value="standby">Standby (Off-line)</option>
+                              <option value="line-interactive">Line-Interactive</option>
+                              <option value="online">Online (Double-conversion)</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="ups-outlets">Количество розеток</label>
+                            <input type="text" id="ups-outlets" name="ups-outlets" class="add-equipment-form-input" placeholder="например, 8">
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- IP Telephony Characteristics -->
+                      <div class="equipment-specific-section" id="ip-telephony-other-section" style="display: none;">
+                        <h4 class="section-title">Характеристики IP-телефона</h4>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="phone-lines">Количество линий</label>
+                            <select id="phone-lines" name="phone-lines" class="add-equipment-form-select">
+                              <option value="1">1 линия</option>
+                              <option value="2">2 линии</option>
+                              <option value="4">4 линии</option>
+                              <option value="6">6 линий</option>
+                              <option value="8">8 линий</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="phone-display">Дисплей</label>
+                            <select id="phone-display" name="phone-display" class="add-equipment-form-select">
+                              <option value="none">Без дисплея</option>
+                              <option value="monochrome">Монохромный</option>
+                              <option value="color">Цветной</option>
+                              <option value="touchscreen">Сенсорный</option>
+                            </select>
+                          </div>
+                        </div>
+                        
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="phone-poe">Питание PoE</label>
+                            <select id="phone-poe" name="phone-poe" class="add-equipment-form-select">
+                              <option value="yes">Да</option>
+                              <option value="no">Нет (внешний адаптер)</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="phone-headset">Поддержка гарнитуры</label>
+                            <select id="phone-headset" name="phone-headset" class="add-equipment-form-select">
+                              <option value="yes">Да</option>
+                              <option value="no">Нет</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Projector Characteristics -->
+                      <div class="equipment-specific-section" id="projector-other-section" style="display: none;">
+                        <h4 class="section-title">Характеристики проектора</h4>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="projector-resolution">Разрешение</label>
+                            <select id="projector-resolution" name="projector-resolution" class="add-equipment-form-select">
+                              <option value="svga">SVGA (800x600)</option>
+                              <option value="xga">XGA (1024x768)</option>
+                              <option value="wxga">WXGA (1280x800)</option>
+                              <option value="hd">HD (1920x1080)</option>
+                              <option value="4k">4K (3840x2160)</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="projector-brightness">Яркость (люмен)</label>
+                            <input type="text" id="projector-brightness" name="projector-brightness" class="add-equipment-form-input" placeholder="например, 3500">
+                          </div>
+                        </div>
+                        
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="projector-technology">Технология</label>
+                            <select id="projector-technology" name="projector-technology" class="add-equipment-form-select">
+                              <option value="lcd">LCD</option>
+                              <option value="dlp">DLP</option>
+                              <option value="led">LED</option>
+                              <option value="laser">Лазерный</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="projector-lamp-life">Срок службы лампы (ч)</label>
+                            <input type="text" id="projector-lamp-life" name="projector-lamp-life" class="add-equipment-form-input" placeholder="например, 15000">
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Notebook Characteristics -->
+                      <div class="equipment-specific-section" id="notebook-other-section" style="display: none;">
+                        <h4 class="section-title">Характеристики ноутбука</h4>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="notebook-cpu">Процессор</label>
+                            <input type="text" id="notebook-cpu" name="notebook-cpu" class="add-equipment-form-input" placeholder="например, Intel Core i7-13700H">
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="notebook-ram">Оперативная память</label>
+                            <select id="notebook-ram" name="notebook-ram" class="add-equipment-form-select">
+                              <option value="4gb">4 ГБ</option>
+                              <option value="8gb">8 ГБ</option>
+                              <option value="16gb">16 ГБ</option>
+                              <option value="32gb">32 ГБ</option>
+                              <option value="64gb">64 ГБ</option>
+                            </select>
+                          </div>
+                        </div>
+                        
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="notebook-storage">Накопитель</label>
+                            <input type="text" id="notebook-storage" name="notebook-storage" class="add-equipment-form-input" placeholder="например, 512 ГБ SSD">
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="notebook-screen">Диагональ экрана</label>
+                            <select id="notebook-screen" name="notebook-screen" class="add-equipment-form-select">
+                              <option value="13">13.3"</option>
+                              <option value="14">14"</option>
+                              <option value="15">15.6"</option>
+                              <option value="17">17.3"</option>
+                            </select>
+                          </div>
+                        </div>
+                        
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="notebook-gpu">Видеокарта</label>
+                            <input type="text" id="notebook-gpu" name="notebook-gpu" class="add-equipment-form-input" placeholder="например, NVIDIA GTX 3060">
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="notebook-os">Операционная система</label>
+                            <select id="notebook-os" name="notebook-os" class="add-equipment-form-select">
+                              <option value="windows11">Windows 11</option>
+                              <option value="windows10">Windows 10</option>
+                              <option value="macos">macOS</option>
+                              <option value="linux">Linux</option>
+                              <option value="none">Без ОС</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Printer Characteristics -->
+                      <div class="equipment-specific-section" id="printer-other-section" style="display: none;">
+                        <h4 class="section-title">Характеристики принтера</h4>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="printer-type">Тип принтера</label>
+                            <select id="printer-type" name="printer-type" class="add-equipment-form-select">
+                              <option value="inkjet">Струйный</option>
+                              <option value="laser">Лазерный</option>
+                              <option value="matrix">Матричный</option>
+                              <option value="thermal">Термальный</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="printer-color">Цветность</label>
+                            <select id="printer-color" name="printer-color" class="add-equipment-form-select">
+                              <option value="monochrome">Монохромный</option>
+                              <option value="color">Цветной</option>
+                            </select>
+                          </div>
+                        </div>
+                        
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="printer-functions">Функции</label>
+                            <select id="printer-functions" name="printer-functions" class="add-equipment-form-select">
+                              <option value="print">Только печать</option>
+                              <option value="mfp">МФУ (печать, сканер, копир)</option>
+                              <option value="mfp-fax">МФУ с факсом</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="printer-cartridge">Тип картриджа</label>
+                            <input type="text" id="printer-cartridge" name="printer-cartridge" class="add-equipment-form-input" placeholder="например, HP 85A, Canon 045">
+                          </div>
+                        </div>
+                        
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="printer-connectivity">Подключение</label>
+                            <select id="printer-connectivity" name="printer-connectivity" class="add-equipment-form-select">
+                              <option value="usb">USB</option>
+                              <option value="ethernet">Ethernet</option>
+                              <option value="wifi">Wi-Fi</option>
+                              <option value="multiple">Несколько типов</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="printer-speed">Скорость печати (стр/мин)</label>
+                            <input type="text" id="printer-speed" name="printer-speed" class="add-equipment-form-input" placeholder="например, 30">
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- TV Characteristics -->
+                      <div class="equipment-specific-section" id="tv-other-section" style="display: none;">
+                        <h4 class="section-title">Характеристики телевизора</h4>
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="tv-size">Диагональ экрана</label>
+                            <select id="tv-size" name="tv-size" class="add-equipment-form-select">
+                              <option value="32">32"</option>
+                              <option value="43">43"</option>
+                              <option value="50">50"</option>
+                              <option value="55">55"</option>
+                              <option value="65">65"</option>
+                              <option value="75">75"</option>
+                              <option value="85">85"</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="tv-resolution">Разрешение</label>
+                            <select id="tv-resolution" name="tv-resolution" class="add-equipment-form-select">
+                              <option value="hd">HD (1366x768)</option>
+                              <option value="fullhd">Full HD (1920x1080)</option>
+                              <option value="2k">2K (2560x1440)</option>
+                              <option value="4k">4K (3840x2160)</option>
+                              <option value="8k">8K (7680x4320)</option>
+                            </select>
+                          </div>
+                        </div>
+                        
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="tv-technology">Технология экрана</label>
+                            <select id="tv-technology" name="tv-technology" class="add-equipment-form-select">
+                              <option value="led">LED</option>
+                              <option value="oled">OLED</option>
+                              <option value="qled">QLED</option>
+                              <option value="mini-led">Mini LED</option>
+                              <option value="lcd">LCD</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="tv-smart">Smart TV</label>
+                            <select id="tv-smart" name="tv-smart" class="add-equipment-form-select">
+                              <option value="yes">Да</option>
+                              <option value="no">Нет</option>
+                            </select>
+                          </div>
+                        </div>
+                        
+                        <div class="add-equipment-form-row">
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="tv-hdmi">Количество HDMI портов</label>
+                            <select id="tv-hdmi" name="tv-hdmi" class="add-equipment-form-select">
+                              <option value="2">2</option>
+                              <option value="3">3</option>
+                              <option value="4">4</option>
+                              <option value="5">5+</option>
+                            </select>
+                          </div>
+                          <div class="add-equipment-form-column">
+                            <label class="add-equipment-form-label" for="tv-refresh">Частота обновления (Гц)</label>
+                            <select id="tv-refresh" name="tv-refresh" class="add-equipment-form-select">
+                              <option value="60">60 Гц</option>
+                              <option value="120">120 Гц</option>
+                              <option value="144">144 Гц</option>
+                              <option value="240">240 Гц</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Generic Characteristics (for other equipment types) -->
+                      <div class="add-equipment-form-section" id="generic-characteristics">
+                        <label class="add-equipment-form-label" for="equipment-characteristics">Характеристики</label>
+                        <textarea id="equipment-characteristics" name="equipment-characteristics" class="add-equipment-form-textarea" rows="4" placeholder="Опишите особенности или заметки о предмете..."></textarea>
+                        <small class="add-equipment-form-hint">Предоставьте подробные характеристики или дополнительные заметки.</small>
+                      </div>
+                      
+                      <!-- Form Actions -->
+                      <div class="add-equipment-form-actions">
+                        <button type="button" class="add-equipment-btn add-equipment-btn-secondary" id="add-equipment-cancel-btn">Очистить форму</button>
+                        <button type="submit" class="add-equipment-btn add-equipment-btn-primary" id="add-equipment-submit-btn">Добавить</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+                
+                <!-- Right Panel - Equipment List and Stats -->
+                <div class="warehouse-right-panel">
+                  <div class="warehouse-header">
+                    <h1 class="warehouse-title">Управление складом</h1>
+                    <p class="warehouse-subtitle">Управление инвентарем технического оборудования</p>
+                  </div>
+                  
+                  <!-- Stats Cards -->
+                  <div class="warehouse-stats">
+                    <div class="stats-header">
+                      <h3 class="stats-title">
+                        <span class="material-icons">inventory_2</span>
+                        Статистика оборудования
+                      </h3>
+                      <div class="stats-total" id="total-equipment-count">63</div>
+                    </div>
+                    <div class="stats-grid">
+                      <div class="stat-item" data-type="monitor" onclick="filterByType('monitor')">
+                        <div class="stat-icon-compact">
+                          <span class="material-icons">monitor</span>
+                        </div>
+                        <div class="stat-content-compact">
+                          <h4 class="stat-number-compact" id="monitor-count">12</h4>
+                          <p class="stat-label-compact">Мониторы</p>
+                        </div>
+                      </div>
+                      <div class="stat-item" data-type="keyboard" onclick="filterByType('keyboard')">
+                        <div class="stat-icon-compact">
+                          <span class="material-icons">keyboard</span>
+                        </div>
+                        <div class="stat-content-compact">
+                          <h4 class="stat-number-compact" id="keyboard-count">25</h4>
+                          <p class="stat-label-compact">Клавиатуры</p>
+                        </div>
+                      </div>
+                      <div class="stat-item" data-type="mouse" onclick="filterByType('mouse')">
+                        <div class="stat-icon-compact">
+                          <span class="material-icons">mouse</span>
+                        </div>
+                        <div class="stat-content-compact">
+                          <h4 class="stat-number-compact" id="mouse-count">18</h4>
+                          <p class="stat-label-compact">Мыши</p>
+                        </div>
+                      </div>
+                      <div class="stat-item" data-type="pc-case" onclick="filterByType('pc-case')">
+                        <div class="stat-icon-compact">
+                          <span class="material-icons">memory</span>
+                        </div>
+                        <div class="stat-content-compact">
+                          <h4 class="stat-number-compact" id="pc-case-count">0</h4>
+                          <p class="stat-label-compact">PC Case</p>
+                        </div>
+                      </div>
+                      <div class="stat-item" data-type="earphones" onclick="filterByType('earphones')">
+                        <div class="stat-icon-compact">
+                          <span class="material-icons">headphones</span>
+                        </div>
+                        <div class="stat-content-compact">
+                          <h4 class="stat-number-compact" id="earphones-count">0</h4>
+                          <p class="stat-label-compact">Наушники</p>
+                        </div>
+                      </div>
+                      <div class="stat-item" data-type="other" onclick="filterByType('other')">
+                        <div class="stat-icon-compact">
+                          <span class="material-icons">tv</span>
+                        </div>
+                        <div class="stat-content-compact">
+                          <h4 class="stat-number-compact" id="other-count">0</h4>
+                          <p class="stat-label-compact">Медиа</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Equipment Table -->
+                  <div class="warehouse-table-container">
+                    <div class="warehouse-table-header">
+                      <h2>Инвентарь оборудования</h2>
+                      <div class="warehouse-controls">
+                        <div class="search-box">
+                          <span class="material-icons">search</span>
+                          <input type="text" placeholder="Поиск оборудования..." id="equipment-search">
+                        </div>
+                        <select class="filter-select" id="equipment-filter">
+                          <option value="">Все оборудование</option>
+                          <option value="monitor">Мониторы</option>
+                          <option value="keyboard">Клавиатуры</option>
+                          <option value="mouse">Мыши</option>
+                          <option value="processor">Процессоры</option>
+                          <option value="extension-cord">Удлинители</option>
+                          <option value="cables">Кабели</option>
+                          <option value="pc-case">PC Case</option>
+                          <option value="earphones">Наушники</option>
+                          <option value="additional">Другое</option>
+                          <option value="other">Медиа</option>
+                        </select>
+                      </div>
+                    </div>
+                    
+                    <div class="warehouse-table-wrapper">
+                      <table class="warehouse-table">
+                        <thead>
+                          <tr>
+                            <th>№</th>
+                            <th>Тип</th>
+                            <th>Название</th>
+                            <th>Размер</th>
+                            <th>Качество</th>
+                            <th>Состояние</th>
+                            <th>Подключение</th>
+                            <th>Количество</th>
+                            <th>Дата добавления</th>
+                            <th>Действия</th>
+                          </tr>
+                        </thead>
+                        <tbody id="equipment-table-body">
+                          <!-- Equipment rows will be populated by JavaScript -->
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+      </main>
+    </div>
+    
+    <!-- Move group modal here for proper centering -->
+    <div id="chat-group-modal" class="chat-group-modal">
+      <div class="chat-group-modal-content">
+        <span
+          id="chat-group-modal-close"
+          class="material-icons chat-group-modal-close"
+          >close
+          </span>
+        <h3 class="chat-group-modal-title">Создать группу</h3>
+        <input
+          id="chat-group-name"
+          type="text"
+          placeholder="Название группы"
+          class="chat-group-name-input"
+        />
+        <div class="chat-group-modal-label">Добавить участников:</div>
+        <div id="chat-group-users-list" class="chat-group-users-list"></div>
+        <button
+          id="chat-group-create-confirm"
+          class="chat-group-create-confirm"
+        >
+          Создать
+        </button>
+      </div>
+    </div>
+    
+    <!-- Add Members to Group Modal -->
+    <div id="add-members-modal" class="add-members-modal" style="display: none;">
+      <div class="add-members-modal-content">
+        <div class="add-members-modal-header">
+          <button class="add-members-modal-back" id="add-members-modal-back">
+            <span class="material-icons">arrow_back</span>
+          </button>
+          <h3 class="add-members-modal-title">Добавить участников</h3>
+          <button class="add-members-modal-close" id="add-members-modal-close">
+            <span class="material-icons">close</span>
+          </button>
+        </div>
+        <div class="add-members-modal-search">
+          <input
+            id="add-members-search"
+            type="text"
+            placeholder="Поиск пользователей..."
+            class="add-members-search-input"
+          />
+        </div>
+        <div class="add-members-modal-label">Выберите пользователей для добавления:</div>
+        <div id="add-members-users-list" class="add-members-users-list"></div>
+        <div class="add-members-modal-actions">
+          <button id="add-members-confirm" class="add-members-confirm" disabled>
+            Добавить (<span id="selected-count">0</span>)
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Image Preview Modal -->
+    <div id="chat-image-modal" class="chat-image-modal">
+      <span
+        id="chat-image-modal-close"
+        class="material-icons chat-image-modal-close"
+        >close</span
+      >
+      <img
+        id="chat-image-modal-img"
+        src=""
+        alt="image"
+        class="chat-image-modal-img"
+      />
+    </div>
+    
+    <!-- Warehouse Equipment Modal -->
+    <div id="warehouse-modal" class="warehouse-modal" style="display: none;">
+      <div class="warehouse-modal-content">
+        <div class="warehouse-modal-header">
+          <h2 class="warehouse-modal-title">Add New Equipment</h2>
+          <button class="warehouse-modal-close" id="warehouse-modal-close">
+            <span class="material-icons">close</span>
+          </button>
+        </div>
+        
+        <div class="warehouse-modal-body">
+          <p class="warehouse-modal-subtitle">Select an equipment type to add its details.</p>
+          
+          <form id="warehouse-equipment-form">
+            <!-- Equipment Type Section -->
+            <div class="warehouse-form-section">
+              <label class="warehouse-form-label">Equipment Type</label>
+              <div class="warehouse-radio-group">
+                <label class="warehouse-radio-option">
+                  <input type="radio" name="equipment-type" value="monitor" checked>
+                  <span class="warehouse-radio-custom"></span>
+                  <span class="warehouse-radio-text">Monitor</span>
+                </label>
+                <label class="warehouse-radio-option">
+                  <input type="radio" name="equipment-type" value="keyboard">
+                  <span class="warehouse-radio-custom"></span>
+                  <span class="warehouse-radio-text">Keyboard</span>
+                </label>
+                <label class="warehouse-radio-option">
+                  <input type="radio" name="equipment-type" value="mouse">
+                  <span class="warehouse-radio-custom"></span>
+                  <span class="warehouse-radio-text">Mouse</span>
+                </label>
+                <label class="warehouse-radio-option">
+                  <input type="radio" name="equipment-type" value="processor">
+                  <span class="warehouse-radio-custom"></span>
+                  <span class="warehouse-radio-text">Processor</span>
+                </label>
+              </div>
+            </div>
+            
+            <!-- Name Section -->
+            <div class="warehouse-form-section">
+              <label class="warehouse-form-label" for="equipment-name">Name</label>
+              <input type="text" id="equipment-name" name="equipment-name" class="warehouse-form-input" placeholder="Enter equipment name">
+              <small class="warehouse-form-hint">e.g., Dell UltraSharp U2723QE, Logitech MX Keys</small>
+            </div>
+            
+            <!-- Size Section -->
+            <div class="warehouse-form-section">
+              <label class="warehouse-form-label" for="equipment-size">Size (inches)</label>
+              <input type="text" id="equipment-size" name="equipment-size" class="warehouse-form-input" placeholder="e.g., 27">
+              <small class="warehouse-form-hint">Enter the screen size in inches.</small>
+            </div>
+            
+            <!-- Quality Section -->
+            <div class="warehouse-form-section">
+              <label class="warehouse-form-label">Quality (High / Standard)</label>
+              <div class="warehouse-toggle-container">
+                <label class="warehouse-toggle">
+                  <input type="checkbox" id="quality-toggle" name="quality-toggle">
+                  <span class="warehouse-toggle-slider"></span>
+                </label>
+                <span class="warehouse-toggle-label" id="quality-label">Standard Quality</span>
+              </div>
+              <small class="warehouse-form-hint">Toggle for high or standard item quality.</small>
+            </div>
+            
+            <!-- Condition Section -->
+            <div class="warehouse-form-section">
+              <label class="warehouse-form-label" for="equipment-condition">Condition</label>
+              <select id="equipment-condition" name="equipment-condition" class="warehouse-form-select">
+                <option value="new">New</option>
+                <option value="used">Used</option>
+                <option value="refurbished">Refurbished</option>
+              </select>
+              <small class="warehouse-form-hint">Specify if the item is new or used.</small>
+            </div>
+            
+            <!-- Characteristics Section -->
+            <div class="warehouse-form-section">
+              <label class="warehouse-form-label" for="equipment-characteristics">Characteristics</label>
+              <textarea id="equipment-characteristics" name="equipment-characteristics" class="warehouse-form-textarea" rows="4" placeholder="Describe specific features or notes about the item..."></textarea>
+              <small class="warehouse-form-hint">Provide detailed characteristics or any additional notes.</small>
+            </div>
+            
+            <!-- Quantity Section -->
+            <div class="warehouse-form-section">
+              <label class="warehouse-form-label" for="equipment-quantity">Quantity</label>
+              <input type="number" id="equipment-quantity" name="equipment-quantity" class="warehouse-form-input" placeholder="e.g., 1" min="1">
+              <small class="warehouse-form-hint">Enter the number of items to add.</small>
+            </div>
+            
+            <!-- Form Actions -->
+            <div class="warehouse-form-actions">
+              <button type="button" class="warehouse-btn warehouse-btn-secondary" id="warehouse-cancel-btn">Cancel</button>
+              <button type="submit" class="warehouse-btn warehouse-btn-primary" id="warehouse-submit-btn">Submit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    
+    <script src="script.js"></script>
+    <script src="js/window-manager.js"></script>
+    <script src="js/chat-modal.js"></script>
+    <script src="js/main-page-custom.js"></script>
+    <script src="js/chat-modal-open-fixed.js"></script>
+    <script src="js/warehouse-dashboard.js"></script>
+  </body>
+</html>
