@@ -117,6 +117,49 @@ document.addEventListener('DOMContentLoaded', function() {
         initializeWarehouseFeatures();
         console.log('Warehouse features initialized');
         
+        // Set up table settings with another delay to ensure everything is ready
+        setTimeout(() => {
+          console.log('Setting up table settings after warehouse activation...');
+          const settingsBtn = document.getElementById('table-settings-btn');
+          const settingsModal = document.getElementById('table-settings-modal');
+          
+          if (settingsBtn && settingsModal) {
+            console.log('Both elements found, setting up click handler...');
+            settingsBtn.onclick = function() {
+              console.log('Settings button clicked via onclick!');
+              console.log('Modal before changes:', {
+                display: settingsModal.style.display,
+                visibility: settingsModal.style.visibility,
+                zIndex: settingsModal.style.zIndex,
+                opacity: settingsModal.style.opacity
+              });
+              
+              settingsModal.style.display = 'flex';
+              settingsModal.style.visibility = 'visible';
+              settingsModal.style.opacity = '1';
+              settingsModal.style.zIndex = '10001';
+              settingsModal.style.position = 'fixed';
+              settingsModal.style.top = '0';
+              settingsModal.style.left = '0';
+              settingsModal.style.width = '100%';
+              settingsModal.style.height = '100%';
+              document.body.style.overflow = 'hidden';
+              
+              console.log('Modal after changes:', {
+                display: settingsModal.style.display,
+                visibility: settingsModal.style.visibility,
+                zIndex: settingsModal.style.zIndex,
+                opacity: settingsModal.style.opacity,
+                position: settingsModal.style.position
+              });
+              
+              console.log('Modal computed styles:', window.getComputedStyle(settingsModal));
+            };
+          } else {
+            console.log('Elements not found:', { settingsBtn, settingsModal });
+          }
+        }, 1000);
+        
         // Update modal positions for the new section
         if (typeof updateModalPositionsOnSectionChange === 'function') {
           updateModalPositionsOnSectionChange();
@@ -151,9 +194,11 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Initialize warehouse features
   function initializeWarehouseFeatures() {
+    console.log('Initializing warehouse features...');
     initializeAddEquipmentForm();
     initializeSearch();
     initializeFilter();
+    initializeTableSettings();
     loadEquipmentData();
   }
   
@@ -1261,52 +1306,517 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Initialize filter functionality
   function initializeFilter() {
-    const filterSelect = document.getElementById('equipment-filter');
-    if (filterSelect) {
-      filterSelect.addEventListener('change', function() {
-        const filterType = this.value;
-        
-        // Remove active class from all stat items
-        document.querySelectorAll('.stat-item').forEach(item => {
-          item.classList.remove('active');
+    // Add a small delay to ensure DOM is fully loaded
+    setTimeout(function() {
+      console.log('Initializing filter functionality...');
+      
+      const filterBtn = document.getElementById('equipment-filter-btn');
+      const filterModal = document.getElementById('filter-modal');
+      const filterModalClose = document.getElementById('filter-modal-close');
+      const filterCurrentText = document.getElementById('filter-current-text');
+      const filterResetBtn = document.getElementById('filter-reset-btn');
+      const filterSearchBtn = document.getElementById('filter-search-btn');
+      
+      console.log('Filter elements:', {
+        filterBtn,
+        filterModal,
+        filterModalClose,
+        filterCurrentText,
+        filterResetBtn,
+        filterSearchBtn
+      });
+      
+      // Test modal visibility immediately
+      if (filterModal) {
+        console.log('Modal found! Current styles:', {
+          display: filterModal.style.display,
+          visibility: filterModal.style.visibility,
+          zIndex: filterModal.style.zIndex,
+          classList: filterModal.classList.toString()
+        });
+      }
+      
+      let selectedFilters = new Set();
+      
+      // Open filter modal
+      if (filterBtn) {
+        console.log('Adding click listener to filter button');
+        filterBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          console.log('Filter button clicked!');
+          
+          if (filterModal) {
+            console.log('Opening filter modal');
+            console.log('Current modal display:', filterModal.style.display);
+            console.log('Modal computed style:', window.getComputedStyle(filterModal).display);
+            
+            // Force the modal to display with multiple approaches
+            filterModal.classList.add('show');
+            filterModal.style.display = 'flex';
+            filterModal.style.visibility = 'visible';
+            filterModal.style.opacity = '1';
+            filterModal.style.zIndex = '10050';
+            
+            document.body.style.overflow = 'hidden';
+            
+            // Set up filter options after modal is opened
+            setupFilterOptions();
+            
+            console.log('After setting display:', filterModal.style.display);
+            console.log('Modal classes:', filterModal.className);
+            console.log('Final computed style:', window.getComputedStyle(filterModal).display);
+          } else {
+            console.error('Filter modal not found!');
+          }
         });
         
-        // If a specific type is selected, highlight the corresponding stat item
-        if (filterType) {
-          const statItem = document.querySelector(`[data-type="${filterType}"]`);
-          if (statItem) {
-            statItem.classList.add('active');
+        // Add a test function to window for debugging
+        window.testFilterModal = function() {
+          console.log('Test function called');
+          if (filterModal) {
+            filterModal.classList.add('show');
+            filterModal.style.display = 'flex';
+            filterModal.style.zIndex = '10050';
+            document.body.style.overflow = 'hidden';
+            console.log('Test modal opened');
+            console.log('Test modal computed style:', window.getComputedStyle(filterModal).display);
+          } else {
+            console.log('Modal not found in test function');
+          }
+        };
+        
+      } else {
+        console.error('Filter button not found!');
+      }
+      
+      // Close filter modal
+      function closeFilterModal() {
+        console.log('Closing filter modal');
+        if (filterModal) {
+          filterModal.classList.remove('show');
+          filterModal.style.display = 'none';
+          document.body.style.overflow = '';
+        }
+      }
+      
+      if (filterModalClose) {
+        filterModalClose.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          closeFilterModal();
+        });
+      }
+      
+      // Close modal when clicking outside
+      if (filterModal) {
+        filterModal.addEventListener('click', function(e) {
+          if (e.target === this) {
+            closeFilterModal();
+          }
+        });
+      }
+      
+      // Setup filter options functionality
+      function setupFilterOptions() {
+        console.log('Setting up filter options...');
+        
+        // Wait a small moment for DOM to be ready
+        setTimeout(() => {
+          // Handle filter option selection
+          const filterOptions = document.querySelectorAll('.filter-option');
+          console.log('Found filter options:', filterOptions.length);
+          console.log('Filter options:', filterOptions);
+          
+          if (filterOptions.length === 0) {
+            console.error('No filter options found! Check if modal HTML is loaded correctly.');
+            return;
+          }
+          
+          // Remove existing event listeners to prevent duplicates
+          filterOptions.forEach((option, index) => {
+            console.log(`Setting up option ${index}:`, option);
+            const newOption = option.cloneNode(true);
+            option.parentNode.replaceChild(newOption, option);
+          });
+          
+          // Re-query after cloning
+          const newFilterOptions = document.querySelectorAll('.filter-option');
+          console.log('Re-queried filter options:', newFilterOptions.length);
+          
+          newFilterOptions.forEach((option, index) => {
+            console.log(`Adding event listener to option ${index}`);
+            option.addEventListener('click', function(e) {
+              console.log('Filter option clicked:', this);
+              console.log('Event target:', e.target);
+              
+              // Don't toggle if clicking on input field or select element
+              if (e.target.classList.contains('filter-input') || e.target.classList.contains('filter-select')) {
+                console.log('Clicked on input/select, ignoring');
+                return;
+              }
+              
+              const filterValue = this.getAttribute('data-filter');
+              console.log('Filter value:', filterValue);
+              const inputContainer = this.querySelector('.filter-input-container');
+              
+              if (this.classList.contains('selected')) {
+                console.log('Deselecting filter');
+                // Deselect
+                this.classList.remove('selected');
+                selectedFilters.delete(filterValue);
+                
+                // Hide input field
+                if (inputContainer) {
+                  inputContainer.style.display = 'none';
+                }
+              } else {
+                console.log('Selecting filter');
+                // Select
+                this.classList.add('selected');
+                selectedFilters.add(filterValue);
+                
+                // Show input field if it exists
+                if (inputContainer) {
+                  inputContainer.style.display = 'block';
+                  const input = inputContainer.querySelector('.filter-input');
+                  const select = inputContainer.querySelector('.filter-select');
+                  if (input) {
+                    setTimeout(() => input.focus(), 100);
+                  } else if (select) {
+                    setTimeout(() => select.focus(), 100);
+                  }
+                }
+              }
+              
+              updateFilterButtonText();
+            });
+            
+            // Handle input field events
+            const inputField = option.querySelector('.filter-input');
+            if (inputField) {
+              // Prevent click event from bubbling up to parent
+              inputField.addEventListener('click', function(e) {
+                e.stopPropagation();
+              });
+              
+              // Store input value
+              inputField.addEventListener('input', function() {
+                const filterValue = option.getAttribute('data-filter');
+                // You can store the input value here for later use
+                console.log(`Filter ${filterValue} value:`, this.value);
+              });
+            }
+            
+            // Handle select field events
+            const selectField = option.querySelector('.filter-select');
+            if (selectField) {
+              // Prevent click event from bubbling up to parent
+              selectField.addEventListener('click', function(e) {
+                e.stopPropagation();
+              });
+              
+              // Store select value
+              selectField.addEventListener('change', function() {
+                const filterValue = option.getAttribute('data-filter');
+                console.log(`Filter ${filterValue} selected:`, this.value);
+              });
+            }
+          });
+        }, 100);
+      }
+      
+      // Handle filter option selection (moved to setupFilterOptions)
+      // This section is now replaced by the setupFilterOptions function above
+      
+      // Update filter button text
+      function updateFilterButtonText() {
+        if (!filterCurrentText) return;
+        
+        // Update filter count badge
+        const filterCountBadge = document.getElementById('filter-count-badge');
+        if (filterCountBadge) {
+          if (selectedFilters.size > 0) {
+            filterCountBadge.textContent = selectedFilters.size;
+            filterCountBadge.style.display = 'inline-block';
+          } else {
+            filterCountBadge.style.display = 'none';
           }
         }
         
-        filterEquipmentByType(filterType);
-      });
-    }
-    
-    // Add click handler to stats title for clearing filters
-    const statsTitle = document.querySelector('.stats-title');
-    if (statsTitle) {
-      statsTitle.addEventListener('click', function() {
-        // Clear all filters
-        const filterSelect = document.getElementById('equipment-filter');
-        if (filterSelect) {
-          filterSelect.value = '';
+        if (selectedFilters.size === 0) {
+          filterCurrentText.textContent = 'Все оборудование';
+        } else if (selectedFilters.size === 1) {
+          const selectedFilter = Array.from(selectedFilters)[0];
+          const filterNames = {
+            'monitor': 'Мониторы',
+            'keyboard': 'Клавиатуры', 
+            'mouse': 'Мыши',
+            'processor': 'Процессоры',
+            'motherboard': 'Материнские платы',
+            'ram': 'Оперативная память',
+            'gpu': 'Видеокарты',
+            'storage': 'Накопители',
+            'power-supply': 'Блоки питания',
+            'cooling': 'Системы охлаждения',
+            'case-component': 'Корпуса',
+            'earphones': 'Наушники',
+            'switch': 'Коммутаторы',
+            'switch-media': 'Switch Kommutator',
+            'ups': 'ИБП',
+            'ip-telephony': 'IP-телефония',
+            'projector': 'Проекторы',
+            'notebook': 'Ноутбуки',
+            'printer': 'Принтеры',
+            'tv': 'Телевизоры',
+            'extension-cord': 'Удлинители',
+            'additional': 'Другое',
+            'cables': 'Кабели',
+            'quality': 'Высокое качество',
+            'condition': 'Новое оборудование',
+            'connectivity': 'Беспроводное',
+            'equipment-name': 'По названию',
+            'equipment-id': 'По ID',
+            'date-range': 'По дате',
+            'quantity-range': 'По количеству'
+          };
+          
+          filterCurrentText.textContent = filterNames[selectedFilter] || 'Фильтр применен';
+        } else {
+          filterCurrentText.textContent = `Фильтров: ${selectedFilters.size}`;
         }
+      }
+      
+      // Reset filters
+      if (filterResetBtn) {
+        filterResetBtn.addEventListener('click', function() {
+          selectedFilters.clear();
+          filterOptions.forEach(option => {
+            option.classList.remove('selected');
+            
+            // Hide input containers and clear values
+            const inputContainer = option.querySelector('.filter-input-container');
+            if (inputContainer) {
+              inputContainer.style.display = 'none';
+              const input = inputContainer.querySelector('.filter-input');
+              const select = inputContainer.querySelector('.filter-select');
+              if (input) {
+                input.value = '';
+              }
+              if (select) {
+                select.value = '';
+              }
+            }
+          });
+          updateFilterButtonText();
+          
+          // Remove active class from all stat items
+          document.querySelectorAll('.stat-item').forEach(item => {
+            item.classList.remove('active');
+          });
+          
+          // Show all equipment
+          filterEquipmentByType('');
+        });
+      }
+      
+      // Apply filters
+      if (filterSearchBtn) {
+        filterSearchBtn.addEventListener('click', function() {
+          closeFilterModal();
+          
+          if (selectedFilters.size > 0) {
+            applyEquipmentFilters();
+            console.log('Applied filters:', Array.from(selectedFilters));
+            showNotification(`Применены фильтры: ${selectedFilters.size}`, 'success');
+          } else {
+            // Show all equipment if no filters selected
+            renderEquipmentTable(equipmentData);
+            showNotification('Показано все оборудование', 'info');
+          }
+        });
+      }
+      
+      // Function to apply equipment filters
+      function applyEquipmentFilters() {
+        let filteredData = [...equipmentData];
         
-        // Remove active class from all stat items
-        document.querySelectorAll('.stat-item').forEach(item => {
-          item.classList.remove('active');
+        selectedFilters.forEach(filter => {
+          switch(filter) {
+            case 'monitor':
+              filteredData = filteredData.filter(item => item.type === 'monitor');
+              break;
+            case 'keyboard':
+              filteredData = filteredData.filter(item => item.type === 'keyboard');
+              break;
+            case 'mouse':
+              filteredData = filteredData.filter(item => item.type === 'mouse');
+              break;
+            case 'processor':
+              filteredData = filteredData.filter(item => item.type === 'processor');
+              break;
+            case 'motherboard':
+              filteredData = filteredData.filter(item => item.type === 'motherboard');
+              break;
+            case 'ram':
+              filteredData = filteredData.filter(item => item.type === 'ram');
+              break;
+            case 'gpu':
+              filteredData = filteredData.filter(item => item.type === 'gpu');
+              break;
+            case 'storage':
+              filteredData = filteredData.filter(item => item.type === 'storage');
+              break;
+            case 'power-supply':
+              filteredData = filteredData.filter(item => item.type === 'power-supply');
+              break;
+            case 'cooling':
+              filteredData = filteredData.filter(item => item.type === 'cooling');
+              break;
+            case 'case-component':
+              filteredData = filteredData.filter(item => item.type === 'case-component');
+              break;
+            case 'earphones':
+              filteredData = filteredData.filter(item => item.type === 'earphones');
+              break;
+            case 'switch':
+              filteredData = filteredData.filter(item => item.type === 'switch');
+              break;
+            case 'switch-media':
+              filteredData = filteredData.filter(item => item.type === 'switch-media');
+              break;
+            case 'ups':
+              filteredData = filteredData.filter(item => item.type === 'ups');
+              break;
+            case 'ip-telephony':
+              filteredData = filteredData.filter(item => item.type === 'ip-telephony');
+              break;
+            case 'projector':
+              filteredData = filteredData.filter(item => item.type === 'projector');
+              break;
+            case 'notebook':
+              filteredData = filteredData.filter(item => item.type === 'notebook');
+              break;
+            case 'printer':
+              filteredData = filteredData.filter(item => item.type === 'printer');
+              break;
+            case 'tv':
+              filteredData = filteredData.filter(item => item.type === 'tv');
+              break;
+            case 'extension-cord':
+              filteredData = filteredData.filter(item => item.type === 'extension-cord');
+              break;
+            case 'additional':
+              filteredData = filteredData.filter(item => item.type === 'additional');
+              break;
+            case 'cables':
+              const cableTypes = ['cat45-connector', 'usb-connector', 'cat45-ethernet', 'vga-cable', 'hdmi-cable', 'hdmi-to-dp', 'vga-to-hdmi', 'vga-to-dp', 'power-cable', 'headphone-adapter', 'printer-cable', 'headphone-cable'];
+              filteredData = filteredData.filter(item => cableTypes.includes(item.type));
+              break;
+            case 'quality':
+              // Handle quality filter from select dropdown
+              const qualitySelect = document.querySelector('[data-filter="quality"] .filter-select');
+              if (qualitySelect && qualitySelect.value.trim()) {
+                const selectedQuality = qualitySelect.value.trim();
+                filteredData = filteredData.filter(item => item.quality === selectedQuality);
+              }
+              break;
+            case 'condition':
+              // Handle condition filter from select dropdown
+              const conditionSelect = document.querySelector('[data-filter="condition"] .filter-select');
+              if (conditionSelect && conditionSelect.value.trim()) {
+                const selectedCondition = conditionSelect.value.trim();
+                filteredData = filteredData.filter(item => item.condition === selectedCondition);
+              }
+              break;
+            case 'connectivity':
+              // Handle connectivity filter from select dropdown
+              const connectivitySelect = document.querySelector('[data-filter="connectivity"] .filter-select');
+              if (connectivitySelect && connectivitySelect.value.trim()) {
+                const selectedConnectivity = connectivitySelect.value.trim();
+                filteredData = filteredData.filter(item => item.connectivity === selectedConnectivity);
+              }
+              break;
+            case 'equipment-name':
+              // Handle name search from input field
+              const nameInput = document.querySelector('[data-filter="equipment-name"] .filter-input');
+              if (nameInput && nameInput.value.trim()) {
+                const searchTerm = nameInput.value.toLowerCase().trim();
+                filteredData = filteredData.filter(item => 
+                  item.name.toLowerCase().includes(searchTerm)
+                );
+              }
+              break;
+            case 'equipment-id':
+              // Handle ID search from input field
+              const idInput = document.querySelector('[data-filter="equipment-id"] .filter-input');
+              if (idInput && idInput.value.trim()) {
+                const searchTerm = idInput.value.toLowerCase().trim();
+                filteredData = filteredData.filter(item => 
+                  item.id.toLowerCase().includes(searchTerm)
+                );
+              }
+              break;
+            case 'date-range':
+              // Handle date range filter
+              const dateInputs = document.querySelectorAll('[data-filter="date-range"] .filter-input');
+              if (dateInputs.length === 2 && (dateInputs[0].value || dateInputs[1].value)) {
+                const fromDate = dateInputs[0].value ? new Date(dateInputs[0].value) : null;
+                const toDate = dateInputs[1].value ? new Date(dateInputs[1].value) : null;
+                
+                filteredData = filteredData.filter(item => {
+                  const itemDate = new Date(item.dateAdded);
+                  if (fromDate && itemDate < fromDate) return false;
+                  if (toDate && itemDate > toDate) return false;
+                  return true;
+                });
+              }
+              break;
+            case 'quantity-range':
+              // Handle quantity range filter
+              const quantityInputs = document.querySelectorAll('[data-filter="quantity-range"] .filter-input');
+              if (quantityInputs.length === 2 && (quantityInputs[0].value || quantityInputs[1].value)) {
+                const minQty = quantityInputs[0].value ? parseInt(quantityInputs[0].value) : 0;
+                const maxQty = quantityInputs[1].value ? parseInt(quantityInputs[1].value) : Infinity;
+                
+                filteredData = filteredData.filter(item => {
+                  const itemQty = parseInt(item.quantity) || 0;
+                  return itemQty >= minQty && itemQty <= maxQty;
+                });
+              }
+              break;
+          }
         });
         
-        // Show all equipment
-        renderEquipmentTable(equipmentData);
-        showNotification('Фильтры очищены', 'info');
-      });
+        renderEquipmentTable(filteredData);
+      }
       
-      // Make it look clickable
-      statsTitle.style.cursor = 'pointer';
-      statsTitle.title = 'Нажмите для очистки фильтров';
-    }
+      // Add click handler to stats title for clearing filters
+      const statsTitle = document.querySelector('.stats-title');
+      if (statsTitle) {
+        statsTitle.addEventListener('click', function() {
+          // Clear all filters
+          selectedFilters.clear();
+          filterOptions.forEach(option => {
+            option.classList.remove('selected');
+          });
+          updateFilterButtonText();
+          
+          // Remove active class from all stat items
+          document.querySelectorAll('.stat-item').forEach(item => {
+            item.classList.remove('active');
+          });
+          
+          // Show all equipment
+          renderEquipmentTable(equipmentData);
+          showNotification('Фильтры очищены', 'info');
+        });
+        
+        // Make it look clickable
+        statsTitle.style.cursor = 'pointer';
+        statsTitle.title = 'Нажмите для очистки фильтров';
+      }
+    }, 100); // 100ms delay to ensure DOM is ready
   }
   
   // Filter equipment by search term
@@ -1342,6 +1852,276 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     renderEquipmentTable(filteredData);
+  }
+  
+  // Initialize table settings functionality
+  function initializeTableSettings() {
+    console.log('Initializing table settings...');
+    
+    // Add a delay to ensure DOM elements are available
+    setTimeout(() => {
+      const tableSettingsBtn = document.getElementById('table-settings-btn');
+      const tableSettingsModal = document.getElementById('table-settings-modal');
+      const tableSettingsClose = document.getElementById('table-settings-modal-close');
+      const applySettingsBtn = document.getElementById('apply-table-settings');
+      const tableColumnsList = document.getElementById('table-columns-list');
+      
+      console.log('Table settings elements:', {
+        tableSettingsBtn,
+        tableSettingsModal,
+        tableSettingsClose,
+        applySettingsBtn,
+        tableColumnsList
+      });
+    
+    // Default column configuration
+    let columnConfig = {
+      number: { visible: true, order: 0, name: '№' },
+      type: { visible: true, order: 1, name: 'Тип' },
+      name: { visible: true, order: 2, name: 'Название' },
+      size: { visible: true, order: 3, name: 'Размер' },
+      quality: { visible: true, order: 4, name: 'Качество' },
+      condition: { visible: true, order: 5, name: 'Состояние' },
+      connectivity: { visible: true, order: 6, name: 'Подключение' },
+      quantity: { visible: true, order: 7, name: 'Количество' },
+      date: { visible: true, order: 8, name: 'Дата добавления' },
+      actions: { visible: true, order: 9, name: 'Действия' }
+    };
+    
+    // Load saved configuration from localStorage
+    function loadColumnConfig() {
+      const saved = localStorage.getItem('warehouse-column-config');
+      if (saved) {
+        try {
+          columnConfig = JSON.parse(saved);
+        } catch (e) {
+          console.error('Failed to load column config:', e);
+        }
+      }
+    }
+    
+    // Save configuration to localStorage
+    function saveColumnConfig() {
+      localStorage.setItem('warehouse-column-config', JSON.stringify(columnConfig));
+    }
+    
+    // Open table settings modal
+    function openTableSettingsModal() {
+      console.log('Opening table settings modal...');
+      if (tableSettingsModal) {
+        console.log('Modal found, setting display to flex');
+        tableSettingsModal.style.display = 'flex';
+        tableSettingsModal.style.zIndex = '10001';
+        document.body.style.overflow = 'hidden';
+        updateModalColumnList();
+        console.log('Modal should be visible now');
+      } else {
+        console.error('Table settings modal not found!');
+      }
+    }
+    
+    // Close table settings modal
+    function closeTableSettingsModal() {
+      if (tableSettingsModal) {
+        tableSettingsModal.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+    }
+    
+    // Update modal column list based on current config
+    function updateModalColumnList() {
+      if (!tableColumnsList) return;
+      
+      // Sort columns by order
+      const sortedColumns = Object.entries(columnConfig)
+        .sort(([,a], [,b]) => a.order - b.order);
+      
+      tableColumnsList.innerHTML = '';
+      
+      sortedColumns.forEach(([key, config]) => {
+        const item = document.createElement('div');
+        item.className = 'table-column-item';
+        item.setAttribute('data-column', key);
+        item.innerHTML = `
+          <div class="drag-handle">
+            <span class="drag-dots">⋮⋮</span>
+          </div>
+          <label class="column-checkbox-label">
+            <input type="checkbox" class="column-checkbox" ${config.visible ? 'checked' : ''}>
+            <span class="column-name">${config.name}</span>
+          </label>
+        `;
+        
+        // Add checkbox event listener
+        const checkbox = item.querySelector('.column-checkbox');
+        checkbox.addEventListener('change', function() {
+          columnConfig[key].visible = this.checked;
+        });
+        
+        tableColumnsList.appendChild(item);
+      });
+      
+      // Initialize drag and drop
+      initializeDragAndDrop();
+    }
+    
+    // Initialize drag and drop functionality
+    function initializeDragAndDrop() {
+      const items = tableColumnsList.querySelectorAll('.table-column-item');
+      
+      items.forEach(item => {
+        item.draggable = true;
+        
+        item.addEventListener('dragstart', function(e) {
+          this.classList.add('dragging');
+          e.dataTransfer.effectAllowed = 'move';
+          e.dataTransfer.setData('text/html', this.outerHTML);
+          e.dataTransfer.setData('text/plain', this.getAttribute('data-column'));
+        });
+        
+        item.addEventListener('dragend', function(e) {
+          this.classList.remove('dragging');
+        });
+        
+        item.addEventListener('dragover', function(e) {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+          this.classList.add('drag-over');
+        });
+        
+        item.addEventListener('dragleave', function(e) {
+          this.classList.remove('drag-over');
+        });
+        
+        item.addEventListener('drop', function(e) {
+          e.preventDefault();
+          this.classList.remove('drag-over');
+          
+          const draggedColumn = e.dataTransfer.getData('text/plain');
+          const targetColumn = this.getAttribute('data-column');
+          
+          if (draggedColumn !== targetColumn) {
+            reorderColumns(draggedColumn, targetColumn);
+            updateModalColumnList();
+          }
+        });
+      });
+    }
+    
+    // Reorder columns in config
+    function reorderColumns(draggedColumn, targetColumn) {
+      const draggedOrder = columnConfig[draggedColumn].order;
+      const targetOrder = columnConfig[targetColumn].order;
+      
+      if (draggedOrder < targetOrder) {
+        // Moving down
+        Object.keys(columnConfig).forEach(key => {
+          if (columnConfig[key].order > draggedOrder && columnConfig[key].order <= targetOrder) {
+            columnConfig[key].order--;
+          }
+        });
+        columnConfig[draggedColumn].order = targetOrder;
+      } else {
+        // Moving up
+        Object.keys(columnConfig).forEach(key => {
+          if (columnConfig[key].order >= targetOrder && columnConfig[key].order < draggedOrder) {
+            columnConfig[key].order++;
+          }
+        });
+        columnConfig[draggedColumn].order = targetOrder;
+      }
+    }
+    
+    // Apply table settings
+    function applyTableSettings() {
+      saveColumnConfig();
+      updateTableColumns();
+      closeTableSettingsModal();
+      console.log('Table settings applied:', columnConfig);
+    }
+    
+    // Update table columns based on configuration
+    function updateTableColumns() {
+      const table = document.querySelector('.warehouse-table');
+      if (!table) return;
+      
+      const headerRow = table.querySelector('thead tr');
+      const bodyRows = table.querySelectorAll('tbody tr');
+      
+      if (!headerRow) return;
+      
+      // Get all headers with data-column attributes
+      const headers = headerRow.querySelectorAll('th[data-column]');
+      
+      headers.forEach(header => {
+        const columnKey = header.getAttribute('data-column');
+        if (columnConfig[columnKey]) {
+          header.style.display = columnConfig[columnKey].visible ? '' : 'none';
+          
+          // Find corresponding cells in body rows
+          const columnIndex = Array.from(headers).indexOf(header);
+          bodyRows.forEach(row => {
+            const cell = row.children[columnIndex];
+            if (cell) {
+              cell.style.display = columnConfig[columnKey].visible ? '' : 'none';
+            }
+          });
+        }
+      });
+    }
+    
+    // Event listeners
+    if (tableSettingsBtn) {
+      console.log('Adding click listener to table settings button');
+      tableSettingsBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Table settings button clicked!');
+        openTableSettingsModal();
+      });
+    } else {
+      console.error('Table settings button not found!');
+    }
+    
+    if (tableSettingsClose) {
+      tableSettingsClose.addEventListener('click', closeTableSettingsModal);
+    }
+    
+    if (applySettingsBtn) {
+      applySettingsBtn.addEventListener('click', applyTableSettings);
+    }
+    
+    // Close modal when clicking outside
+    if (tableSettingsModal) {
+      tableSettingsModal.addEventListener('click', function(e) {
+        if (e.target === this) {
+          closeTableSettingsModal();
+        }
+      });
+    }
+    
+    // Initialize
+    loadColumnConfig();
+    
+    // Apply initial configuration after a small delay to ensure table is rendered
+    setTimeout(() => {
+      updateTableColumns();
+    }, 100);
+    
+    // Add global test function for debugging
+    window.testTableSettings = function() {
+      console.log('Testing table settings...');
+      const modal = document.getElementById('table-settings-modal');
+      if (modal) {
+        modal.style.display = 'flex';
+        modal.style.zIndex = '10001';
+        console.log('Test modal opened');
+      } else {
+        console.log('Modal not found in test');
+      }
+    };
+    
+    }, 500); // Close the main setTimeout
   }
   
   // Load and display equipment data
@@ -1482,10 +2262,14 @@ document.addEventListener('DOMContentLoaded', function() {
       clickedItem.classList.add('active');
     }
     
-    // Update the filter dropdown
-    const filterSelect = document.getElementById('equipment-filter');
-    if (filterSelect) {
-      filterSelect.value = type;
+    // Update the filter button text
+    const filterCurrentText = document.getElementById('filter-current-text');
+    if (filterCurrentText) {
+      if (type) {
+        filterCurrentText.textContent = translateEquipmentType(type);
+      } else {
+        filterCurrentText.textContent = 'Все оборудование';
+      }
     }
     
     // Filter the equipment table

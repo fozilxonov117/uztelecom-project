@@ -2159,19 +2159,13 @@
                           <span class="material-icons">search</span>
                           <input type="text" placeholder="Поиск оборудования..." id="equipment-search">
                         </div>
-                        <select class="filter-select" id="equipment-filter">
-                          <option value="">Все оборудование</option>
-                          <option value="monitor">Мониторы</option>
-                          <option value="keyboard">Клавиатуры</option>
-                          <option value="mouse">Мыши</option>
-                          <option value="processor">Процессоры</option>
-                          <option value="extension-cord">Удлинители</option>
-                          <option value="cables">Кабели</option>
-                          <option value="pc-case">PC Case</option>
-                          <option value="earphones">Наушники</option>
-                          <option value="additional">Другое</option>
-                          <option value="other">Медиа</option>
-                        </select>
+                        <button class="filter-select" id="equipment-filter-btn">
+                          <span id="filter-current-text">Все оборудование</span>
+                          <span class="material-icons">expand_more</span>
+                        </button>
+                        <button class="table-settings-btn" id="table-settings-btn" title="Настройки таблицы">
+                          <span class="material-icons">settings</span>
+                        </button>
                       </div>
                     </div>
                     
@@ -2179,16 +2173,16 @@
                       <table class="warehouse-table">
                         <thead>
                           <tr>
-                            <th>№</th>
-                            <th>Тип</th>
-                            <th>Название</th>
-                            <th>Размер</th>
-                            <th>Качество</th>
-                            <th>Состояние</th>
-                            <th>Подключение</th>
-                            <th>Количество</th>
-                            <th>Дата добавления</th>
-                            <th>Действия</th>
+                            <th data-column="number">№</th>
+                            <th data-column="type">Тип</th>
+                            <th data-column="name">Название</th>
+                            <th data-column="size">Размер</th>
+                            <th data-column="quality">Качество</th>
+                            <th data-column="condition">Состояние</th>
+                            <th data-column="connectivity">Подключение</th>
+                            <th data-column="quantity">Количество</th>
+                            <th data-column="date">Дата добавления</th>
+                            <th data-column="actions">Действия</th>
                           </tr>
                         </thead>
                         <tbody id="equipment-table-body">
@@ -2384,5 +2378,484 @@
     <script src="js/main-page-custom.js"></script>
     <script src="js/chat-modal-open-fixed.js"></script>
     <script src="js/warehouse-dashboard.js"></script>
+    <!-- Filter Modal -->
+    <div id="filter-modal" class="warehouse-modal filter-modal" style="display: none;">
+      <div class="warehouse-modal-content filter-modal-content">
+        <div class="warehouse-modal-header">
+          <h2 class="warehouse-modal-title">Фильтрация оборудования</h2>
+          <button class="warehouse-modal-close" id="filter-modal-close">
+            <span class="material-icons">close</span>
+          </button>
+        </div>
+        <div class="warehouse-modal-body">
+          <div class="filter-sections">
+            <!-- Equipment Type Section -->
+            <div class="filter-section">
+              <h3 class="filter-section-title">Тип оборудования</h3>
+              <div class="filter-grid">
+                <div class="filter-option" data-filter="monitor">
+                  <div class="filter-option-icon">
+                    <span class="material-icons">monitor</span>
+                  </div>
+                  <div class="filter-option-content">
+                    <span class="filter-option-title">Мониторы</span>
+                    <span class="filter-option-subtitle">Дисплеи</span>
+                  </div>
+                </div>
+                <div class="filter-option" data-filter="keyboard">
+                  <div class="filter-option-icon">
+                    <span class="material-icons">keyboard</span>
+                  </div>
+                  <div class="filter-option-content">
+                    <span class="filter-option-title">Клавиатуры</span>
+                    <span class="filter-option-subtitle">Ввод</span>
+                  </div>
+                </div>
+                <div class="filter-option" data-filter="mouse">
+                  <div class="filter-option-icon">
+                    <span class="material-icons">mouse</span>
+                  </div>
+                  <div class="filter-option-content">
+                    <span class="filter-option-title">Мыши</span>
+                    <span class="filter-option-subtitle">Указатели</span>
+                  </div>
+                </div>
+                <div class="filter-option" data-filter="processor">
+                  <div class="filter-option-icon">
+                    <span class="material-icons">memory</span>
+                  </div>
+                  <div class="filter-option-content">
+                    <span class="filter-option-title">Процессоры</span>
+                    <span class="filter-option-subtitle">CPU</span>
+                  </div>
+                </div>
+                <div class="filter-option" data-filter="motherboard">
+                  <div class="filter-option-icon">
+                    <span class="material-icons">developer_board</span>
+                  </div>
+                  <div class="filter-option-content">
+                    <span class="filter-option-title">Материнские платы</span>
+                    <span class="filter-option-subtitle">Motherboard</span>
+                  </div>
+                </div>
+                <div class="filter-option" data-filter="ram">
+                  <div class="filter-option-icon">
+                    <span class="material-icons">sim_card</span>
+                  </div>
+                  <div class="filter-option-content">
+                    <span class="filter-option-title">Оперативная память</span>
+                    <span class="filter-option-subtitle">RAM</span>
+                  </div>
+                </div>
+                <div class="filter-option" data-filter="gpu">
+                  <div class="filter-option-icon">
+                    <span class="material-icons">videogame_asset</span>
+                  </div>
+                  <div class="filter-option-content">
+                    <span class="filter-option-title">Видеокарты</span>
+                    <span class="filter-option-subtitle">GPU</span>
+                  </div>
+                </div>
+                <div class="filter-option" data-filter="storage">
+                  <div class="filter-option-icon">
+                    <span class="material-icons">storage</span>
+                  </div>
+                  <div class="filter-option-content">
+                    <span class="filter-option-title">Накопители</span>
+                    <span class="filter-option-subtitle">HDD/SSD</span>
+                  </div>
+                </div>
+                <div class="filter-option" data-filter="power-supply">
+                  <div class="filter-option-icon">
+                    <span class="material-icons">power</span>
+                  </div>
+                  <div class="filter-option-content">
+                    <span class="filter-option-title">Блоки питания</span>
+                    <span class="filter-option-subtitle">PSU</span>
+                  </div>
+                </div>
+                <div class="filter-option" data-filter="cooling">
+                  <div class="filter-option-icon">
+                    <span class="material-icons">ac_unit</span>
+                  </div>
+                  <div class="filter-option-content">
+                    <span class="filter-option-title">Системы охлаждения</span>
+                    <span class="filter-option-subtitle">Кулеры</span>
+                  </div>
+                </div>
+                <div class="filter-option" data-filter="case-component">
+                  <div class="filter-option-icon">
+                    <span class="material-icons">computer</span>
+                  </div>
+                  <div class="filter-option-content">
+                    <span class="filter-option-title">Корпуса</span>
+                    <span class="filter-option-subtitle">PC Case</span>
+                  </div>
+                </div>
+                <div class="filter-option" data-filter="earphones">
+                  <div class="filter-option-icon">
+                    <span class="material-icons">headphones</span>
+                  </div>
+                  <div class="filter-option-content">
+                    <span class="filter-option-title">Наушники</span>
+                    <span class="filter-option-subtitle">Аудио</span>
+                  </div>
+                </div>
+                <div class="filter-option" data-filter="switch">
+                  <div class="filter-option-icon">
+                    <span class="material-icons">router</span>
+                  </div>
+                  <div class="filter-option-content">
+                    <span class="filter-option-title">Коммутаторы</span>
+                    <span class="filter-option-subtitle">Сеть</span>
+                  </div>
+                </div>
+                <div class="filter-option" data-filter="switch-media">
+                  <div class="filter-option-icon">
+                    <span class="material-icons">hub</span>
+                  </div>
+                  <div class="filter-option-content">
+                    <span class="filter-option-title">Switch Kommutator</span>
+                    <span class="filter-option-subtitle">Медиа</span>
+                  </div>
+                </div>
+                <div class="filter-option" data-filter="ups">
+                  <div class="filter-option-icon">
+                    <span class="material-icons">battery_charging_full</span>
+                  </div>
+                  <div class="filter-option-content">
+                    <span class="filter-option-title">ИБП</span>
+                    <span class="filter-option-subtitle">UPS</span>
+                  </div>
+                </div>
+                <div class="filter-option" data-filter="ip-telephony">
+                  <div class="filter-option-icon">
+                    <span class="material-icons">phone_in_talk</span>
+                  </div>
+                  <div class="filter-option-content">
+                    <span class="filter-option-title">IP-телефония</span>
+                    <span class="filter-option-subtitle">Связь</span>
+                  </div>
+                </div>
+                <div class="filter-option" data-filter="projector">
+                  <div class="filter-option-icon">
+                    <span class="material-icons">videocam</span>
+                  </div>
+                  <div class="filter-option-content">
+                    <span class="filter-option-title">Проекторы</span>
+                    <span class="filter-option-subtitle">Видео</span>
+                  </div>
+                </div>
+                <div class="filter-option" data-filter="notebook">
+                  <div class="filter-option-icon">
+                    <span class="material-icons">laptop</span>
+                  </div>
+                  <div class="filter-option-content">
+                    <span class="filter-option-title">Ноутбуки</span>
+                    <span class="filter-option-subtitle">Портативные</span>
+                  </div>
+                </div>
+                <div class="filter-option" data-filter="printer">
+                  <div class="filter-option-icon">
+                    <span class="material-icons">print</span>
+                  </div>
+                  <div class="filter-option-content">
+                    <span class="filter-option-title">Принтеры</span>
+                    <span class="filter-option-subtitle">Печать</span>
+                  </div>
+                </div>
+                <div class="filter-option" data-filter="tv">
+                  <div class="filter-option-icon">
+                    <span class="material-icons">tv</span>
+                  </div>
+                  <div class="filter-option-content">
+                    <span class="filter-option-title">Телевизоры</span>
+                    <span class="filter-option-subtitle">Дисплеи</span>
+                  </div>
+                </div>
+                <div class="filter-option" data-filter="extension-cord">
+                  <div class="filter-option-icon">
+                    <span class="material-icons">electrical_services</span>
+                  </div>
+                  <div class="filter-option-content">
+                    <span class="filter-option-title">Удлинители</span>
+                    <span class="filter-option-subtitle">Питание</span>
+                  </div>
+                </div>
+                <div class="filter-option" data-filter="cables">
+                  <div class="filter-option-icon">
+                    <span class="material-icons">cable</span>
+                  </div>
+                  <div class="filter-option-content">
+                    <span class="filter-option-title">Кабели</span>
+                    <span class="filter-option-subtitle">Соединения</span>
+                  </div>
+                </div>
+                <div class="filter-option" data-filter="additional">
+                  <div class="filter-option-icon">
+                    <span class="material-icons">more_horiz</span>
+                  </div>
+                  <div class="filter-option-content">
+                    <span class="filter-option-title">Другое</span>
+                    <span class="filter-option-subtitle">Прочее</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Equipment Properties Section -->
+            <div class="filter-section">
+              <h3 class="filter-section-title">Свойства оборудования</h3>
+              <div class="filter-grid">
+                <div class="filter-option" data-filter="equipment-name">
+                  <div class="filter-option-icon">
+                    <span class="material-icons">badge</span>
+                  </div>
+                  <div class="filter-option-content">
+                    <span class="filter-option-title">Название</span>
+                    <span class="filter-option-subtitle">Модель</span>
+                    <div class="filter-input-container" style="display: none;">
+                      <input type="text" class="filter-input" placeholder="Введите название оборудования">
+                    </div>
+                  </div>
+                </div>
+                <div class="filter-option" data-filter="equipment-id">
+                  <div class="filter-option-icon">
+                    <span class="material-icons">qr_code</span>
+                  </div>
+                  <div class="filter-option-content">
+                    <span class="filter-option-title">ID оборудования</span>
+                    <span class="filter-option-subtitle">Идентификатор</span>
+                    <div class="filter-input-container" style="display: none;">
+                      <input type="text" class="filter-input" placeholder="Введите ID (например: MON001)">
+                    </div>
+                  </div>
+                </div>
+                <div class="filter-option" data-filter="quality">
+                  <div class="filter-option-icon">
+                    <span class="material-icons">star</span>
+                  </div>
+                  <div class="filter-option-content">
+                    <span class="filter-option-title">Качество</span>
+                    <span class="filter-option-subtitle">Высокое/Стандартное</span>
+                    <div class="filter-input-container" style="display: none;">
+                      <select class="filter-input filter-select">
+                        <option value="">Все качества</option>
+                        <option value="High">Высокое</option>
+                        <option value="Standard">Стандартное</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="filter-option" data-filter="condition">
+                  <div class="filter-option-icon">
+                    <span class="material-icons">health_and_safety</span>
+                  </div>
+                  <div class="filter-option-content">
+                    <span class="filter-option-title">Состояние</span>
+                    <span class="filter-option-subtitle">Новое/Б/у</span>
+                    <div class="filter-input-container" style="display: none;">
+                      <select class="filter-input filter-select">
+                        <option value="">Все состояния</option>
+                        <option value="new">Новое</option>
+                        <option value="used">Б/у</option>
+                        <option value="refurbished">Восстановленное</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="filter-option" data-filter="connectivity">
+                  <div class="filter-option-icon">
+                    <span class="material-icons">wifi</span>
+                  </div>
+                  <div class="filter-option-content">
+                    <span class="filter-option-title">Подключение</span>
+                    <span class="filter-option-subtitle">Проводное/Беспроводное</span>
+                    <div class="filter-input-container" style="display: none;">
+                      <select class="filter-input filter-select">
+                        <option value="">Все типы подключения</option>
+                        <option value="wired">Проводное</option>
+                        <option value="wireless">Беспроводное</option>
+                        <option value="both">Проводное/Беспроводное</option>
+                        <option value="integrated">Встроенное</option>
+                        <option value="not-applicable">Не применимо</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Additional Filters Section -->
+            <div class="filter-section">
+              <h3 class="filter-section-title">Дополнительные фильтры</h3>
+              <div class="filter-grid">
+                <div class="filter-option" data-filter="date-range">
+                  <div class="filter-option-icon">
+                    <span class="material-icons">date_range</span>
+                  </div>
+                  <div class="filter-option-content">
+                    <span class="filter-option-title">Дата добавления</span>
+                    <span class="filter-option-subtitle">Период</span>
+                    <div class="filter-input-container" style="display: none;">
+                      <input type="date" class="filter-input" placeholder="От">
+                      <input type="date" class="filter-input" placeholder="До">
+                    </div>
+                  </div>
+                </div>
+                <div class="filter-option" data-filter="quantity-range">
+                  <div class="filter-option-icon">
+                    <span class="material-icons">inventory</span>
+                  </div>
+                  <div class="filter-option-content">
+                    <span class="filter-option-title">Количество</span>
+                    <span class="filter-option-subtitle">Диапазон</span>
+                    <div class="filter-input-container" style="display: none;">
+                      <input type="number" class="filter-input" placeholder="От" min="0">
+                      <input type="number" class="filter-input" placeholder="До" min="0">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="filter-modal-actions">
+            <div class="filter-info">
+              <span class="filter-count-badge" id="filter-count-badge" style="display: none;">0</span>
+              <span class="filter-info-text">фильтров выбрано</span>
+            </div>
+            <div class="filter-actions-buttons">
+              <button class="filter-btn filter-btn-reset" id="filter-reset-btn">СБРОСИТЬ</button>
+              <button class="filter-btn filter-btn-search" id="filter-search-btn">НАЙТИ</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table Settings Modal -->
+    <div id="table-settings-modal" class="warehouse-modal table-settings-modal" style="display: none;">
+      <div class="warehouse-modal-content table-settings-modal-content">
+        <div class="warehouse-modal-header">
+          <h2 class="warehouse-modal-title">Настройки таблицы</h2>
+          <button class="warehouse-modal-close" id="table-settings-modal-close">
+            <span class="material-icons">close</span>
+          </button>
+        </div>
+        <div class="warehouse-modal-body">
+          <p class="warehouse-modal-subtitle">Выберете порядок и поля для отображения в таблице</p>
+          
+          <div class="table-columns-list" id="table-columns-list">
+            <div class="table-column-item" data-column="number">
+              <div class="drag-handle">
+                <span class="drag-dots">⋮⋮</span>
+              </div>
+              <label class="column-checkbox-label">
+                <input type="checkbox" class="column-checkbox" checked>
+                <span class="column-name">№</span>
+              </label>
+            </div>
+            
+            <div class="table-column-item" data-column="type">
+              <div class="drag-handle">
+                <span class="drag-dots">⋮⋮</span>
+              </div>
+              <label class="column-checkbox-label">
+                <input type="checkbox" class="column-checkbox" checked>
+                <span class="column-name">Тип</span>
+              </label>
+            </div>
+            
+            <div class="table-column-item" data-column="name">
+              <div class="drag-handle">
+                <span class="drag-dots">⋮⋮</span>
+              </div>
+              <label class="column-checkbox-label">
+                <input type="checkbox" class="column-checkbox" checked>
+                <span class="column-name">Название</span>
+              </label>
+            </div>
+            
+            <div class="table-column-item" data-column="size">
+              <div class="drag-handle">
+                <span class="drag-dots">⋮⋮</span>
+              </div>
+              <label class="column-checkbox-label">
+                <input type="checkbox" class="column-checkbox" checked>
+                <span class="column-name">Размер</span>
+              </label>
+            </div>
+            
+            <div class="table-column-item" data-column="quality">
+              <div class="drag-handle">
+                <span class="drag-dots">⋮⋮</span>
+              </div>
+              <label class="column-checkbox-label">
+                <input type="checkbox" class="column-checkbox" checked>
+                <span class="column-name">Качество</span>
+              </label>
+            </div>
+            
+            <div class="table-column-item" data-column="condition">
+              <div class="drag-handle">
+                <span class="drag-dots">⋮⋮</span>
+              </div>
+              <label class="column-checkbox-label">
+                <input type="checkbox" class="column-checkbox" checked>
+                <span class="column-name">Состояние</span>
+              </label>
+            </div>
+            
+            <div class="table-column-item" data-column="connectivity">
+              <div class="drag-handle">
+                <span class="drag-dots">⋮⋮</span>
+              </div>
+              <label class="column-checkbox-label">
+                <input type="checkbox" class="column-checkbox" checked>
+                <span class="column-name">Подключение</span>
+              </label>
+            </div>
+            
+            <div class="table-column-item" data-column="quantity">
+              <div class="drag-handle">
+                <span class="drag-dots">⋮⋮</span>
+              </div>
+              <label class="column-checkbox-label">
+                <input type="checkbox" class="column-checkbox" checked>
+                <span class="column-name">Количество</span>
+              </label>
+            </div>
+            
+            <div class="table-column-item" data-column="date">
+              <div class="drag-handle">
+                <span class="drag-dots">⋮⋮</span>
+              </div>
+              <label class="column-checkbox-label">
+                <input type="checkbox" class="column-checkbox" checked>
+                <span class="column-name">Дата добавления</span>
+              </label>
+            </div>
+            
+            <div class="table-column-item" data-column="actions">
+              <div class="drag-handle">
+                <span class="drag-dots">⋮⋮</span>
+              </div>
+              <label class="column-checkbox-label">
+                <input type="checkbox" class="column-checkbox" checked>
+                <span class="column-name">Действия</span>
+              </label>
+            </div>
+          </div>
+          
+          <div class="warehouse-form-actions">
+            <button class="warehouse-btn warehouse-btn-primary" id="apply-table-settings">
+              ПРИМЕНИТЬ
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </body>
 </html>
