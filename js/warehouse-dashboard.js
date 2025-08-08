@@ -1591,6 +1591,9 @@ document.addEventListener('DOMContentLoaded', function() {
       if (filterResetBtn) {
         filterResetBtn.addEventListener('click', function() {
           selectedFilters.clear();
+          
+          // Query filter options within this scope
+          const filterOptions = document.querySelectorAll('.filter-option');
           filterOptions.forEach(option => {
             option.classList.remove('selected');
             
