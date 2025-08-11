@@ -44,6 +44,82 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     return translations[type] || type;
   }
+
+  // Russian to English search term mapping for better search results
+  function normalizeSearchTerm(searchTerm) {
+    const russianToEnglish = {
+      'монитор': 'monitor',
+      'мониторы': 'monitor',
+      'экран': 'monitor',
+      'дисплей': 'monitor',
+      'клавиатура': 'keyboard',
+      'клавиатуры': 'keyboard',
+      'клава': 'keyboard',
+      'мышь': 'mouse',
+      'мыши': 'mouse',
+      'мышка': 'mouse',
+      'процессор': 'processor',
+      'процессоры': 'processor',
+      'проц': 'processor',
+      'cpu': 'processor',
+      'материнская': 'motherboard',
+      'материнка': 'motherboard',
+      'мать': 'motherboard',
+      'память': 'ram',
+      'оперативная': 'ram',
+      'оперативка': 'ram',
+      'видеокарта': 'gpu',
+      'видеокарты': 'gpu',
+      'видюха': 'gpu',
+      'графика': 'gpu',
+      'накопитель': 'storage',
+      'диск': 'storage',
+      'жесткий': 'storage',
+      'ssd': 'storage',
+      'hdd': 'storage',
+      'питание': 'power-supply',
+      'блок': 'power-supply',
+      'охлаждение': 'cooling',
+      'кулер': 'cooling',
+      'вентилятор': 'cooling',
+      'корпус': 'case-component',
+      'коммутатор': 'switch',
+      'свитч': 'switch',
+      'кабель': 'cables',
+      'кабели': 'cables',
+      'провод': 'cables',
+      'провода': 'cables',
+      'наушники': 'earphones',
+      'наушник': 'earphones',
+      'ноутбук': 'notebook',
+      'ноутбуки': 'notebook',
+      'лаптоп': 'notebook',
+      'принтер': 'printer',
+      'принтеры': 'printer',
+      'телевизор': 'tv',
+      'телевизоры': 'tv',
+      'тв': 'tv',
+      'проектор': 'projector',
+      'проекторы': 'projector',
+      'удлинитель': 'extension-cord',
+      'удлинители': 'extension-cord',
+      'ибп': 'ups',
+      'бесперебойник': 'ups',
+      'dell': 'dell',
+      'logitech': 'logitech',
+      'hp': 'hp',
+      'lenovo': 'lenovo',
+      'asus': 'asus',
+      'acer': 'acer',
+      'samsung': 'samsung',
+      'intel': 'intel',
+      'amd': 'amd',
+      'nvidia': 'nvidia'
+    };
+    
+    const lowerTerm = searchTerm.toLowerCase();
+    return russianToEnglish[lowerTerm] || searchTerm;
+  }
   
   function translateCondition(condition) {
     const translations = {
@@ -1741,13 +1817,35 @@ document.addEventListener('DOMContentLoaded', function() {
               }
               break;
             case 'equipment-name':
-              // Handle name search from input field
+              // Handle name search from input field with Russian language support
               const nameInput = document.querySelector('[data-filter="equipment-name"] .filter-input');
               if (nameInput && nameInput.value.trim()) {
                 const searchTerm = nameInput.value.toLowerCase().trim();
-                filteredData = filteredData.filter(item => 
-                  item.name.toLowerCase().includes(searchTerm)
-                );
+                const normalizedTerm = normalizeSearchTerm(searchTerm);
+                
+                filteredData = filteredData.filter(item => {
+                  // Search in English name (original and normalized)
+                  const englishMatch = item.name.toLowerCase().includes(searchTerm) || 
+                                     item.name.toLowerCase().includes(normalizedTerm);
+                  
+                  // Search in Russian type translation
+                  const russianType = translateEquipmentType(item.type);
+                  const russianTypeMatch = russianType.toLowerCase().includes(searchTerm);
+                  
+                  // Search by equipment type if Russian term was normalized
+                  const typeMatch = normalizedTerm !== searchTerm ? item.type === normalizedTerm : false;
+                  
+                  // Search in characteristics if available
+                  const characteristicsMatch = item.characteristics ? 
+                    item.characteristics.toLowerCase().includes(searchTerm) ||
+                    item.characteristics.toLowerCase().includes(normalizedTerm) : false;
+                  
+                  // Search in ID field as well
+                  const idMatch = item.id.toLowerCase().includes(searchTerm);
+                  
+                  // Return true if any field matches
+                  return englishMatch || russianTypeMatch || typeMatch || characteristicsMatch || idMatch;
+                });
               }
               break;
             case 'equipment-id':
@@ -1822,13 +1920,35 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 100); // 100ms delay to ensure DOM is ready
   }
   
-  // Filter equipment by search term
+  // Filter equipment by search term with Russian language support
   function filterEquipment(searchTerm) {
-    const filteredData = equipmentData.filter(item =>
-      item.name.toLowerCase().includes(searchTerm) ||
-      item.type.toLowerCase().includes(searchTerm) ||
-      item.id.toLowerCase().includes(searchTerm)
-    );
+    const normalizedTerm = normalizeSearchTerm(searchTerm);
+    
+    const filteredData = equipmentData.filter(item => {
+      // Search in English name (original and normalized)
+      const englishMatch = item.name.toLowerCase().includes(searchTerm) || 
+                         item.name.toLowerCase().includes(normalizedTerm);
+      
+      // Search in Russian type translation
+      const russianType = translateEquipmentType(item.type);
+      const russianTypeMatch = russianType.toLowerCase().includes(searchTerm);
+      
+      // Search by equipment type if Russian term was normalized
+      const typeMatch = normalizedTerm !== searchTerm ? item.type === normalizedTerm : 
+                       item.type.toLowerCase().includes(searchTerm);
+      
+      // Search in characteristics if available
+      const characteristicsMatch = item.characteristics ? 
+        item.characteristics.toLowerCase().includes(searchTerm) ||
+        item.characteristics.toLowerCase().includes(normalizedTerm) : false;
+      
+      // Search in ID field as well
+      const idMatch = item.id.toLowerCase().includes(searchTerm);
+      
+      // Return true if any field matches
+      return englishMatch || russianTypeMatch || typeMatch || characteristicsMatch || idMatch;
+    });
+    
     renderEquipmentTable(filteredData);
   }
   
