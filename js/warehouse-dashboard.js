@@ -2067,7 +2067,6 @@ document.addEventListener('DOMContentLoaded', function() {
         item.setAttribute('data-column', key);
         item.innerHTML = `
           <div class="drag-handle">
-            <span class="drag-dots">⋮⋮</span>
           </div>
           <label class="column-checkbox-label">
             <input type="checkbox" class="column-checkbox" ${config.visible ? 'checked' : ''}>
@@ -2093,7 +2092,30 @@ document.addEventListener('DOMContentLoaded', function() {
       const items = tableColumnsList.querySelectorAll('.table-column-item');
       
       items.forEach(item => {
-        item.draggable = true;
+        // Make item draggable but only when drag handle is used
+        item.draggable = false; // Initially not draggable
+        
+        const dragHandle = item.querySelector('.drag-handle');
+        if (dragHandle) {
+          // Make drag handle initiate drag on the parent item
+          dragHandle.addEventListener('mousedown', function(e) {
+            item.draggable = true;
+          });
+          
+          // Reset draggable state when mouse is released
+          dragHandle.addEventListener('mouseup', function(e) {
+            setTimeout(() => {
+              item.draggable = false;
+            }, 100);
+          });
+          
+          // Also handle mouse leave to ensure draggable is reset
+          dragHandle.addEventListener('mouseleave', function(e) {
+            setTimeout(() => {
+              item.draggable = false;
+            }, 100);
+          });
+        }
         
         item.addEventListener('dragstart', function(e) {
           this.classList.add('dragging');
@@ -2104,6 +2126,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         item.addEventListener('dragend', function(e) {
           this.classList.remove('dragging');
+          this.draggable = false; // Reset draggable state
         });
         
         item.addEventListener('dragover', function(e) {
@@ -2126,6 +2149,9 @@ document.addEventListener('DOMContentLoaded', function() {
           if (draggedColumn !== targetColumn) {
             reorderColumns(draggedColumn, targetColumn);
             updateModalColumnList();
+            // Immediately update the table to show new column order
+            updateTableColumns();
+            saveColumnConfig();
           }
         });
       });
@@ -2161,36 +2187,6 @@ document.addEventListener('DOMContentLoaded', function() {
       updateTableColumns();
       closeTableSettingsModal();
       console.log('Table settings applied:', columnConfig);
-    }
-    
-    // Update table columns based on configuration
-    function updateTableColumns() {
-      const table = document.querySelector('.warehouse-table');
-      if (!table) return;
-      
-      const headerRow = table.querySelector('thead tr');
-      const bodyRows = table.querySelectorAll('tbody tr');
-      
-      if (!headerRow) return;
-      
-      // Get all headers with data-column attributes
-      const headers = headerRow.querySelectorAll('th[data-column]');
-      
-      headers.forEach(header => {
-        const columnKey = header.getAttribute('data-column');
-        if (columnConfig[columnKey]) {
-          header.style.display = columnConfig[columnKey].visible ? '' : 'none';
-          
-          // Find corresponding cells in body rows
-          const columnIndex = Array.from(headers).indexOf(header);
-          bodyRows.forEach(row => {
-            const cell = row.children[columnIndex];
-            if (cell) {
-              cell.style.display = columnConfig[columnKey].visible ? '' : 'none';
-            }
-          });
-        }
-      });
     }
     
     // Event listeners
@@ -2246,11 +2242,87 @@ document.addEventListener('DOMContentLoaded', function() {
     
     }, 500); // Close the main setTimeout
   }
+
+  // Update table columns based on configuration - Global function
+  function updateTableColumns() {
+    // Get column configuration from the table settings scope
+    const savedConfig = localStorage.getItem('warehouse-column-config');
+    let columnConfig = {
+      number: { visible: true, order: 0, name: '№' },
+      type: { visible: true, order: 1, name: 'Тип' },
+      name: { visible: true, order: 2, name: 'Название' },
+      size: { visible: true, order: 3, name: 'Размер' },
+      quality: { visible: true, order: 4, name: 'Качество' },
+      condition: { visible: true, order: 5, name: 'Состояние' },
+      connectivity: { visible: true, order: 6, name: 'Подключение' },
+      quantity: { visible: true, order: 7, name: 'Количество' },
+      date: { visible: true, order: 8, name: 'Дата добавления' },
+      actions: { visible: true, order: 9, name: 'Действия' }
+    };
+    
+    if (savedConfig) {
+      try {
+        columnConfig = JSON.parse(savedConfig);
+      } catch (e) {
+        console.error('Failed to load column config:', e);
+      }
+    }
+    
+    const table = document.querySelector('.warehouse-table');
+    if (!table) return;
+    
+    const headerRow = table.querySelector('thead tr');
+    const bodyRows = table.querySelectorAll('tbody tr');
+    
+    if (!headerRow) return;
+    
+    // Get all headers with data-column attributes
+    const headers = Array.from(headerRow.querySelectorAll('th[data-column]'));
+    
+    // Sort columns by their order in configuration
+    const sortedColumns = Object.keys(columnConfig)
+      .filter(key => columnConfig[key])
+      .sort((a, b) => columnConfig[a].order - columnConfig[b].order);
+    
+    // Reorder headers
+    sortedColumns.forEach((columnKey, index) => {
+      const header = headers.find(h => h.getAttribute('data-column') === columnKey);
+      if (header) {
+        header.style.order = index;
+        header.style.display = columnConfig[columnKey].visible ? '' : 'none';
+      }
+    });
+    
+    // Reorder body cells for each row
+    bodyRows.forEach(row => {
+      const cells = Array.from(row.querySelectorAll('td[data-column]'));
+      
+      sortedColumns.forEach((columnKey, index) => {
+        const cell = cells.find(c => c.getAttribute('data-column') === columnKey);
+        if (cell) {
+          cell.style.order = index;
+          cell.style.display = columnConfig[columnKey].visible ? '' : 'none';
+        }
+      });
+    });
+    
+    // Ensure the parent containers use flexbox for ordering
+    if (headerRow) {
+      headerRow.style.display = 'flex';
+    }
+    bodyRows.forEach(row => {
+      row.style.display = 'flex';
+    });
+  }
   
   // Load and display equipment data
   function loadEquipmentData() {
     renderEquipmentTable(equipmentData);
     updateStatistics();
+    // Apply column configuration after rendering
+    setTimeout(() => {
+      updateTableColumns();
+    }, 100);
   }
   
   // Render equipment table
@@ -2271,16 +2343,16 @@ document.addEventListener('DOMContentLoaded', function() {
       
       const row = document.createElement('tr');
       row.innerHTML = `
-        <td>${index + 1}</td>
-        <td><span class="equipment-type-badge ${item.type}">${translateEquipmentType(item.type)}</span></td>
-        <td>${item.name}</td>
-        <td>${item.size}</td>
-        <td><span class="quality-badge ${item.quality.toLowerCase()}">${translateQuality(item.quality)}</span></td>
-        <td><span class="condition-badge ${item.condition.toLowerCase()}">${translateCondition(item.condition)}</span></td>
-        <td><span class="connectivity-badge ${item.connectivity}">${translateConnectivity(item.connectivity)}</span></td>
-        <td>${quantity}</td>
-        <td>${formatDate(item.dateAdded)}</td>
-        <td>
+        <td data-column="number">${index + 1}</td>
+        <td data-column="type"><span class="equipment-type-badge ${item.type}">${translateEquipmentType(item.type)}</span></td>
+        <td data-column="name">${item.name}</td>
+        <td data-column="size">${item.size}</td>
+        <td data-column="quality"><span class="quality-badge ${item.quality.toLowerCase()}">${translateQuality(item.quality)}</span></td>
+        <td data-column="condition"><span class="condition-badge ${item.condition.toLowerCase()}">${translateCondition(item.condition)}</span></td>
+        <td data-column="connectivity"><span class="connectivity-badge ${item.connectivity}">${translateConnectivity(item.connectivity)}</span></td>
+        <td data-column="quantity">${quantity}</td>
+        <td data-column="date">${formatDate(item.dateAdded)}</td>
+        <td data-column="actions">
           
         <div class="action-buttons">
             <button class="action-btn view-btn" onclick="viewCharacteristics('${item.id}')" title="Просмотр характеристик">

@@ -570,6 +570,87 @@
   font-size: 14px;
 }
 
+/* Table ordering support */
+.warehouse-table thead tr,
+.warehouse-table tbody tr {
+  display: flex;
+  width: 100%;
+}
+
+.warehouse-table th,
+.warehouse-table td {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 10px;
+}
+
+/* Proportional column widths that expand when others are hidden */
+.warehouse-table th[data-column="number"],
+.warehouse-table td[data-column="number"] {
+  flex: 0 1 60px;
+  min-width: 50px;
+}
+
+.warehouse-table th[data-column="type"],
+.warehouse-table td[data-column="type"] {
+  flex: 2 1 140px;
+  min-width: 100px;
+}
+
+.warehouse-table th[data-column="name"],
+.warehouse-table td[data-column="name"] {
+  flex: 3 1 200px;
+  min-width: 150px;
+}
+
+.warehouse-table th[data-column="size"],
+.warehouse-table td[data-column="size"] {
+  flex: 1 1 100px;
+  min-width: 80px;
+}
+
+.warehouse-table th[data-column="quality"],
+.warehouse-table td[data-column="quality"] {
+  flex: 1.5 1 120px;
+  min-width: 100px;
+}
+
+.warehouse-table th[data-column="condition"],
+.warehouse-table td[data-column="condition"] {
+  flex: 1.5 1 120px;
+  min-width: 100px;
+}
+
+.warehouse-table th[data-column="connectivity"],
+.warehouse-table td[data-column="connectivity"] {
+  flex: 1.5 1 130px;
+  min-width: 110px;
+}
+
+.warehouse-table th[data-column="quantity"],
+.warehouse-table td[data-column="quantity"] {
+  flex: 1 1 100px;
+  min-width: 80px;
+  display: flex;
+  justify-content: center;
+}
+
+.warehouse-table th[data-column="date"],
+.warehouse-table td[data-column="date"] {
+  flex: 1.5 1 120px;
+  min-width: 100px;
+  display: flex;
+  justify-content: center;
+}
+
+.warehouse-table th[data-column="actions"],
+.warehouse-table td[data-column="actions"] {
+  flex: 2 1 140px;
+  min-width: 120px;
+  display: flex;
+  justify-content: center;
+}
+
 .warehouse-table th {
   background: #f8f9fa;
   padding: 12px 10px;
@@ -1891,12 +1972,6 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  transition: all 0.2s ease;
-}
-
-.filter-section-title:hover {
-  background: linear-gradient(135deg, #edf2f7 0%, #e2e8f0 100%);
-  transform: translateX(2px);
 }
 
 .filter-section-title::before {
@@ -2556,7 +2631,7 @@
   border: 1.5px solid rgba(226, 232, 240, 0.6);
   border-radius: 12px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: move;
+  cursor: default;
   user-select: none;
   position: relative;
   overflow: hidden;
@@ -2621,6 +2696,14 @@
   background: rgba(148, 163, 184, 0.1);
   transition: all 0.3s ease;
   backdrop-filter: blur(8px);
+  position: relative;
+}
+
+.drag-handle::before {
+  content: '⋮⋮';
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: -2px;
 }
 
 .drag-handle:hover {
