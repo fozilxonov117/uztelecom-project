@@ -149,123 +149,10 @@ document.addEventListener('DOMContentLoaded', function() {
     return translations[connectivity] || connectivity;
   }
   
-  // Initialize dashboard when "Технический сбой" is clicked
+  // Initialize dashboard when warehouse section is selected
   function initWarehouseDashboard() {
-    const techIssueItem = document.getElementById('sidebar-tech-issue'); // Технический сбой
-    const warehouseDashboard = document.getElementById('warehouse-dashboard');
-    const defaultPlaceholder = document.getElementById('default-placeholder');
-    const sidebarItems = document.querySelectorAll('nav.sidebar-menu-figma a');
-    
-    console.log('Tech issue item:', techIssueItem);
-    console.log('Warehouse dashboard:', warehouseDashboard);
-    
-    // Add click handler for tech issue menu
-    if (techIssueItem) {
-      techIssueItem.addEventListener('click', function(e) {
-        // Only prevent default for direct clicks on the tech issue item itself
-        // Don't interfere with header chat button or other elements
-        if (e.target === this || e.target.closest('a') === this) {
-          e.preventDefault();
-        }
-        console.log('Tech issue clicked!');
-        console.log('Warehouse dashboard element:', warehouseDashboard);
-        console.log('Default placeholder element:', defaultPlaceholder);
-        
-        // Remove active class from all sidebar items
-        sidebarItems.forEach(item => {
-          item.classList.remove('active');
-        });
-        
-        // Add active class to clicked item
-        this.classList.add('active');
-        
-        // Hide default placeholder and show warehouse dashboard
-        if (defaultPlaceholder) {
-          defaultPlaceholder.style.display = 'none';
-          console.log('Default placeholder hidden');
-        }
-        if (warehouseDashboard) {
-          warehouseDashboard.style.display = 'block';
-          console.log('Warehouse dashboard shown');
-        }
-        
-        // Initialize warehouse functionality
-        initializeWarehouseFeatures();
-        console.log('Warehouse features initialized');
-        
-        // Set up table settings with another delay to ensure everything is ready
-        setTimeout(() => {
-          console.log('Setting up table settings after warehouse activation...');
-          const settingsBtn = document.getElementById('table-settings-btn');
-          const settingsModal = document.getElementById('table-settings-modal');
-          
-          if (settingsBtn && settingsModal) {
-            console.log('Both elements found, setting up click handler...');
-            settingsBtn.onclick = function() {
-              console.log('Settings button clicked via onclick!');
-              console.log('Modal before changes:', {
-                display: settingsModal.style.display,
-                visibility: settingsModal.style.visibility,
-                zIndex: settingsModal.style.zIndex,
-                opacity: settingsModal.style.opacity
-              });
-              
-              settingsModal.style.display = 'flex';
-              settingsModal.style.visibility = 'visible';
-              settingsModal.style.opacity = '1';
-              settingsModal.style.zIndex = '10001';
-              settingsModal.style.position = 'fixed';
-              settingsModal.style.top = '0';
-              settingsModal.style.left = '0';
-              settingsModal.style.width = '100%';
-              settingsModal.style.height = '100%';
-              document.body.style.overflow = 'hidden';
-              
-              console.log('Modal after changes:', {
-                display: settingsModal.style.display,
-                visibility: settingsModal.style.visibility,
-                zIndex: settingsModal.style.zIndex,
-                opacity: settingsModal.style.opacity,
-                position: settingsModal.style.position
-              });
-              
-              console.log('Modal computed styles:', window.getComputedStyle(settingsModal));
-            };
-          } else {
-            console.log('Elements not found:', { settingsBtn, settingsModal });
-          }
-        }, 1000);
-        
-        // Update modal positions for the new section
-        if (typeof updateModalPositionsOnSectionChange === 'function') {
-          updateModalPositionsOnSectionChange();
-        }
-      });
-    } else {
-      console.error('Tech issue item not found!');
-    }
-    
-    // Add click handlers for other sidebar items to hide warehouse dashboard
-    sidebarItems.forEach(item => {
-      if (item.id !== 'sidebar-tech-issue') {
-        item.addEventListener('click', function(e) {
-          // Hide warehouse dashboard and show default content
-          if (warehouseDashboard) warehouseDashboard.style.display = 'none';
-          if (defaultPlaceholder) defaultPlaceholder.style.display = 'block';
-          
-          // Update active states (this is also handled by main-page-custom.js)
-          sidebarItems.forEach(sidebarItem => {
-            sidebarItem.classList.remove('active');
-          });
-          this.classList.add('active');
-          
-          // Update modal positions for the new section
-          if (typeof updateModalPositionsOnSectionChange === 'function') {
-            updateModalPositionsOnSectionChange();
-          }
-        });
-      }
-    });
+    console.log('Warehouse dashboard initialization');
+    initializeWarehouseFeatures();
   }
   
   // Initialize warehouse features
@@ -1989,13 +1876,20 @@ document.addEventListener('DOMContentLoaded', function() {
       const applySettingsBtn = document.getElementById('apply-table-settings');
       const tableColumnsList = document.getElementById('table-columns-list');
       
-      console.log('Table settings elements:', {
-        tableSettingsBtn,
-        tableSettingsModal,
-        tableSettingsClose,
-        applySettingsBtn,
-        tableColumnsList
+      console.log('Table settings elements found:', {
+        tableSettingsBtn: !!tableSettingsBtn,
+        tableSettingsModal: !!tableSettingsModal,
+        tableSettingsClose: !!tableSettingsClose,
+        applySettingsBtn: !!applySettingsBtn,
+        tableColumnsList: !!tableColumnsList
       });
+
+      // Debug log to check if elements exist
+      if (!tableSettingsBtn) {
+        console.error('Table settings button not found! Checking all buttons with settings class...');
+        const allSettingsButtons = document.querySelectorAll('.table-settings-btn, button[id*="settings"], button[title*="Настройки"]');
+        console.log('All potential settings buttons:', allSettingsButtons);
+      }
     
     // Default column configuration
     let columnConfig = {
@@ -2231,12 +2125,25 @@ document.addEventListener('DOMContentLoaded', function() {
     window.testTableSettings = function() {
       console.log('Testing table settings...');
       const modal = document.getElementById('table-settings-modal');
+      const btn = document.getElementById('table-settings-btn');
+      console.log('Elements found:', { modal: !!modal, btn: !!btn });
       if (modal) {
         modal.style.display = 'flex';
         modal.style.zIndex = '10001';
         console.log('Test modal opened');
       } else {
         console.log('Modal not found in test');
+      }
+    };
+
+    // Additional manual test for button click
+    window.clickTableSettingsBtn = function() {
+      const btn = document.getElementById('table-settings-btn');
+      if (btn) {
+        console.log('Manually clicking table settings button...');
+        btn.click();
+      } else {
+        console.log('Table settings button not found for manual click');
       }
     };
     
@@ -2450,6 +2357,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.stat-item').forEach(item => {
       item.classList.remove('active');
     });
+    
+    // Expose equipment data globally for inventory editing
+    window.equipmentData = equipmentData;
     
     // Add active class to clicked item
     const clickedItem = document.querySelector(`[data-type="${type}"]`);
@@ -2689,6 +2599,9 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Initialize the dashboard
   initWarehouseDashboard();
+  
+  // Expose equipment data globally for cross-module access
+  window.equipmentData = equipmentData;
   
   // Ensure warehouse dashboard is hidden by default on page load
   const warehouseDashboard = document.getElementById('warehouse-dashboard');

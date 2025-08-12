@@ -169,6 +169,20 @@ if (sidebar && logoImg) {
     sidebar.addEventListener('mouseleave', () => {
         sidebar.classList.remove('open');
         updateLogo();
+        
+        // Check if any technical sub-item is active before hiding submenu
+        const activeSubItem = document.querySelector('.sidebar-sub-item.active');
+        if (!activeSubItem) {
+            // Only hide technical submenu if no sub-item is active
+            const techSubmenu = document.getElementById('tech-submenu');
+            const techIssueItem = document.getElementById('sidebar-tech-issue');
+            if (techSubmenu) {
+                techSubmenu.style.display = 'none';
+            }
+            if (techIssueItem) {
+                techIssueItem.classList.remove('expanded', 'active');
+            }
+        }
     });
     // Инициализация при загрузке
     updateLogo();

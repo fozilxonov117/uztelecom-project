@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="css/chat-modal-responsive.css" />
     <link rel="stylesheet" href="css/main-page-custom.css" />
     <link rel="stylesheet" href="css/warehouse-dashboard.css" />
+    <link rel="stylesheet" href="css/warehouse-modal.css" />
+    <link rel="stylesheet" href="css/inventory-dashboard.css" />
     <link
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet"
@@ -124,10 +126,27 @@
             <span class="sidebar-label">Отработки</span></a
           >
 
-          <a id="sidebar-tech-issue"
+          <a id="sidebar-tech-issue" class="sidebar-main-item"
             ><span class="material-icons">report_problem</span>
-            <span class="sidebar-label">Технический сбой</span></a
-          >
+            <span class="sidebar-label">Технический</span>
+            <span class="material-icons sidebar-arrow">expand_more</span>
+          </a>
+          
+          <!-- Technical Sub-menu -->
+          <div id="tech-submenu" class="sidebar-submenu" style="display: none;">
+            <a id="tech-warehouse" class="sidebar-sub-item active">
+              <span class="material-icons">inventory_2</span>
+              <span class="sidebar-label">Склад</span>
+            </a>
+            <a id="tech-inventory" class="sidebar-sub-item">
+              <span class="material-icons">assessment</span>
+              <span class="sidebar-label">Инвентаризация</span>
+            </a>
+            <a id="tech-comp" class="sidebar-sub-item">
+              <span class="material-icons">computer</span>
+              <span class="sidebar-label">Комп</span>
+            </a>
+          </div>
           <a
             ><span class="material-icons header-chat-icon">chat</span>
             <span class="sidebar-label">Chat</span>
@@ -2194,6 +2213,128 @@
                 </div>
               </div>
             </div>
+            
+            <!-- Inventory Management Dashboard Layout -->
+            <div id="inventory-dashboard" class="inventory-dashboard-layout" style="display: none;">
+              <div class="inventory-two-column-layout">
+                
+                <!-- Left Panel (30% width) -->
+                <div class="inventory-left-panel">
+                  <!-- Left panel content can be added here later -->
+                </div>
+                
+                <!-- Right Panel (70% width) -->
+                <div class="inventory-right-panel">
+                  
+                  <!-- Summary Stats at top of right panel -->
+                  <div class="inventory-summary compact">
+                    <div class="inventory-stat-card">
+                      <div class="inventory-stat-icon">
+                        <span class="material-icons">computer</span>
+                      </div>
+                      <div class="inventory-stat-content">
+                        <div class="inventory-stat-number" id="total-workstations">0</div>
+                        <div class="inventory-stat-label">Всего рабочих мест</div>
+                      </div>
+                    </div>
+                    <div class="inventory-stat-card">
+                      <div class="inventory-stat-icon">
+                        <span class="material-icons">check_circle</span>
+                      </div>
+                      <div class="inventory-stat-content">
+                        <div class="inventory-stat-number" id="available-equipment">0</div>
+                        <div class="inventory-stat-label">Исправные</div>
+                      </div>
+                    </div>
+                    <div class="inventory-stat-card">
+                      <div class="inventory-stat-icon">
+                        <span class="material-icons">warning</span>
+                      </div>
+                      <div class="inventory-stat-content">
+                        <div class="inventory-stat-number" id="needs-repair-equipment">0</div>
+                        <div class="inventory-stat-label">Требуют ремонта</div>
+                      </div>
+                    </div>
+                    <div class="inventory-stat-card">
+                      <div class="inventory-stat-icon">
+                        <span class="material-icons">remove_circle</span>
+                      </div>
+                      <div class="inventory-stat-content">
+                        <div class="inventory-stat-number" id="missing-equipment">0</div>
+                        <div class="inventory-stat-label">Отсутствуют</div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Filters -->
+                  <div class="inventory-filters">
+                    <div class="inventory-filter-item">
+                      <label for="atc-filter">АТС:</label>
+                      <select id="atc-filter" class="inventory-filter-select">
+                        <option value="">Все АТС</option>
+                        <option value="229">АТС 229</option>
+                        <option value="255">АТС 255</option>
+                      </select>
+                    </div>
+                    <div class="inventory-filter-item">
+                      <label for="floor-filter">Этаж:</label>
+                      <select id="floor-filter" class="inventory-filter-select">
+                        <option value="">Все этажи</option>
+                        <option value="2">2 этаж</option>
+                        <option value="3">3 этаж</option>
+                        <option value="4">4 этаж</option>
+                      </select>
+                    </div>
+                    <div class="inventory-filter-item">
+                      <input type="text" id="inventory-search" class="inventory-search-input" placeholder="Поиск по IP или номеру стола...">
+                    </div>
+                    <div class="inventory-filter-item">
+                      <button class="inventory-add-btn" id="inventory-add-btn">
+                        <span class="material-icons">add</span>
+                        Добавить
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Main Table -->
+                  <div class="inventory-table-container">
+                    <table class="inventory-table" id="inventory-table">
+                      <thead>
+                        <tr>
+                          <th>АТС</th>
+                          <th>Этаж</th>
+                          <th>Номер стола</th>
+                          <th>IP адрес</th>
+                          <th>Мышь</th>
+                          <th>Клавиатура</th>
+                          <th>Корпус</th>
+                          <th>Монитор</th>
+                          <th>Действия</th>
+                        </tr>
+                      </thead>
+                      <tbody id="inventory-table-body">
+                        <!-- Data will be populated by JavaScript -->
+                      </tbody>
+                    </table>
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+
+            <!-- Computer (Комп) Management Dashboard Layout -->
+            <div id="comp-dashboard" class="comp-dashboard-layout" style="display: none;">
+              <div class="comp-header">
+                <h1 class="comp-title">Комп</h1>
+                <p class="comp-subtitle">Управление компьютерами (в разработке)</p>
+              </div>
+              <div class="comp-content">
+                <div class="coming-soon">
+                  <span class="material-icons">construction</span>
+                  <p>Этот раздел находится в разработке</p>
+                </div>
+              </div>
+            </div>
         </div>
       </main>
     </div>
@@ -2372,12 +2513,211 @@
       </div>
     </div>
     
+    <!-- Inventory Add/Edit Modal -->
+    <div id="inventory-modal" class="warehouse-modal" style="display: none;">
+      <div class="warehouse-modal-content">
+        <div class="warehouse-modal-header">
+          <h2 class="warehouse-modal-title" id="inventory-modal-title">Добавить запись инвентаризации</h2>
+          <button class="warehouse-modal-close" id="inventory-modal-close">
+            <span class="material-icons">close</span>
+          </button>
+        </div>
+        <div class="warehouse-modal-body">
+          <form id="inventory-form">
+            <div class="warehouse-form-section">
+              <label class="warehouse-form-label" for="inventory-atc">АТС</label>
+              <select id="inventory-atc" name="atc" class="warehouse-form-select" required>
+                <option value="">Выберите АТС</option>
+                <option value="229">АТС 229</option>
+                <option value="255">АТС 255</option>
+              </select>
+            </div>
+            
+            <div class="warehouse-form-section">
+              <label class="warehouse-form-label" for="inventory-floor">Этаж</label>
+              <select id="inventory-floor" name="floor" class="warehouse-form-select" required>
+                <option value="">Выберите этаж</option>
+                <option value="2">2 этаж</option>
+                <option value="3">3 этаж</option>
+                <option value="4">4 этаж</option>
+              </select>
+            </div>
+            
+            <div class="warehouse-form-section">
+              <label class="warehouse-form-label" for="inventory-table-number">Номер стола</label>
+              <input type="text" id="inventory-table-number" name="tableNumber" class="warehouse-form-input" placeholder="например, 001" required>
+            </div>
+            
+            <div class="warehouse-form-section">
+              <label class="warehouse-form-label" for="inventory-ip">IP адрес</label>
+              <input type="text" id="inventory-ip" name="ip" class="warehouse-form-input" placeholder="например, 192.168.1.101" required>
+            </div>
+            
+            <div class="warehouse-form-section">
+              <label class="warehouse-form-label" for="inventory-mouse">Мышь</label>
+              <input type="text" id="inventory-mouse" name="mouse" class="warehouse-form-input" placeholder="например, Logitech M100">
+            </div>
+            
+            <div class="warehouse-form-section">
+              <label class="warehouse-form-label" for="inventory-keyboard">Клавиатура</label>
+              <input type="text" id="inventory-keyboard" name="keyboard" class="warehouse-form-input" placeholder="например, Logitech K120">
+            </div>
+            
+            <div class="warehouse-form-section">
+              <label class="warehouse-form-label" for="inventory-case">Корпус</label>
+              <input type="text" id="inventory-case" name="case" class="warehouse-form-input" placeholder="например, Dell OptiPlex">
+            </div>
+            
+            <div class="warehouse-form-section">
+              <label class="warehouse-form-label" for="inventory-monitor">Монитор</label>
+              <input type="text" id="inventory-monitor" name="monitor" class="warehouse-form-input" placeholder="например, Dell 24&quot;">
+            </div>
+            
+            <div class="warehouse-form-actions">
+              <button type="button" class="warehouse-btn warehouse-btn-secondary" id="inventory-cancel-btn">Отмена</button>
+              <button type="submit" class="warehouse-btn warehouse-btn-primary" id="inventory-submit-btn">Сохранить</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Inventory View Modal -->
+    <div id="inventory-view-modal" class="warehouse-modal" style="display: none;">
+      <div class="warehouse-modal-overlay"></div>
+      <div class="warehouse-modal-content">
+        <div class="warehouse-modal-header">
+          <h2 class="warehouse-modal-title">Подробная информация об инвентаре</h2>
+          <button class="warehouse-modal-close" id="inventory-view-modal-close">
+            <span class="material-icons">close</span>
+          </button>
+        </div>
+        <div class="warehouse-modal-body">
+          <div class="inventory-view-info">
+            <!-- Basic Information -->
+            <div class="inventory-view-section">
+              <h3 class="inventory-view-section-title">Основная информация</h3>
+              <div class="inventory-view-grid">
+                <div class="inventory-view-item">
+                  <span class="inventory-view-label">АТС:</span>
+                  <span class="inventory-view-value" id="view-atc">-</span>
+                </div>
+                <div class="inventory-view-item">
+                  <span class="inventory-view-label">Этаж:</span>
+                  <span class="inventory-view-value" id="view-floor">-</span>
+                </div>
+                <div class="inventory-view-item">
+                  <span class="inventory-view-label">Номер стола:</span>
+                  <span class="inventory-view-value" id="view-table-number">-</span>
+                </div>
+                <div class="inventory-view-item">
+                  <span class="inventory-view-label">IP адрес:</span>
+                  <span class="inventory-view-value" id="view-ip">-</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Equipment Details -->
+            <div class="inventory-view-section">
+              <h3 class="inventory-view-section-title">Оборудование</h3>
+              <div class="inventory-equipment-grid">
+                <div class="inventory-equipment-card">
+                  <div class="inventory-equipment-header">
+                    <span class="material-icons">mouse</span>
+                    <h4>Мышь</h4>
+                  </div>
+                  <div class="inventory-equipment-details">
+                    <div class="inventory-equipment-item">
+                      <span class="inventory-equipment-label">Модель:</span>
+                      <span class="inventory-equipment-value" id="view-mouse-name">-</span>
+                    </div>
+                    <div class="inventory-equipment-item">
+                      <span class="inventory-equipment-label">Статус:</span>
+                      <span class="inventory-equipment-status" id="view-mouse-status">-</span>
+                    </div>
+                    <div class="inventory-equipment-item">
+                      <span class="inventory-equipment-label">ID:</span>
+                      <span class="inventory-equipment-value" id="view-mouse-id">-</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="inventory-equipment-card">
+                  <div class="inventory-equipment-header">
+                    <span class="material-icons">keyboard</span>
+                    <h4>Клавиатура</h4>
+                  </div>
+                  <div class="inventory-equipment-details">
+                    <div class="inventory-equipment-item">
+                      <span class="inventory-equipment-label">Модель:</span>
+                      <span class="inventory-equipment-value" id="view-keyboard-name">-</span>
+                    </div>
+                    <div class="inventory-equipment-item">
+                      <span class="inventory-equipment-label">Статус:</span>
+                      <span class="inventory-equipment-status" id="view-keyboard-status">-</span>
+                    </div>
+                    <div class="inventory-equipment-item">
+                      <span class="inventory-equipment-label">ID:</span>
+                      <span class="inventory-equipment-value" id="view-keyboard-id">-</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="inventory-equipment-card">
+                  <div class="inventory-equipment-header">
+                    <span class="material-icons">memory</span>
+                    <h4>Корпус (Процессор)</h4>
+                  </div>
+                  <div class="inventory-equipment-details">
+                    <div class="inventory-equipment-item">
+                      <span class="inventory-equipment-label">Модель:</span>
+                      <span class="inventory-equipment-value" id="view-case-name">-</span>
+                    </div>
+                    <div class="inventory-equipment-item">
+                      <span class="inventory-equipment-label">Статус:</span>
+                      <span class="inventory-equipment-status" id="view-case-status">-</span>
+                    </div>
+                    <div class="inventory-equipment-item">
+                      <span class="inventory-equipment-label">ID:</span>
+                      <span class="inventory-equipment-value" id="view-case-id">-</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="inventory-equipment-card">
+                  <div class="inventory-equipment-header">
+                    <span class="material-icons">monitor</span>
+                    <h4>Монитор</h4>
+                  </div>
+                  <div class="inventory-equipment-details">
+                    <div class="inventory-equipment-item">
+                      <span class="inventory-equipment-label">Модель:</span>
+                      <span class="inventory-equipment-value" id="view-monitor-name">-</span>
+                    </div>
+                    <div class="inventory-equipment-item">
+                      <span class="inventory-equipment-label">Статус:</span>
+                      <span class="inventory-equipment-status" id="view-monitor-status">-</span>
+                    </div>
+                    <div class="inventory-equipment-item">
+                      <span class="inventory-equipment-label">ID:</span>
+                      <span class="inventory-equipment-value" id="view-monitor-id">-</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
     <script src="script.js"></script>
     <script src="js/window-manager.js"></script>
     <script src="js/chat-modal.js"></script>
     <script src="js/main-page-custom.js"></script>
     <script src="js/chat-modal-open-fixed.js"></script>
     <script src="js/warehouse-dashboard.js"></script>
+    <script src="js/technical-navigation.js"></script>
     <!-- Filter Modal -->
     <div id="filter-modal" class="warehouse-modal filter-modal" style="display: none;">
       <div class="warehouse-modal-content filter-modal-content">

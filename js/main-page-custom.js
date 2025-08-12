@@ -65,6 +65,18 @@ document.addEventListener('DOMContentLoaded', function() {
             logoImg.src = 'assets/mini.png';
             sidebar.classList.remove('open');
             document.body.classList.remove('sidebar-open');
+            
+            // Only hide technical submenu if no technical sub-item is active
+            const techSubmenu = document.getElementById('tech-submenu');
+            const techIssueItem = document.getElementById('sidebar-tech-issue');
+            const activeSubItem = document.querySelector('.sidebar-sub-item.active');
+            
+            if (techSubmenu && !activeSubItem) {
+                techSubmenu.style.display = 'none';
+            }
+            if (techIssueItem && !activeSubItem) {
+                techIssueItem.classList.remove('expanded', 'active');
+            }
         });
     }
     // Header user dropdown
@@ -195,14 +207,44 @@ document.addEventListener('DOMContentLoaded', function() {
         const target = e.target.closest('a');
         if (!target) return;
         
-        // Don't handle tech-issue here as it's handled by warehouse-dashboard.js
+        // Don't handle tech-issue here as it's handled by technical-navigation.js
         if (target.id === 'sidebar-tech-issue') return;
+        
+        // Hide all technical dashboards when clicking other sections
+        hideTechnicalDashboards();
+        
+        // Hide technical submenu when other sections are clicked
+        const techSubmenu = document.getElementById('tech-submenu');
+        const techIssueItem = document.getElementById('sidebar-tech-issue');
+        if (techSubmenu) {
+            techSubmenu.style.display = 'none';
+        }
+        if (techIssueItem) {
+            techIssueItem.classList.remove('expanded', 'active');
+        }
+        
+        // Show default placeholder for non-technical sections
+        const defaultPlaceholder = document.getElementById('default-placeholder');
+        if (defaultPlaceholder) {
+            defaultPlaceholder.style.display = 'block';
+        }
         
         // Remove active from all
         sidebarMenu.querySelectorAll('a').forEach(a => a.classList.remove('active'));
         // Add active to clicked
         target.classList.add('active');
     });
+    
+    // Function to hide all technical dashboards
+    function hideTechnicalDashboards() {
+        const warehouseDashboard = document.getElementById('warehouse-dashboard');
+        const inventoryDashboard = document.getElementById('inventory-dashboard');
+        const compDashboard = document.getElementById('comp-dashboard');
+        
+        if (warehouseDashboard) warehouseDashboard.style.display = 'none';
+        if (inventoryDashboard) inventoryDashboard.style.display = 'none';
+        if (compDashboard) compDashboard.style.display = 'none';
+    }
 });
 
 // --- Chat Modal Drag Logic: Only drag from drag button ---
