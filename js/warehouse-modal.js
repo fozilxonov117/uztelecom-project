@@ -96,7 +96,8 @@ document.addEventListener('DOMContentLoaded', function() {
             monitor: 'e.g., Dell UltraSharp U2723QE, Samsung Odyssey G7',
             keyboard: 'e.g., Logitech MX Keys, Corsair K95 RGB',
             mouse: 'e.g., Logitech MX Master 3, Razer DeathAdder V3',
-            processor: 'e.g., Intel Core i7-13700K, AMD Ryzen 9 7900X'
+            processor: 'e.g., Intel Core i7-13700K, AMD Ryzen 9 7900X',
+            earphone: 'e.g., Sony WH-1000XM5, Bose QuietComfort 45'
         };
         
         if (equipmentNameInput && placeholders[type]) {
@@ -127,9 +128,29 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // Submit button event listener (since it's now outside the form)
+    const warehouseSubmitBtn = document.getElementById('warehouse-submit-btn');
+    if (warehouseSubmitBtn) {
+        warehouseSubmitBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            handleFormSubmission();
+        });
+    }
+    
+    // Edit button event listener
+    const warehouseEditBtn = document.getElementById('warehouse-edit-btn');
+    if (warehouseEditBtn) {
+        warehouseEditBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            toggleEditingMode();
+        });
+    }
+    
     function handleFormSubmission() {
         // Get form data
         const formData = new FormData(warehouseForm);
+        const isEditingMode = document.getElementById('equipment-id-section').style.display !== 'none';
+        
         const equipmentData = {
             type: formData.get('equipment-type'),
             name: formData.get('equipment-name'),
@@ -137,13 +158,26 @@ document.addEventListener('DOMContentLoaded', function() {
             quality: formData.get('quality-toggle') ? 'high' : 'standard',
             condition: formData.get('equipment-condition'),
             characteristics: formData.get('equipment-characteristics'),
-            quantity: parseInt(formData.get('equipment-quantity')) || 1,
+            quantity: isEditingMode ? 1 : (parseInt(formData.get('equipment-quantity')) || 1),
             dateAdded: new Date().toISOString()
         };
         
+        // Add editing mode specific fields
+        if (isEditingMode) {
+            equipmentData.ipAddress = formData.get('equipment-ip');
+            equipmentData.model = formData.get('equipment-model');
+            equipmentData.status = formData.get('equipment-status');
+            equipmentData.equipmentId = formData.get('equipment-id');
+        }
+        
         // Validate required fields
-        if (!equipmentData.name || !equipmentData.quantity) {
-            showNotification('Please fill in all required fields.', 'error');
+        if (!equipmentData.name) {
+            showNotification('Please fill in the equipment name.', 'error');
+            return;
+        }
+        
+        if (!isEditingMode && !equipmentData.quantity) {
+            showNotification('Please specify the quantity.', 'error');
             return;
         }
         
@@ -152,11 +186,15 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Simulate adding to database
-        console.log('Adding equipment to warehouse:', equipmentData);
+        // Simulate adding/updating to database
+        console.log(isEditingMode ? 'Updating equipment in warehouse:' : 'Adding equipment to warehouse:', equipmentData);
         
         // Show success notification
-        showNotification(`Successfully added ${equipmentData.quantity} ${equipmentData.name} to warehouse!`, 'success');
+        const action = isEditingMode ? 'updated' : 'added';
+        const message = isEditingMode 
+            ? `Successfully updated ${equipmentData.name}!` 
+            : `Successfully added ${equipmentData.quantity} ${equipmentData.name} to warehouse!`;
+        showNotification(message, 'success');
         
         // Close modal and reset form
         closeWarehouseModal();
@@ -177,6 +215,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 monitorRadio.checked = true;
                 updateFormForEquipmentType('monitor');
             }
+            
+            // Disable editing mode
+            disableEditingMode();
         }
     }
     
@@ -266,4 +307,160 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 300);
         }, 4000);
     }
+
+    // Editing mode functions
+    function toggleEditingMode() {
+        const editBtn = document.getElementById('warehouse-edit-btn');
+        const isCurrentlyEditing = document.getElementById('equipment-id-section').style.display !== 'none';
+        
+        if (isCurrentlyEditing) {
+            disableEditingMode();
+        } else {
+            // Create sample equipment data for demonstration
+            const sampleData = {
+                type: 'monitor',
+                name: 'Dell UltraSharp U2723QE',
+                size: '27',
+                quality: 'high',
+                condition: 'new',
+                characteristics: 'High-resolution 4K display with USB-C connectivity',
+                ipAddress: '192.168.1.100',
+                model: 'U2723QE',
+                status: 'available',
+                equipmentId: 'MON-001'
+            };
+            enableEditingMode(sampleData);
+        }
+    }
+    
+    function enableEditingMode(equipmentData) {
+        // Change modal title
+        const modalTitle = document.querySelector('.warehouse-modal-title');
+        if (modalTitle) {
+            modalTitle.textContent = 'Edit Equipment';
+        }
+        
+        // Show editing-specific fields
+        const editingSections = [
+            'equipment-ip-section',
+            'equipment-model-section', 
+            'equipment-status-section',
+            'equipment-id-section'
+        ];
+        
+        editingSections.forEach(sectionId => {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.style.display = 'block';
+            }
+        });
+        
+        // Hide quantity field in editing mode
+        const quantitySection = document.getElementById('equipment-quantity').closest('.warehouse-form-section');
+        if (quantitySection) {
+            quantitySection.style.display = 'none';
+        }
+        
+        // Populate form with existing data
+        if (equipmentData) {
+            populateFormWithData(equipmentData);
+        }
+        
+        // Change submit button text
+        const submitBtn = document.getElementById('warehouse-submit-btn');
+        if (submitBtn) {
+            submitBtn.textContent = 'Update Equipment';
+        }
+        
+        // Change edit button text and style
+        const editBtn = document.getElementById('warehouse-edit-btn');
+        if (editBtn) {
+            editBtn.textContent = 'Exit Edit Mode';
+            editBtn.className = 'warehouse-btn warehouse-btn-secondary';
+        }
+    }
+    
+    function populateFormWithData(data) {
+        // Set equipment type
+        const typeRadio = document.querySelector(`input[name="equipment-type"][value="${data.type}"]`);
+        if (typeRadio) {
+            typeRadio.checked = true;
+            updateFormForEquipmentType(data.type);
+        }
+        
+        // Populate form fields
+        const fieldMappings = {
+            'equipment-name': data.name,
+            'equipment-size': data.size,
+            'equipment-condition': data.condition,
+            'equipment-characteristics': data.characteristics,
+            'equipment-ip': data.ipAddress,
+            'equipment-model': data.model,
+            'equipment-status': data.status,
+            'equipment-id': data.equipmentId
+        };
+        
+        Object.entries(fieldMappings).forEach(([fieldId, value]) => {
+            const field = document.getElementById(fieldId);
+            if (field && value !== undefined) {
+                field.value = value;
+            }
+        });
+        
+        // Set quality toggle
+        const qualityToggle = document.getElementById('quality-toggle');
+        if (qualityToggle && data.quality) {
+            qualityToggle.checked = data.quality === 'high';
+            const qualityLabel = document.getElementById('quality-label');
+            if (qualityLabel) {
+                qualityLabel.textContent = data.quality === 'high' ? 'High Quality' : 'Standard Quality';
+            }
+        }
+    }
+    
+    function disableEditingMode() {
+        // Reset modal title
+        const modalTitle = document.querySelector('.warehouse-modal-title');
+        if (modalTitle) {
+            modalTitle.textContent = 'Add New Equipment';
+        }
+        
+        // Hide editing-specific fields
+        const editingSections = [
+            'equipment-ip-section',
+            'equipment-model-section',
+            'equipment-status-section', 
+            'equipment-id-section'
+        ];
+        
+        editingSections.forEach(sectionId => {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.style.display = 'none';
+            }
+        });
+        
+        // Show quantity field
+        const quantitySection = document.getElementById('equipment-quantity').closest('.warehouse-form-section');
+        if (quantitySection) {
+            quantitySection.style.display = 'block';
+        }
+        
+        // Reset submit button text
+        const submitBtn = document.getElementById('warehouse-submit-btn');
+        if (submitBtn) {
+            submitBtn.textContent = 'Submit';
+        }
+        
+        // Reset edit button text and style
+        const editBtn = document.getElementById('warehouse-edit-btn');
+        if (editBtn) {
+            editBtn.textContent = 'Edit Mode';
+            editBtn.className = 'warehouse-btn warehouse-btn-info';
+        }
+    }
+    
+    // Export functions for global access
+    window.enableWarehouseEditingMode = enableEditingMode;
+    window.disableWarehouseEditingMode = disableEditingMode;
 });

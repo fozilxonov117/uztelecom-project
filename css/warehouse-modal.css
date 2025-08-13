@@ -79,7 +79,53 @@
 }
 
 .warehouse-modal-body {
-  padding: 16px 24px 20px;
+  padding: 16px 24px;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(90vh - 120px);
+  overflow: hidden;
+}
+
+.warehouse-modal-body-content {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 16px;
+  margin-bottom: 12px;
+  padding-right: 5px;
+}
+
+/* Custom scrollbar for modal content - Compact and gentle design */
+.warehouse-modal-body-content::-webkit-scrollbar,
+#inventory-modal .warehouse-modal-body-content::-webkit-scrollbar,
+#inventory-view-modal .warehouse-modal-body-content::-webkit-scrollbar {
+  width: 3px !important;
+}
+
+.warehouse-modal-body-content::-webkit-scrollbar-track,
+#inventory-modal .warehouse-modal-body-content::-webkit-scrollbar-track,
+#inventory-view-modal .warehouse-modal-body-content::-webkit-scrollbar-track {
+  background: transparent !important;
+  border-radius: 1.5px !important;
+}
+
+.warehouse-modal-body-content::-webkit-scrollbar-thumb,
+#inventory-modal .warehouse-modal-body-content::-webkit-scrollbar-thumb,
+#inventory-view-modal .warehouse-modal-body-content::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.3) !important;
+  border-radius: 1.5px !important;
+  transition: all 0.3s ease !important;
+}
+
+.warehouse-modal-body-content::-webkit-scrollbar-thumb:hover,
+#inventory-modal .warehouse-modal-body-content::-webkit-scrollbar-thumb:hover,
+#inventory-view-modal .warehouse-modal-body-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.5) !important;
+}
+
+.warehouse-modal-body-content::-webkit-scrollbar-thumb:active,
+#inventory-modal .warehouse-modal-body-content::-webkit-scrollbar-thumb:active,
+#inventory-view-modal .warehouse-modal-body-content::-webkit-scrollbar-thumb:active {
+  background: rgba(156, 163, 175, 0.7) !important;
 }
 
 .warehouse-modal-subtitle {
@@ -261,9 +307,11 @@
   display: flex;
   justify-content: flex-end;
   gap: 8px;
-  margin-top: 20px;
-  padding-top: 16px;
+  padding: 16px 24px 20px;
   border-top: 1px solid #f0f2f5;
+  background: #ffffff;
+  margin-top: auto;
+  flex-shrink: 0;
 }
 
 .warehouse-btn {
@@ -300,6 +348,19 @@
 
 .warehouse-btn-primary:active {
   background: #001a3a;
+}
+
+.warehouse-btn-info {
+  background: #0ea5e9;
+  color: white;
+}
+
+.warehouse-btn-info:hover {
+  background: #0284c7;
+}
+
+.warehouse-btn-info:active {
+  background: #0369a1;
 }
 
 /* Responsive Design */
@@ -344,20 +405,119 @@
   box-shadow: 0 0 0 2px rgba(0, 63, 125, 0.2);
 }
 
-/* Scrollbar styling for modal */
-.warehouse-modal-content::-webkit-scrollbar {
-  width: 4px;
+/* Scrollbar styling for modal - Compact and gentle design */
+.warehouse-modal-content::-webkit-scrollbar,
+#inventory-modal .warehouse-modal-content::-webkit-scrollbar,
+#inventory-view-modal .warehouse-modal-content::-webkit-scrollbar {
+  width: 3px !important;
 }
 
-.warehouse-modal-content::-webkit-scrollbar-track {
-  background: transparent;
+.warehouse-modal-content::-webkit-scrollbar-track,
+#inventory-modal .warehouse-modal-content::-webkit-scrollbar-track,
+#inventory-view-modal .warehouse-modal-content::-webkit-scrollbar-track {
+  background: transparent !important;
+  border-radius: 1.5px !important;
 }
 
-.warehouse-modal-content::-webkit-scrollbar-thumb {
-  background: #d1d5db;
-  border-radius: 2px;
+.warehouse-modal-content::-webkit-scrollbar-thumb,
+#inventory-modal .warehouse-modal-content::-webkit-scrollbar-thumb,
+#inventory-view-modal .warehouse-modal-content::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.3) !important;
+  border-radius: 1.5px !important;
+  transition: all 0.3s ease !important;
 }
 
-.warehouse-modal-content::-webkit-scrollbar-thumb:hover {
-  background: #9ca3af;
+.warehouse-modal-content::-webkit-scrollbar-thumb:hover,
+#inventory-modal .warehouse-modal-content::-webkit-scrollbar-thumb:hover,
+#inventory-view-modal .warehouse-modal-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.5) !important;
+}
+
+/* Additional specific scrollbar targeting for all modal elements */
+.warehouse-modal::-webkit-scrollbar,
+.warehouse-modal *::-webkit-scrollbar,
+.inventory-view-info::-webkit-scrollbar,
+.warehouse-modal-body::-webkit-scrollbar {
+  width: 3px !important;
+}
+
+.warehouse-modal::-webkit-scrollbar-track,
+.warehouse-modal *::-webkit-scrollbar-track,
+.inventory-view-info::-webkit-scrollbar-track,
+.warehouse-modal-body::-webkit-scrollbar-track {
+  background: transparent !important;
+  border-radius: 1.5px !important;
+}
+
+.warehouse-modal::-webkit-scrollbar-thumb,
+.warehouse-modal *::-webkit-scrollbar-thumb,
+.inventory-view-info::-webkit-scrollbar-thumb,
+.warehouse-modal-body::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.3) !important;
+  border-radius: 1.5px !important;
+  transition: all 0.3s ease !important;
+}
+
+.warehouse-modal::-webkit-scrollbar-thumb:hover,
+.warehouse-modal *::-webkit-scrollbar-thumb:hover,
+.inventory-view-info::-webkit-scrollbar-thumb:hover,
+.warehouse-modal-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.5) !important;
+}
+
+/* Force browser cache refresh - Compact gentle scrollbar 2025-08-13 */
+* {
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(156, 163, 175, 0.3) transparent !important;
+}
+
+*::-webkit-scrollbar {
+  width: 3px !important;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent !important;
+  border-radius: 1.5px !important;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.3) !important;
+  border-radius: 1.5px !important;
+  transition: all 0.3s ease !important;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.5) !important;
+}
+
+/* Editing Mode Styles */
+.warehouse-form-input[readonly] {
+  background-color: #f9fafb;
+  color: #6b7280;
+  cursor: not-allowed;
+  border-color: #e5e7eb;
+}
+
+.warehouse-form-input[readonly]:focus {
+  border-color: #e5e7eb;
+  box-shadow: none;
+}
+
+/* Editing mode section styling */
+#equipment-ip-section,
+#equipment-model-section,
+#equipment-status-section,
+#equipment-id-section {
+  border-left: 3px solid #3b82f6;
+  padding-left: 12px;
+  background-color: #f8fafc;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+/* Special styling for equipment ID field */
+#equipment-id-section .warehouse-form-input {
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }

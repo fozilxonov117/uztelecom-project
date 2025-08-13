@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Modal Close</title>
+    <style>
+        .test-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .test-modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Modal Close Button Test</h1>
+    <button onclick="showTestModal()">Show Test Modal</button>
+    
+    <div id="test-modal" class="test-modal" style="display: none;">
+        <div class="test-modal-content">
+            <h2>Test Modal</h2>
+            <p>This is a test modal to verify close functionality.</p>
+            <button id="close-test-modal">Close Modal</button>
+        </div>
+    </div>
+
+    <script>
+        function showTestModal() {
+            document.getElementById('test-modal').style.display = 'flex';
+        }
+        
+        function closeTestModal() {
+            console.log('Closing test modal...');
+            document.getElementById('test-modal').style.display = 'none';
+        }
+        
+        // Add event listener
+        document.getElementById('close-test-modal').addEventListener('click', closeTestModal);
+        
+        console.log('Test modal script loaded');
+    </script>
+</body>
+</html>

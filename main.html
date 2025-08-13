@@ -2309,6 +2309,7 @@
                           <th>Клавиатура</th>
                           <th>Корпус</th>
                           <th>Монитор</th>
+                          <th>Наушники</th>
                           <th>Действия</th>
                         </tr>
                       </thead>
@@ -2421,33 +2422,39 @@
         </div>
         
         <div class="warehouse-modal-body">
-          <p class="warehouse-modal-subtitle">Select an equipment type to add its details.</p>
-          
-          <form id="warehouse-equipment-form">
-            <!-- Equipment Type Section -->
-            <div class="warehouse-form-section">
-              <label class="warehouse-form-label">Equipment Type</label>
-              <div class="warehouse-radio-group">
-                <label class="warehouse-radio-option">
-                  <input type="radio" name="equipment-type" value="monitor" checked>
-                  <span class="warehouse-radio-custom"></span>
-                  <span class="warehouse-radio-text">Monitor</span>
-                </label>
-                <label class="warehouse-radio-option">
-                  <input type="radio" name="equipment-type" value="keyboard">
-                  <span class="warehouse-radio-custom"></span>
-                  <span class="warehouse-radio-text">Keyboard</span>
-                </label>
-                <label class="warehouse-radio-option">
-                  <input type="radio" name="equipment-type" value="mouse">
-                  <span class="warehouse-radio-custom"></span>
-                  <span class="warehouse-radio-text">Mouse</span>
-                </label>
-                <label class="warehouse-radio-option">
-                  <input type="radio" name="equipment-type" value="processor">
-                  <span class="warehouse-radio-custom"></span>
-                  <span class="warehouse-radio-text">Processor</span>
-                </label>
+          <div class="warehouse-modal-body-content">
+            <p class="warehouse-modal-subtitle">Select an equipment type to add its details.</p>
+            
+            <form id="warehouse-equipment-form">
+              <!-- Equipment Type Section -->
+              <div class="warehouse-form-section">
+                <label class="warehouse-form-label">Equipment Type</label>
+                <div class="warehouse-radio-group">
+                  <label class="warehouse-radio-option">
+                    <input type="radio" name="equipment-type" value="monitor" checked>
+                    <span class="warehouse-radio-custom"></span>
+                    <span class="warehouse-radio-text">Monitor</span>
+                  </label>
+                  <label class="warehouse-radio-option">
+                    <input type="radio" name="equipment-type" value="keyboard">
+                    <span class="warehouse-radio-custom"></span>
+                    <span class="warehouse-radio-text">Keyboard</span>
+                  </label>
+                  <label class="warehouse-radio-option">
+                    <input type="radio" name="equipment-type" value="mouse">
+                    <span class="warehouse-radio-custom"></span>
+                    <span class="warehouse-radio-text">Mouse</span>
+                  </label>
+                  <label class="warehouse-radio-option">
+                    <input type="radio" name="equipment-type" value="processor">
+                    <span class="warehouse-radio-custom"></span>
+                    <span class="warehouse-radio-text">Processor</span>
+                  </label>
+                  <label class="warehouse-radio-option">
+                    <input type="radio" name="equipment-type" value="earphone">
+                    <span class="warehouse-radio-custom"></span>
+                    <span class="warehouse-radio-text">Earphone</span>
+                  </label>
               </div>
             </div>
             
@@ -2503,12 +2510,47 @@
               <small class="warehouse-form-hint">Enter the number of items to add.</small>
             </div>
             
-            <!-- Form Actions -->
-            <div class="warehouse-form-actions">
-              <button type="button" class="warehouse-btn warehouse-btn-secondary" id="warehouse-cancel-btn">Cancel</button>
-              <button type="submit" class="warehouse-btn warehouse-btn-primary" id="warehouse-submit-btn">Submit</button>
+            <!-- IP Address Section (for editing mode) -->
+            <div class="warehouse-form-section" id="equipment-ip-section" style="display: none;">
+              <label class="warehouse-form-label" for="equipment-ip">IP Address</label>
+              <input type="text" id="equipment-ip" name="equipment-ip" class="warehouse-form-input" placeholder="e.g., 192.168.1.100">
+              <small class="warehouse-form-hint">Enter the IP address assigned to this equipment.</small>
             </div>
-          </form>
+            
+            <!-- Model Section (for editing mode) -->
+            <div class="warehouse-form-section" id="equipment-model-section" style="display: none;">
+              <label class="warehouse-form-label" for="equipment-model">Model</label>
+              <input type="text" id="equipment-model" name="equipment-model" class="warehouse-form-input" placeholder="e.g., XPS 8930">
+              <small class="warehouse-form-hint">Enter the specific model number or name.</small>
+            </div>
+            
+            <!-- Status Section (for editing mode) -->
+            <div class="warehouse-form-section" id="equipment-status-section" style="display: none;">
+              <label class="warehouse-form-label" for="equipment-status">Status</label>
+              <select id="equipment-status" name="equipment-status" class="warehouse-form-select">
+                <option value="available">Available</option>
+                <option value="in-use">In Use</option>
+                <option value="maintenance">Under Maintenance</option>
+                <option value="retired">Retired</option>
+              </select>
+              <small class="warehouse-form-hint">Select the current status of the equipment.</small>
+            </div>
+            
+            <!-- ID Section (for editing mode) -->
+            <div class="warehouse-form-section" id="equipment-id-section" style="display: none;">
+              <label class="warehouse-form-label" for="equipment-id">Equipment ID</label>
+              <input type="text" id="equipment-id" name="equipment-id" class="warehouse-form-input" placeholder="e.g., MON-001" readonly>
+              <small class="warehouse-form-hint">Equipment ID is automatically generated and cannot be modified.</small>
+            </div>
+            </form>
+          </div>
+          
+          <!-- Form Actions -->
+          <div class="warehouse-form-actions">
+            <button type="button" class="warehouse-btn warehouse-btn-secondary" id="warehouse-cancel-btn">Cancel</button>
+            <button type="button" class="warehouse-btn warehouse-btn-info" id="warehouse-edit-btn">Edit Mode</button>
+            <button type="submit" class="warehouse-btn warehouse-btn-primary" id="warehouse-submit-btn">Submit</button>
+          </div>
         </div>
       </div>
     </div>
@@ -2523,8 +2565,9 @@
           </button>
         </div>
         <div class="warehouse-modal-body">
-          <form id="inventory-form">
-            <div class="warehouse-form-section">
+          <div class="warehouse-modal-body-content">
+            <form id="inventory-form">
+              <div class="warehouse-form-section">
               <label class="warehouse-form-label" for="inventory-atc">АТС</label>
               <select id="inventory-atc" name="atc" class="warehouse-form-select" required>
                 <option value="">Выберите АТС</option>
@@ -2550,34 +2593,60 @@
             
             <div class="warehouse-form-section">
               <label class="warehouse-form-label" for="inventory-ip">IP адрес</label>
-              <input type="text" id="inventory-ip" name="ip" class="warehouse-form-input" placeholder="например, 192.168.1.101" required>
+              <input type="text" id="inventory-ip" name="ip" class="warehouse-form-input" placeholder="например, 192.168.1.101">
             </div>
             
+            <!-- Mouse Section -->
             <div class="warehouse-form-section">
-              <label class="warehouse-form-label" for="inventory-mouse">Мышь</label>
-              <input type="text" id="inventory-mouse" name="mouse" class="warehouse-form-input" placeholder="например, Logitech M100">
+              <label class="warehouse-form-label">Мышь</label>
+              <div class="equipment-input-split">
+                <input type="text" id="inventory-mouse" name="mouse" class="warehouse-form-input split-left" placeholder="например, Logitech M100">
+                <input type="text" id="inventory-mouse-id" name="mouseId" class="warehouse-form-input split-right" placeholder="MOUSE-001">
+              </div>
             </div>
             
+            <!-- Keyboard Section -->
             <div class="warehouse-form-section">
-              <label class="warehouse-form-label" for="inventory-keyboard">Клавиатура</label>
-              <input type="text" id="inventory-keyboard" name="keyboard" class="warehouse-form-input" placeholder="например, Logitech K120">
+              <label class="warehouse-form-label">Клавиатура</label>
+              <div class="equipment-input-split">
+                <input type="text" id="inventory-keyboard" name="keyboard" class="warehouse-form-input split-left" placeholder="например, Logitech K120">
+                <input type="text" id="inventory-keyboard-id" name="keyboardId" class="warehouse-form-input split-right" placeholder="KEYB-001">
+              </div>
             </div>
             
+            <!-- Case Section -->
             <div class="warehouse-form-section">
-              <label class="warehouse-form-label" for="inventory-case">Корпус</label>
-              <input type="text" id="inventory-case" name="case" class="warehouse-form-input" placeholder="например, Dell OptiPlex">
+              <label class="warehouse-form-label">Корпус</label>
+              <div class="equipment-input-split">
+                <input type="text" id="inventory-case" name="case" class="warehouse-form-input split-left" placeholder="например, Dell OptiPlex">
+                <input type="text" id="inventory-case-id" name="caseId" class="warehouse-form-input split-right" placeholder="CASE-001">
+              </div>
             </div>
             
+            <!-- Monitor Section -->
             <div class="warehouse-form-section">
-              <label class="warehouse-form-label" for="inventory-monitor">Монитор</label>
-              <input type="text" id="inventory-monitor" name="monitor" class="warehouse-form-input" placeholder="например, Dell 24&quot;">
+              <label class="warehouse-form-label">Монитор</label>
+              <div class="equipment-input-split">
+                <input type="text" id="inventory-monitor" name="monitor" class="warehouse-form-input split-left" placeholder="например, Dell 24&quot;">
+                <input type="text" id="inventory-monitor-id" name="monitorId" class="warehouse-form-input split-right" placeholder="MON-001">
+              </div>
             </div>
             
-            <div class="warehouse-form-actions">
-              <button type="button" class="warehouse-btn warehouse-btn-secondary" id="inventory-cancel-btn">Отмена</button>
-              <button type="submit" class="warehouse-btn warehouse-btn-primary" id="inventory-submit-btn">Сохранить</button>
+            <!-- Earphone Section -->
+            <div class="warehouse-form-section">
+              <label class="warehouse-form-label">Наушники</label>
+              <div class="equipment-input-split">
+                <input type="text" id="inventory-earphone" name="earphone" class="warehouse-form-input split-left" placeholder="например, Sony WH-1000XM4">
+                <input type="text" id="inventory-earphone-id" name="earphoneId" class="warehouse-form-input split-right" placeholder="EAR-001">
+              </div>
             </div>
-          </form>
+            </form>
+          </div>
+          
+          <div class="warehouse-form-actions">
+            <button type="button" class="warehouse-btn warehouse-btn-secondary" id="inventory-cancel-btn">Отмена</button>
+            <button type="submit" class="warehouse-btn warehouse-btn-primary" id="inventory-submit-btn">Сохранить</button>
+          </div>
         </div>
       </div>
     </div>
@@ -2625,6 +2694,9 @@
                   <div class="inventory-equipment-header">
                     <span class="material-icons">mouse</span>
                     <h4>Мышь</h4>
+                    <button class="inventory-equipment-edit-btn" data-equipment-type="mouse" title="Редактировать мышь">
+                      <span class="material-icons">edit</span>
+                    </button>
                   </div>
                   <div class="inventory-equipment-details">
                     <div class="inventory-equipment-item">
@@ -2646,6 +2718,9 @@
                   <div class="inventory-equipment-header">
                     <span class="material-icons">keyboard</span>
                     <h4>Клавиатура</h4>
+                    <button class="inventory-equipment-edit-btn" data-equipment-type="keyboard" title="Редактировать клавиатуру">
+                      <span class="material-icons">edit</span>
+                    </button>
                   </div>
                   <div class="inventory-equipment-details">
                     <div class="inventory-equipment-item">
@@ -2667,6 +2742,9 @@
                   <div class="inventory-equipment-header">
                     <span class="material-icons">memory</span>
                     <h4>Корпус (Процессор)</h4>
+                    <button class="inventory-equipment-edit-btn" data-equipment-type="processor" title="Редактировать процессор">
+                      <span class="material-icons">edit</span>
+                    </button>
                   </div>
                   <div class="inventory-equipment-details">
                     <div class="inventory-equipment-item">
@@ -2688,6 +2766,9 @@
                   <div class="inventory-equipment-header">
                     <span class="material-icons">monitor</span>
                     <h4>Монитор</h4>
+                    <button class="inventory-equipment-edit-btn" data-equipment-type="monitor" title="Редактировать монитор">
+                      <span class="material-icons">edit</span>
+                    </button>
                   </div>
                   <div class="inventory-equipment-details">
                     <div class="inventory-equipment-item">
@@ -2701,6 +2782,30 @@
                     <div class="inventory-equipment-item">
                       <span class="inventory-equipment-label">ID:</span>
                       <span class="inventory-equipment-value" id="view-monitor-id">-</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="inventory-equipment-card">
+                  <div class="inventory-equipment-header">
+                    <span class="material-icons">headphones</span>
+                    <h4>Наушники</h4>
+                    <button class="inventory-equipment-edit-btn" data-equipment-type="earphone" title="Редактировать наушники">
+                      <span class="material-icons">edit</span>
+                    </button>
+                  </div>
+                  <div class="inventory-equipment-details">
+                    <div class="inventory-equipment-item">
+                      <span class="inventory-equipment-label">Модель:</span>
+                      <span class="inventory-equipment-value" id="view-earphone-name">-</span>
+                    </div>
+                    <div class="inventory-equipment-item">
+                      <span class="inventory-equipment-label">Статус:</span>
+                      <span class="inventory-equipment-status" id="view-earphone-status">-</span>
+                    </div>
+                    <div class="inventory-equipment-item">
+                      <span class="inventory-equipment-label">ID:</span>
+                      <span class="inventory-equipment-value" id="view-earphone-id">-</span>
                     </div>
                   </div>
                 </div>

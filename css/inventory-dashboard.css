@@ -238,6 +238,7 @@
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
+  table-layout: fixed;
 }
 
 .inventory-table th {
@@ -249,6 +250,60 @@
   border-bottom: 2px solid rgba(148, 163, 184, 0.1);
   font-size: 13px;
   letter-spacing: 0.025em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Exact column widths */
+.inventory-table th:nth-child(1), /* АТС */
+.inventory-table td:nth-child(1) {
+  width: 8%;
+}
+
+.inventory-table th:nth-child(2), /* Этаж */
+.inventory-table td:nth-child(2) {
+  width: 8%;
+}
+
+.inventory-table th:nth-child(3), /* Номер стола */
+.inventory-table td:nth-child(3) {
+  width: 10%;
+}
+
+.inventory-table th:nth-child(4), /* IP адрес */
+.inventory-table td:nth-child(4) {
+  width: 12%;
+}
+
+.inventory-table th:nth-child(5), /* Мышь */
+.inventory-table td:nth-child(5) {
+  width: 14%;
+}
+
+.inventory-table th:nth-child(6), /* Клавиатура */
+.inventory-table td:nth-child(6) {
+  width: 14%;
+}
+
+.inventory-table th:nth-child(7), /* Корпус */
+.inventory-table td:nth-child(7) {
+  width: 14%;
+}
+
+.inventory-table th:nth-child(8), /* Монитор */
+.inventory-table td:nth-child(8) {
+  width: 14%;
+}
+
+.inventory-table th:nth-child(9), /* Наушники */
+.inventory-table td:nth-child(9) {
+  width: 14%;
+}
+
+.inventory-table th:nth-child(10), /* Действия */
+.inventory-table td:nth-child(10) {
+  width: 12%;
 }
 
 .inventory-table td {
@@ -256,6 +311,9 @@
   border-bottom: 1px solid rgba(148, 163, 184, 0.1);
   color: #334155;
   font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .inventory-table tbody tr:hover {
@@ -268,7 +326,19 @@
   border-radius: 6px;
   font-size: 12px;
   font-weight: 600;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  /* gap: 6px; */
+}
+
+.inventory-status .equipment-icon {
+  font-size: 16px;
+  margin-right: 4px;
+}
+
+.inventory-status .manufacturer-name {
+  font-weight: 500;
+  text-transform: capitalize;
 }
 
 .inventory-status.available {
@@ -281,12 +351,20 @@
   background: rgba(34, 197, 94, 0.1);
   color: #15803d;
   border: 1px solid rgba(34, 197, 94, 0.2);
+  width: 95px;
 }
 
 .inventory-status.missing {
   background: rgba(239, 68, 68, 0.1);
   color: #dc2626;
   border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.inventory-status.unassigned {
+  background: rgba(156, 163, 175, 0.1);
+  color: #6b7280;
+  border: 1px solid rgba(156, 163, 175, 0.2);
+  font-style: italic;
 }
 
 .inventory-status.needs-repair {
@@ -318,11 +396,6 @@
 
 .inventory-action-btn:hover {
   transform: scale(1.1);
-}
-
-.inventory-action-btn.edit:hover {
-  background: rgba(59, 130, 246, 0.1);
-  color: #3b82f6;
 }
 
 .inventory-action-btn.view:hover {
@@ -853,7 +926,7 @@
 }
 
 .inventory-equipment-card:hover {
-  transform: translateY(-2px);
+  /* transform: translateY(-2px); */
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
@@ -864,6 +937,7 @@
   margin-bottom: 16px;
   padding-bottom: 12px;
   border-bottom: 1px solid #e2e8f0;
+  position: relative;
 }
 
 .inventory-equipment-header .material-icons {
@@ -876,6 +950,111 @@
   font-size: 16px;
   font-weight: 600;
   color: #1f2937;
+  flex: 1;
+}
+
+.inventory-equipment-edit-btn {
+  background: none;
+  border: none;
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #64748b;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+}
+
+.inventory-equipment-edit-btn:hover {
+  background: #f1f5f9;
+  color: #3b82f6;
+  transform: scale(1.1);
+}
+
+.inventory-equipment-edit-btn .material-icons {
+  font-size: 18px;
+}
+
+/* Inline Editing Styles */
+.inventory-equipment-card.editing-mode {
+  border-color: #3b82f6;
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.15);
+  background: #f8fafc;
+}
+
+.inventory-equipment-edit-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.inventory-equipment-save-btn,
+.inventory-equipment-cancel-btn {
+  background: none;
+  border: none;
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.inventory-equipment-save-btn {
+  color: #059669;
+}
+
+.inventory-equipment-save-btn:hover {
+  background: rgba(5, 150, 105, 0.1);
+  transform: scale(1.1);
+}
+
+.inventory-equipment-cancel-btn {
+  color: #dc2626;
+}
+
+.inventory-equipment-cancel-btn:hover {
+  background: rgba(220, 38, 38, 0.1);
+  transform: scale(1.1);
+}
+
+.inventory-equipment-save-btn .material-icons,
+.inventory-equipment-cancel-btn .material-icons {
+  font-size: 16px;
+}
+
+.inventory-equipment-edit-select,
+.inventory-equipment-edit-input {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 13px;
+  background: white;
+  transition: all 0.2s ease;
+}
+
+.inventory-equipment-edit-select:focus,
+.inventory-equipment-edit-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.inventory-equipment-edit-select {
+  cursor: pointer;
+}
+
+.inventory-equipment-card.editing-mode .inventory-equipment-item {
+  margin-bottom: 12px;
+}
+
+.inventory-equipment-card.editing-mode .inventory-equipment-label {
+  margin-bottom: 4px;
+  display: block;
 }
 
 .inventory-equipment-details {
@@ -965,4 +1144,90 @@
     flex: 1;
     min-width: calc(50% - 6px);
   }
+}
+
+/* Equipment split input styles */
+.equipment-input-split {
+  display: flex;
+  gap: 0;
+  position: relative;
+}
+
+.equipment-input-split .warehouse-form-input.split-left {
+  flex: 2;
+  border-radius: 8px 0 0 8px;
+  border-right: none;
+  position: relative;
+}
+
+.equipment-input-split .warehouse-form-input.split-right {
+  flex: 1;
+  border-radius: 0 8px 8px 0;
+  border-left: 1px solid #e1e5e9;
+  background-color: #f8f9fa;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  color: #495057;
+}
+
+.equipment-input-split .warehouse-form-input.split-left:focus {
+  border-right: none;
+  z-index: 2;
+  position: relative;
+}
+
+.equipment-input-split .warehouse-form-input.split-right:focus {
+  border-left: 1px solid #007bff;
+  background-color: #fff;
+}
+
+.equipment-input-split .warehouse-form-input.split-left::placeholder {
+  color: #6c757d;
+}
+
+.equipment-input-split .warehouse-form-input.split-right::placeholder {
+  color: #adb5bd;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+/* Visual improvements for split inputs */
+.equipment-input-split .warehouse-form-input {
+  margin-bottom: 0;
+}
+
+.equipment-input-split .warehouse-form-input.split-right {
+  text-align: center;
+}
+
+/* Hover effects for split inputs */
+.equipment-input-split:hover .warehouse-form-input.split-left {
+  border-color: #b3d7ff;
+}
+
+.equipment-input-split:hover .warehouse-form-input.split-right {
+  border-color: #b3d7ff;
+  background-color: #f0f8ff;
+}
+
+/* Row highlighting animation for inventory table updates */
+@keyframes inventoryRowHighlight {
+  0% {
+    background-color: rgba(34, 197, 94, 0.2);
+    transform: scale(1);
+  }
+  50% {
+    background-color: rgba(34, 197, 94, 0.1);
+    transform: scale(1.01);
+  }
+  100% {
+    background-color: transparent;
+    transform: scale(1);
+  }
+}
+
+.highlighted-row {
+  animation: inventoryRowHighlight 3s ease-in-out;
+  transition: all 0.3s ease;
 }
