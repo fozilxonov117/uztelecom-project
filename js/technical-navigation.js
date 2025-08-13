@@ -1305,12 +1305,14 @@ function initInventoryDashboard() {
       
       // Show modal
       console.log('🚀 Showing modal...');
+      modal.setAttribute('data-item-id', id);
       modal.style.display = 'flex';
       console.log('✅ Modal display set to flex');
       
       // Initialize equipment edit buttons after modal is shown
       setTimeout(() => {
         initEquipmentEditButtons();
+        initIPEditButton();
       }, 100);
     } else {
       console.error('❌ Item not found for id:', id);
@@ -1519,6 +1521,153 @@ function initEquipmentEditButtons() {
     
     console.log(`✅ Button ${index + 1} initialized for type:`, newButton.getAttribute('data-equipment-type'));
   });
+}
+
+// Initialize IP address edit functionality
+function initIPEditButton() {
+  console.log('🌐 Initializing IP edit button...');
+  const ipEditBtn = document.getElementById('ip-edit-btn');
+  
+  if (ipEditBtn) {
+    // Remove any existing event listeners by cloning the button
+    const newButton = ipEditBtn.cloneNode(true);
+    ipEditBtn.parentNode.replaceChild(newButton, ipEditBtn);
+    
+    // Add fresh event listener
+    newButton.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('🎯 IP edit button clicked');
+      enableIPInlineEditing();
+    });
+    
+    console.log('✅ IP edit button initialized');
+  }
+}
+
+// Enable inline editing for IP address
+function enableIPInlineEditing() {
+  const ipContainer = document.querySelector('.inventory-view-ip-container');
+  const ipValue = document.getElementById('view-ip');
+  
+  if (!ipContainer || !ipValue) {
+    console.error('IP container or value element not found');
+    return;
+  }
+  
+  // Get current IP value
+  const currentIP = ipValue.textContent.trim();
+  
+  // Add editing class
+  ipContainer.classList.add('editing');
+  
+  // Create input field
+  const inputField = document.createElement('input');
+  inputField.type = 'text';
+  inputField.className = 'ip-edit-input';
+  inputField.value = currentIP === '-' ? '' : currentIP;
+  inputField.placeholder = 'например, 192.168.1.100';
+  
+  // Create control buttons
+  const controlsDiv = document.createElement('div');
+  controlsDiv.className = 'ip-edit-controls';
+  
+  const saveBtn = document.createElement('button');
+  saveBtn.className = 'ip-edit-control-btn save';
+  saveBtn.innerHTML = '<span class="material-icons">check</span>';
+  saveBtn.title = 'Сохранить';
+  
+  const cancelBtn = document.createElement('button');
+  cancelBtn.className = 'ip-edit-control-btn cancel';
+  cancelBtn.innerHTML = '<span class="material-icons">close</span>';
+  cancelBtn.title = 'Отменить';
+  
+  controlsDiv.appendChild(saveBtn);
+  controlsDiv.appendChild(cancelBtn);
+  
+  // Insert input and controls after the value span
+  ipValue.insertAdjacentElement('afterend', inputField);
+  inputField.insertAdjacentElement('afterend', controlsDiv);
+  
+  // Focus on input
+  inputField.focus();
+  inputField.select();
+  
+  // Save functionality
+  const saveIP = () => {
+    const newIP = inputField.value.trim();
+    
+    // Basic IP validation
+    if (newIP && !isValidIP(newIP)) {
+      showNotification('Пожалуйста, введите корректный IP адрес', 'error');
+      inputField.focus();
+      return;
+    }
+    
+    // Update IP in current inventory item
+    const currentInventoryId = getCurrentInventoryItemId();
+    if (currentInventoryId && window.inventoryData) {
+      const item = window.inventoryData.find(item => item.id == currentInventoryId);
+      if (item) {
+        item.ip = newIP || '-';
+        
+        // Update display
+        ipValue.textContent = newIP || '-';
+        
+        // Re-render inventory table to reflect changes
+        if (typeof window.renderInventoryTable === 'function') {
+          window.renderInventoryTable(window.inventoryData);
+        }
+        
+        showNotification('IP адрес успешно обновлен', 'success');
+      }
+    }
+    
+    // Exit editing mode
+    exitIPEditingMode();
+  };
+  
+  // Cancel functionality
+  const cancelEdit = () => {
+    exitIPEditingMode();
+  };
+  
+  // Exit editing mode
+  const exitIPEditingMode = () => {
+    ipContainer.classList.remove('editing');
+    inputField.remove();
+    controlsDiv.remove();
+  };
+  
+  // Event listeners
+  saveBtn.addEventListener('click', saveIP);
+  cancelBtn.addEventListener('click', cancelEdit);
+  
+  // Enter key to save, Escape to cancel
+  inputField.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      saveIP();
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      cancelEdit();
+    }
+  });
+}
+
+// IP validation function
+function isValidIP(ip) {
+  const ipRegex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+  return ipRegex.test(ip);
+}
+
+// Get current inventory item ID from modal
+function getCurrentInventoryItemId() {
+  const modal = document.getElementById('inventory-view-modal');
+  if (modal && modal.style.display === 'block') {
+    return modal.getAttribute('data-item-id');
+  }
+  return null;
 }
 
 function handleEquipmentEdit(equipmentType) {

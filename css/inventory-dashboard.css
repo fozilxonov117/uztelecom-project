@@ -1231,3 +1231,96 @@
   animation: inventoryRowHighlight 3s ease-in-out;
   transition: all 0.3s ease;
 }
+
+/* IP Address Edit Functionality */
+.inventory-view-ip-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.inventory-ip-edit-btn {
+  background: none;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  opacity: 0.7;
+}
+
+.inventory-ip-edit-btn:hover {
+  color: #3b82f6;
+  background: rgba(59, 130, 246, 0.1);
+  opacity: 1;
+}
+
+.inventory-ip-edit-btn .material-icons {
+  font-size: 16px;
+}
+
+.inventory-view-ip-container.editing .inventory-view-value {
+  display: none;
+}
+
+.inventory-view-ip-container.editing .inventory-ip-edit-btn {
+  display: none;
+}
+
+.ip-edit-input {
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 14px;
+  width: 120px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.ip-edit-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.ip-edit-controls {
+  display: flex;
+  gap: 4px;
+  margin-left: 8px;
+}
+
+.ip-edit-control-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.ip-edit-control-btn.save {
+  color: #059669;
+}
+
+.ip-edit-control-btn.save:hover {
+  background: rgba(5, 150, 105, 0.1);
+}
+
+.ip-edit-control-btn.cancel {
+  color: #dc2626;
+}
+
+.ip-edit-control-btn.cancel:hover {
+  background: rgba(220, 38, 38, 0.1);
+}
+
+.ip-edit-control-btn .material-icons {
+  font-size: 16px;
+}
