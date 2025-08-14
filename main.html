@@ -2587,7 +2587,7 @@
             </div>
             
             <div class="warehouse-form-section">
-              <label class="warehouse-form-label" for="inventory-table-number">Номер стола</label>
+              <label class="warehouse-form-label" for="inventory-table-number">Номер стола/Комната</label>
               <input type="text" id="inventory-table-number" name="tableNumber" class="warehouse-form-input" placeholder="например, 001" required>
             </div>
             
@@ -2600,7 +2600,9 @@
             <div class="warehouse-form-section">
               <label class="warehouse-form-label">Мышь</label>
               <div class="equipment-input-split">
-                <input type="text" id="inventory-mouse" name="mouse" class="warehouse-form-input split-left" placeholder="например, Logitech M100">
+                <select id="inventory-mouse" name="mouse" class="warehouse-form-input split-left inventory-equipment-edit-select">
+                  <option value="">Выберите мышь...</option>
+                </select>
                 <input type="text" id="inventory-mouse-id" name="mouseId" class="warehouse-form-input split-right" placeholder="MOUSE-001">
               </div>
             </div>
@@ -2609,7 +2611,9 @@
             <div class="warehouse-form-section">
               <label class="warehouse-form-label">Клавиатура</label>
               <div class="equipment-input-split">
-                <input type="text" id="inventory-keyboard" name="keyboard" class="warehouse-form-input split-left" placeholder="например, Logitech K120">
+                <select id="inventory-keyboard" name="keyboard" class="warehouse-form-input split-left inventory-equipment-edit-select">
+                  <option value="">Выберите клавиатуру...</option>
+                </select>
                 <input type="text" id="inventory-keyboard-id" name="keyboardId" class="warehouse-form-input split-right" placeholder="KEYB-001">
               </div>
             </div>
@@ -2618,7 +2622,9 @@
             <div class="warehouse-form-section">
               <label class="warehouse-form-label">Корпус</label>
               <div class="equipment-input-split">
-                <input type="text" id="inventory-case" name="case" class="warehouse-form-input split-left" placeholder="например, Dell OptiPlex">
+                <select id="inventory-case" name="case" class="warehouse-form-input split-left inventory-equipment-edit-select">
+                  <option value="">Выберите корпус...</option>
+                </select>
                 <input type="text" id="inventory-case-id" name="caseId" class="warehouse-form-input split-right" placeholder="CASE-001">
               </div>
             </div>
@@ -2627,7 +2633,9 @@
             <div class="warehouse-form-section">
               <label class="warehouse-form-label">Монитор</label>
               <div class="equipment-input-split">
-                <input type="text" id="inventory-monitor" name="monitor" class="warehouse-form-input split-left" placeholder="например, Dell 24&quot;">
+                <select id="inventory-monitor" name="monitor" class="warehouse-form-input split-left inventory-equipment-edit-select">
+                  <option value="">Выберите монитор...</option>
+                </select>
                 <input type="text" id="inventory-monitor-id" name="monitorId" class="warehouse-form-input split-right" placeholder="MON-001">
               </div>
             </div>
@@ -2636,7 +2644,9 @@
             <div class="warehouse-form-section">
               <label class="warehouse-form-label">Наушники</label>
               <div class="equipment-input-split">
-                <input type="text" id="inventory-earphone" name="earphone" class="warehouse-form-input split-left" placeholder="например, Sony WH-1000XM4">
+                <select id="inventory-earphone" name="earphone" class="warehouse-form-input split-left inventory-equipment-edit-select">
+                  <option value="">Выберите наушники...</option>
+                </select>
                 <input type="text" id="inventory-earphone-id" name="earphoneId" class="warehouse-form-input split-right" placeholder="EAR-001">
               </div>
             </div>

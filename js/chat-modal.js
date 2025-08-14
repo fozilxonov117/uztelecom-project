@@ -440,10 +440,12 @@ function enableModalResize(modalRoot) {
                 // Now do the expensive operations once at the end
                 requestAnimationFrame(() => {
                     // Final boundary check after resize
-                    ensureModalBounds(modal);
+                    if (modal) {
+                        ensureModalBounds(modal);
+                    }
                     
                     // Trigger mobile mode detection after modal resize is complete
-                    if (modal._checkMobileMode) {
+                    if (modal && modal._checkMobileMode) {
                         modal._checkMobileMode(false);
                     }
                 });
@@ -537,10 +539,12 @@ function enableModalResize(modalRoot) {
                 // Now do the expensive operations once at the end
                 requestAnimationFrame(() => {
                     // Final boundary check after resize
-                    ensureModalBounds(modal);
+                    if (modal) {
+                        ensureModalBounds(modal);
+                    }
                     
                     // Trigger mobile mode detection after modal resize is complete
-                    if (modal._checkMobileMode) {
+                    if (modal && modal._checkMobileMode) {
                         modal._checkMobileMode(false);
                     }
                 });
@@ -853,7 +857,9 @@ function setupModalControls(modalRoot) {
                 
                 // Ensure modal is within training-placeholder bounds after restoring position
                 setTimeout(() => {
-                    ensureModalBounds(modal);
+                    if (modal) {
+                        ensureModalBounds(modal);
+                    }
                 }, 50);
             }
         });
@@ -1008,7 +1014,9 @@ function setupModalControls(modalRoot) {
                     
                     // Ensure modal is within training-placeholder bounds after restoring position
                     setTimeout(() => {
-                        ensureModalBounds(modal);
+                        if (modal) {
+                            ensureModalBounds(modal);
+                        }
                     }, 50);
                 }
                 
@@ -5946,6 +5954,12 @@ document.addEventListener('DOMContentLoaded', function() {
  * @param {HTMLElement} modalElement - Элемент модального окна
  */
 function ensureModalBounds(modalElement) {
+    // Check if modalElement exists
+    if (!modalElement) {
+        console.warn('ensureModalBounds called with undefined modalElement');
+        return;
+    }
+    
     setTimeout(() => {
         // Skip if modal is manually positioned (don't interfere with user-positioned modals)
         // But allow sidebar layout adjustments by checking if we're in sidebar transition

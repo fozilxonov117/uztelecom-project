@@ -259,6 +259,28 @@ function initInventoryDashboard() {
     });
   }
 
+  // Helper function to validate modal elements
+  function validateModalElements() {
+    const requiredElements = [
+      'view-atc', 'view-floor', 'view-table-number', 'view-ip',
+      'view-mouse-name', 'view-mouse-status', 'view-mouse-id',
+      'view-keyboard-name', 'view-keyboard-status', 'view-keyboard-id',
+      'view-case-name', 'view-case-status', 'view-case-id',
+      'view-monitor-name', 'view-monitor-status', 'view-monitor-id',
+      'view-earphone-name', 'view-earphone-status', 'view-earphone-id'
+    ];
+    
+    const missingElements = requiredElements.filter(id => !document.getElementById(id));
+    
+    if (missingElements.length > 0) {
+      console.warn('⚠️ Missing modal elements:', missingElements);
+      return false;
+    }
+    
+    console.log('✅ All modal elements found');
+    return true;
+  }
+
   function initInventoryViewModal() {
     console.log('🔧 Initializing inventory view modal...');
     
@@ -404,12 +426,34 @@ function initInventoryDashboard() {
   }
   
   // Function to extract manufacturer name and get equipment icon
-  function getEquipmentDisplayInfo(equipmentName, equipmentType) {
-    if (!equipmentName || equipmentName === 'Не назначено') {
+  function getEquipmentDisplayInfo(equipmentName, equipmentType, equipmentStatus) {
+    if (!equipmentName || equipmentName === 'Не назначено' || equipmentName === '-') {
+      // Get the appropriate icon for the equipment type even when missing
+      let icon = '';
+      switch (equipmentType) {
+        case 'mouse':
+          icon = '🖱️';
+          break;
+        case 'keyboard':
+          icon = '⌨️';
+          break;
+        case 'case':
+          icon = '🖥️';
+          break;
+        case 'monitor':
+          icon = '📺';
+          break;
+        case 'earphone':
+          icon = '🎧';
+          break;
+        default:
+          icon = '❓';
+      }
+      
       return {
-        icon: '❌',
-        manufacturer: 'Не назначено',
-        status: 'unassigned'
+        icon: icon,
+        manufacturer: equipmentName === '-' ? '-' : 'Не назначено',
+        status: 'missing'
       };
     }
 
@@ -460,6 +504,8 @@ function initInventoryDashboard() {
         icon = '⌨️';
         break;
       case 'case':
+        icon = '<i class="case-icon"></i>'; // Custom CSS icon for computer case
+        break;
       case 'processor':
         icon = '💻';
         break;
@@ -473,10 +519,26 @@ function initInventoryDashboard() {
         icon = '⚙️';
     }
 
+    // Determine status - use provided status or default to working
+    let status = 'working';
+    if (equipmentStatus) {
+      // Map status values to CSS classes
+      const statusLower = equipmentStatus.toLowerCase();
+      if (statusLower.includes('доступно') || statusLower === 'available' || statusLower === 'assigned') {
+        status = 'available';
+      } else if (statusLower.includes('ремонт') || statusLower === 'repair' || statusLower === 'needs-repair' || statusLower === 'maintenance') {
+        status = 'needs-repair';
+      } else if (statusLower.includes('missing') || statusLower === 'unavailable' || statusLower === '-') {
+        status = 'missing';
+      } else if (statusLower.includes('unassigned') || statusLower === 'not assigned') {
+        status = 'unassigned';
+      }
+    }
+
     return {
       icon: icon,
       manufacturer: manufacturer,
-      status: 'working'
+      status: status
     };
   }
 
@@ -496,11 +558,11 @@ function initInventoryDashboard() {
       const row = document.createElement('tr');
       
       // Get equipment display info for each equipment type
-      const mouseInfo = getEquipmentDisplayInfo(item.mouse?.name, 'mouse');
-      const keyboardInfo = getEquipmentDisplayInfo(item.keyboard?.name, 'keyboard');
-      const caseInfo = getEquipmentDisplayInfo(item.case?.name, 'case');
-      const monitorInfo = getEquipmentDisplayInfo(item.monitor?.name, 'monitor');
-      const earphoneInfo = getEquipmentDisplayInfo(item.earphone?.name, 'earphone');
+      const mouseInfo = getEquipmentDisplayInfo(item.mouse?.name, 'mouse', item.mouse?.status);
+      const keyboardInfo = getEquipmentDisplayInfo(item.keyboard?.name, 'keyboard', item.keyboard?.status);
+      const caseInfo = getEquipmentDisplayInfo(item.case?.name, 'case', item.case?.status);
+      const monitorInfo = getEquipmentDisplayInfo(item.monitor?.name, 'monitor', item.monitor?.status);
+      const earphoneInfo = getEquipmentDisplayInfo(item.earphone?.name, 'earphone', item.earphone?.status);
       
       row.innerHTML = `
         <td>${item.atc}</td>
@@ -836,7 +898,8 @@ function initInventoryDashboard() {
       'keyboard': 'keyboard', 
       'case': 'case-component',
       'processor': 'processor',
-      'monitor': 'monitor'
+      'monitor': 'monitor',
+      'earphone': 'earphone'
     };
     
     const warehouseType = typeMapping[type] || type;
@@ -1269,14 +1332,9 @@ function initInventoryDashboard() {
           element.textContent = text;
           console.log(`✅ Set ${id}: ${text}`);
         } else {
-          console.error(`❌ Element ${id} not found!`);
+          console.warn(`⚠️ Element ${id} not found - modal may not be fully rendered yet`);
         }
       };
-      
-      setElementText('view-atc', item.atc);
-      setElementText('view-floor', item.floor);
-      setElementText('view-table-number', item.tableNumber);
-      setElementText('view-ip', item.ip);
       
       // Equipment information with error handling
       const setEquipmentInfo = (prefix, equipment) => {
@@ -1285,16 +1343,29 @@ function initInventoryDashboard() {
           return;
         }
         
-        setElementText(`view-${prefix}-name`, equipment.name || '-');
-        
-        const statusElement = document.getElementById(`view-${prefix}-status`);
-        if (statusElement) {
-          statusElement.textContent = getStatusText(equipment.status);
-          statusElement.className = `inventory-equipment-status ${equipment.status}`;
-        }
-        
-        setElementText(`view-${prefix}-id`, equipment.id || generateEquipmentId(prefix.toUpperCase(), item.id));
+        // Add a small delay to ensure DOM is ready
+        setTimeout(() => {
+          setElementText(`view-${prefix}-name`, equipment.name || '-');
+          
+          const statusElement = document.getElementById(`view-${prefix}-status`);
+          if (statusElement) {
+            statusElement.textContent = getStatusText(equipment.status);
+            statusElement.className = `inventory-equipment-status ${equipment.status}`;
+          } else {
+            console.warn(`⚠️ Status element view-${prefix}-status not found`);
+          }
+          
+          setElementText(`view-${prefix}-id`, equipment.id || generateEquipmentId(prefix.toUpperCase(), item.id));
+        }, 50); // Small delay to ensure modal is rendered
       };
+      
+      // Set basic information with delay to ensure modal is rendered
+      setTimeout(() => {
+        setElementText('view-atc', item.atc);
+        setElementText('view-floor', item.floor);
+        setElementText('view-table-number', item.tableNumber);
+        setElementText('view-ip', item.ip);
+      }, 10);
       
       // Set equipment information - handle processor/case mapping with defaults for missing equipment
       setEquipmentInfo('mouse', item.mouse || { name: '-', status: 'missing', id: 'N/A' });
@@ -1309,11 +1380,23 @@ function initInventoryDashboard() {
       modal.style.display = 'flex';
       console.log('✅ Modal display set to flex');
       
-      // Initialize equipment edit buttons after modal is shown
+      // Force a reflow to ensure modal is rendered
+      modal.offsetHeight;
+      
+      // Validate modal elements before proceeding
       setTimeout(() => {
-        initEquipmentEditButtons();
-        initIPEditButton();
-      }, 100);
+        if (validateModalElements()) {
+          try {
+            initEquipmentEditButtons();
+            initIPEditButton();
+            console.log('✅ Modal initialization completed');
+          } catch (error) {
+            console.error('❌ Error during modal initialization:', error);
+          }
+        } else {
+          console.error('❌ Modal elements validation failed - some elements are missing');
+        }
+      }, 150);
     } else {
       console.error('❌ Item not found for id:', id);
       alert(`Запись с ID ${id} не найдена!`);
@@ -1382,6 +1465,57 @@ function initInventoryModal() {
   }
 }
 
+// Populate inventory equipment selects with warehouse data
+function populateInventoryEquipmentSelects() {
+  console.log('🔧 Populating inventory equipment selects...');
+  
+  const equipmentTypes = [
+    { id: 'inventory-mouse', type: 'mouse', idField: 'inventory-mouse-id', prefix: 'MOUSE' },
+    { id: 'inventory-keyboard', type: 'keyboard', idField: 'inventory-keyboard-id', prefix: 'KEYB' },
+    { id: 'inventory-case', type: 'case', idField: 'inventory-case-id', prefix: 'CASE' },
+    { id: 'inventory-monitor', type: 'monitor', idField: 'inventory-monitor-id', prefix: 'MON' },
+    { id: 'inventory-earphone', type: 'earphone', idField: 'inventory-earphone-id', prefix: 'EAR' }
+  ];
+  
+  equipmentTypes.forEach(equipment => {
+    const select = document.getElementById(equipment.id);
+    const idField = document.getElementById(equipment.idField);
+    
+    if (select) {
+      // Clear existing options except the first one
+      while (select.children.length > 1) {
+        select.removeChild(select.lastChild);
+      }
+      
+      // Get available equipment of this type
+      const availableEquipment = getAllEquipmentByType(equipment.type);
+      console.log(`📦 Found ${availableEquipment.length} items for type ${equipment.type}:`, availableEquipment);
+      
+      // Add options for available equipment
+      availableEquipment.forEach((item, index) => {
+        const option = document.createElement('option');
+        option.value = item.name;
+        option.textContent = `${item.name} (${item.quantity} шт.)`;
+        option.dataset.equipmentId = item.id;
+        option.dataset.quantity = item.quantity;
+        
+        // Disable if out of stock
+        if (item.quantity <= 0) {
+          option.disabled = true;
+          option.textContent += ' - Нет в наличии';
+        }
+        
+        select.appendChild(option);
+      });
+      
+      // Remove the automatic ID generation event listener
+      // Users will manually enter equipment IDs
+    }
+  });
+  
+  console.log('✅ Inventory equipment selects populated');
+}
+
 function openInventoryModal(itemId = null) {
   const modal = document.getElementById('inventory-modal');
   const title = document.getElementById('inventory-modal-title');
@@ -1394,6 +1528,8 @@ function openInventoryModal(itemId = null) {
     } else {
       title.textContent = 'Добавить запись инвентаризации';
       form.reset();
+      // Populate equipment selects with warehouse data
+      populateInventoryEquipmentSelects();
     }
     
     modal.style.display = 'flex';
@@ -1413,21 +1549,92 @@ function saveInventoryItem() {
   
   const formData = new FormData(form);
   
-  // Auto-populate equipment from warehouse
-  const autoEquipment = autoAssignEquipmentFromWarehouse();
+  // Validate required fields
+  const tableNumber = formData.get('tableNumber');
+  if (!tableNumber || tableNumber.trim() === '') {
+    showNotification('Пожалуйста, укажите номер стола', 'error');
+    return;
+  }
+  
+  // Validate equipment selections and IDs
+  const equipmentFields = ['mouse', 'keyboard', 'case', 'monitor', 'earphone'];
+  const equipmentData = {};
+  let hasValidationErrors = false;
+  const usedIds = new Set();
+  
+  // Collect existing equipment IDs to check for duplicates
+  if (window.inventoryData && Array.isArray(window.inventoryData)) {
+    window.inventoryData.forEach(item => {
+      equipmentFields.forEach(field => {
+        if (item[field] && item[field].id && item[field].id !== '-') {
+          usedIds.add(item[field].id.toLowerCase());
+        }
+      });
+    });
+  }
+  
+  equipmentFields.forEach(field => {
+    const equipmentName = formData.get(field);
+    const equipmentId = formData.get(field + 'Id');
+    
+    if (equipmentName && equipmentName !== '') {
+      // Validate equipment availability
+      const warehouseData = getWarehouseEquipmentData();
+      const selectedEquipment = warehouseData.find(item => item.name === equipmentName);
+      
+      if (!selectedEquipment || selectedEquipment.quantity <= 0) {
+        showNotification(`Выбранное оборудование "${equipmentName}" больше не доступно на складе`, 'error');
+        hasValidationErrors = true;
+        return;
+      }
+      
+      // Validate equipment ID is provided and unique
+      if (!equipmentId || equipmentId.trim() === '') {
+        showNotification(`Пожалуйста, укажите уникальный ID для ${equipmentName}`, 'error');
+        hasValidationErrors = true;
+        return;
+      }
+      
+      // Check for duplicate ID
+      if (usedIds.has(equipmentId.toLowerCase())) {
+        showNotification(`ID "${equipmentId}" уже используется. Пожалуйста, выберите другой ID`, 'error');
+        hasValidationErrors = true;
+        return;
+      }
+      
+      // Add to used IDs set
+      usedIds.add(equipmentId.toLowerCase());
+      
+      equipmentData[field] = {
+        name: equipmentName,
+        id: equipmentId.trim(),
+        status: 'Доступно'
+      };
+    } else {
+      equipmentData[field] = {
+        name: '-',
+        id: '-',
+        status: 'missing'
+      };
+    }
+  });
+  
+  if (hasValidationErrors) {
+    return;
+  }
   
   const newItem = {
     id: Date.now(), // Simple ID generation
     atc: formData.get('atc'),
     floor: formData.get('floor'),
-    tableNumber: formData.get('tableNumber'),
+    tableNumber: tableNumber,
     ip: formData.get('ip'),
-    // Use auto-assigned equipment instead of form data
-    mouse: autoEquipment.mouse,
-    keyboard: autoEquipment.keyboard,
-    case: autoEquipment.case,
-    monitor: autoEquipment.monitor,
-    earphone: autoEquipment.earphone
+    // Use selected equipment from dropdowns
+    mouse: equipmentData.mouse,
+    keyboard: equipmentData.keyboard,
+    case: equipmentData.case,
+    monitor: equipmentData.monitor,
+    earphone: equipmentData.earphone
   };
   
   // Add to inventory data (this should be replaced with proper data persistence)
@@ -1443,21 +1650,23 @@ function saveInventoryItem() {
   
   closeInventoryModal();
   
-  // Show success notification instead of alert
-  showNotification('Запись успешно добавлена с автоматически назначенным оборудованием!', 'success');
+  // Show success notification
+  try {
+    showNotification('Запись успешно добавлена!', 'success');
+  } catch (error) {
+    console.warn('⚠️ Could not show notification:', error);
+  }
 
-  // Call initialization after data is loaded
+  // Re-render the inventory table after adding new item
   setTimeout(() => {
-    if (window.inventoryData && window.equipmentData) {
-      initializeInventoryWithValidation();
+    try {
+      if (window.inventoryData && typeof window.filterInventory === 'function') {
+        window.filterInventory();
+      }
+    } catch (error) {
+      console.warn('⚠️ Could not re-render inventory table:', error);
     }
-  }, 1500);
-  
-  // Initialize inventory view modal
-  initInventoryViewModal();
-  
-  // Initialize equipment edit buttons
-  initEquipmentEditButtons();
+  }, 100);
 }
 
 // Function to automatically assign equipment from warehouse

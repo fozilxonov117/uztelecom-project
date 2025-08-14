@@ -328,6 +328,7 @@
   font-weight: 600;
   display: inline-flex;
   align-items: center;
+  width: 95px;
   /* gap: 6px; */
 }
 
@@ -336,41 +337,70 @@
   margin-right: 4px;
 }
 
+/* Custom Computer Case Icon */
+.case-icon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 4px;
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxkZWZzPgo8bGluZWFyR3JhZGllbnQgaWQ9ImNhc2VHcmFkaWVudCIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgo8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjNkE2QTZBIi8+CjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzNEM0QzRCIvPgo8L2xpbmVhckdyYWRpZW50Pgo8L2RlZnM+CjwhLS0gTWFpbiBjYXNlIGJvZHkgLS0+CjxyZWN0IHg9IjEwNCIgeT0iNzIiIHdpZHRoPSIzMDQiIGhlaWdodD0iMzY4IiByeD0iMTIiIGZpbGw9InVybCgjY2FzZUdyYWRpZW50KSIgc3Ryb2tlPSIjMkEyQTJBIiBzdHJva2Utd2lkdGg9IjIiLz4KPCEtLSBGcm9udCBwYW5lbCAtLT4KPHJlY3QgeD0iMTM2IiB5PSI5NiIgd2lkdGg9IjI0MCIgaGVpZ2h0PSIzMjAiIHJ4PSI4IiBmaWxsPSIjNEU0RTRFIiBzdHJva2U9IiMyQTJBMkEiIHN0cm9rZS13aWR0aD0iMSIvPgo8IS0tIERyaXZlIGJheXMgLS0+CjxyZWN0IHg9IjE1MiIgeT0iMTEyIiB3aWR0aD0iMjA4IiBoZWlnaHQ9IjE2IiByeD0iNCIgZmlsbD0iIzMzMzMzMyIvPgo8cmVjdCB4PSIxNTIiIHk9IjEzNiIgd2lkdGg9IjIwOCIgaGVpZ2h0PSIxNiIgcng9IjQiIGZpbGw9IiMzMzMzMzMiLz4KPHJlY3QgeD0iMTUyIiB5PSIxNjAiIHdpZHRoPSIyMDgiIGhlaWdodD0iMTYiIHJ4PSI0IiBmaWxsPSIjMzMzMzMzIi8+CjwhLS0gT3B0aWNhbCBkcml2ZSAtLT4KPHJlY3QgeD0iMTUyIiB5PSIyMDAiIHdpZHRoPSIyMDgiIGhlaWdodD0iNDAiIHJ4PSI2IiBmaWxsPSIjMjIyMjIyIiBzdHJva2U9IiMxQTFBMUEiIHN0cm9rZS13aWR0aD0iMSIvPgo8cmVjdCB4PSIxNjAiIHk9IjIwOCIgd2lkdGg9IjE5MiIgaGVpZ2h0PSIyNCIgcng9IjQiIGZpbGw9IiMxNTE1MTUiLz4KPGNpcmNsZSBjeD0iMzQ0IiBjeT0iMjIwIiByPSI2IiBmaWxsPSIjNjY2NjY2Ii8+CjwhLS0gUG93ZXIgYnV0dG9uIC0tPgo8Y2lyY2xlIGN4PSIyNTYiIGN5PSIzMDAiIHI9IjI0IiBmaWxsPSIjNDQ0NDQ0IiBzdHJva2U9IiMyQTJBMkEiIHN0cm9rZS13aWR0aD0iMiIvPgo8Y2lyY2xlIGN4PSIyNTYiIGN5PSIzMDAiIHI9IjE0IiBmaWxsPSIjNjY2NjY2Ii8+CjxjaXJjbGUgY3g9IjI1NiIgY3k9IjMwMCIgcj0iOCIgZmlsbD0iIzMzMzMzMyIvPgo8IS0tIEZyb250IElPIHBvcnRzIC0tPgo8cmVjdCB4PSIxNTIiIHk9IjM2MCIgd2lkdGg9IjY0IiBoZWlnaHQ9IjMyIiByeD0iNCIgZmlsbD0iIzIyMjIyMiIvPgo8Y2lyY2xlIGN4PSIxNzIiIGN5PSIzNzYiIHI9IjYiIGZpbGw9IiM2NjY2NjYiLz4KPGNpcmNsZSBjeD0iMTk2IiBjeT0iMzc2IiByPSI2IiBmaWxsPSIjNjY2NjY2Ii8+Cjwvc3ZnPgo=');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
 .inventory-status .manufacturer-name {
   font-weight: 500;
   text-transform: capitalize;
 }
 
-.inventory-status.available {
-  background: rgba(34, 197, 94, 0.1);
-  color: #15803d;
-  border: 1px solid rgba(34, 197, 94, 0.2);
-}
-
+/* Default working status - green for available/working equipment */
 .inventory-status.working {
-  background: rgba(34, 197, 94, 0.1);
+  background: rgba(21, 128, 61, 0.1);
   color: #15803d;
-  border: 1px solid rgba(34, 197, 94, 0.2);
+  border: 1px solid rgba(21, 128, 61, 0.2);
   width: 95px;
 }
 
+.inventory-status.available {
+  /* background: rgba(21, 128, 61, 0.1); */
+  color: #15803d;
+  /* border: 1px solid rgba(21, 128, 61, 0.2); */
+}
+
+/* Russian status translations */
+.inventory-status[data-status="Доступно"],
+.inventory-status.dostupno {
+  background: rgba(21, 128, 61, 0.1);
+  color: #15803d;
+  border: 1px solid rgba(21, 128, 61, 0.2);
+}
+
+.inventory-status[data-status="Ремонт"],
+.inventory-status.remont,
+.inventory-status.repair {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid rgba(146, 64, 14, 0.3);
+}
+
 .inventory-status.missing {
-  background: rgba(239, 68, 68, 0.1);
-  color: #dc2626;
-  border: 1px solid rgba(239, 68, 68, 0.2);
+  background: rgba(239, 68, 68, 0.1) !important;
+  color: #dc2626 !important;
+  border: 1px solid rgba(239, 68, 68, 0.2) !important;
 }
 
 .inventory-status.unassigned {
-  background: rgba(156, 163, 175, 0.1);
-  color: #6b7280;
-  border: 1px solid rgba(156, 163, 175, 0.2);
+  background: rgba(239, 68, 68, 0.1) !important;
+  color: #dc2626 !important;
+  border: 1px solid rgba(239, 68, 68, 0.2) !important;
   font-style: italic;
 }
 
 .inventory-status.needs-repair {
-  background: rgba(245, 158, 11, 0.1);
-  color: #d97706;
-  border: 1px solid rgba(245, 158, 11, 0.2);
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid rgba(146, 64, 14, 0.3);
 }
 
 /* Action Buttons */
@@ -1048,6 +1078,25 @@
   cursor: pointer;
 }
 
+/* Inventory form equipment selects */
+.warehouse-form-input.inventory-equipment-edit-select {
+  background-color: #ffffff;
+  /* background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e"); */
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+}
+
+.warehouse-form-input.inventory-equipment-edit-select option:disabled {
+  color: #9ca3af;
+  background-color: #f3f4f6;
+}
+
+.warehouse-form-input.inventory-equipment-edit-select option[value=""] {
+  color: #6b7280;
+}
+
 .inventory-equipment-card.editing-mode .inventory-equipment-item {
   margin-bottom: 12px;
 }
@@ -1091,18 +1140,47 @@
 }
 
 .inventory-equipment-status.available {
-  background: #dcfce7;
-  color: #166534;
+  background: rgba(21, 128, 61, 0.1);
+  color: #15803d;
+  border: 1px solid rgba(21, 128, 61, 0.2);
+}
+
+/* Russian status translations for equipment modal */
+.inventory-equipment-status[data-status="Доступно"],
+.inventory-equipment-status.dostupno {
+  background: rgba(21, 128, 61, 0.1);
+  color: #15803d;
+  border: 1px solid rgba(21, 128, 61, 0.2);
+}
+
+.inventory-equipment-status[data-status="Ремонт"],
+.inventory-equipment-status.remont,
+.inventory-equipment-status.repair {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid rgba(146, 64, 14, 0.3);
 }
 
 .inventory-equipment-status.missing {
-  background: #fee2e2;
-  color: #991b1b;
+  background: rgba(239, 68, 68, 0.1) !important;
+  color: #dc2626 !important;
+  border: 1px solid rgba(239, 68, 68, 0.2) !important;
+}
+
+/* Missing equipment with dash */
+.inventory-status[data-status="-"],
+.inventory-equipment-status[data-status="-"],
+.inventory-status:has(.manufacturer-name:contains("-")),
+.inventory-equipment-status:contains("-") {
+  background: rgba(239, 68, 68, 0.1) !important;
+  color: #dc2626 !important;
+  border: 1px solid rgba(239, 68, 68, 0.2) !important;
 }
 
 .inventory-equipment-status.needs-repair {
   background: #fef3c7;
   color: #92400e;
+  border: 1px solid rgba(146, 64, 14, 0.3);
 }
 
 /* Responsive Design for Two-Column Layout */
