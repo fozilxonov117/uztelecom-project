@@ -1,0 +1,454 @@
+/* Tech Issue Dashboard Styles */
+.comp-dashboard-layout {
+  width: 100%;
+  height: 100vh;
+  background: #f8f9fa;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.tech-issue-header {
+  margin-bottom: 30px;
+}
+
+.tech-issue-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0 0 8px 0;
+}
+
+.tech-issue-subtitle {
+  font-size: 16px;
+  color: #7f8c8d;
+  margin: 0;
+}
+
+.tech-issue-content {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  height: 90vh;
+}
+
+/* Filters Section */
+.tech-issue-filters {
+  display: flex;
+  gap: 15px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  flex-wrap: wrap;
+}
+
+.tech-issue-filter-item {
+  flex: 1;
+  min-width: 200px;
+}
+
+.tech-issue-filter-input {
+  width: 100%;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  background: white;
+  transition: border-color 0.3s ease;
+}
+
+.tech-issue-filter-input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.tech-issue-filter-input::placeholder {
+  color: #adb5bd;
+}
+
+/* Table Styles */
+.tech-issue-table-container {
+  overflow-x: auto;
+  max-height: calc(100vh - 257px);
+}
+
+.tech-issue-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  font-size: 14px;
+}
+
+.tech-issue-table-header {
+  background: #f8f9fa;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.tech-issue-th {
+  padding: 15px 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #495057;
+  border-bottom: 2px solid #dee2e6;
+  white-space: nowrap;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tech-issue-table-body tr {
+  border-bottom: 1px solid #f1f3f4;
+  transition: background-color 0.2s ease;
+}
+
+.tech-issue-table-body tr:hover {
+  background: #f8f9fa;
+}
+
+.tech-issue-table-body tr:nth-child(even) {
+  background: #fafbfc;
+}
+
+.tech-issue-table-body tr:nth-child(even):hover {
+  background: #f1f3f4;
+}
+
+.tech-issue-td {
+  padding: 12px;
+  vertical-align: top;
+  border-bottom: 1px solid #f1f3f4;
+}
+
+/* Column specific styles */
+.tech-issue-date {
+  font-weight: 600;
+  color: #495057;
+  white-space: nowrap;
+}
+
+.tech-issue-operator {
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+.tech-issue-operator-detail {
+  font-size: 12px;
+  color: #6c757d;
+  margin-top: 2px;
+}
+
+.tech-issue-timestamp {
+  font-family: 'Courier New', monospace;
+  color: #495057;
+  white-space: nowrap;
+}
+
+.tech-issue-problem-type {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.problem-type-pmo {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.problem-type-tech {
+  background: #fff3e0;
+  color: #f57c00;
+}
+
+.problem-type-network {
+  background: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.tech-issue-room {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.tech-issue-comment {
+  max-width: 200px;
+  line-height: 1.4;
+  color: #495057;
+}
+
+.tech-issue-supervisor {
+  color: #28a745;
+  font-weight: 500;
+}
+
+/* Action button */
+.tech-issue-action-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  white-space: nowrap;
+}
+
+.tech-issue-action-btn:hover {
+  background: #0056b3;
+}
+
+/* Add new issue section */
+.tech-issue-actions {
+  padding: 20px;
+  border-top: 1px solid #e9ecef;
+  background: #f8f9fa;
+}
+
+.tech-issue-add-btn {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tech-issue-add-btn:hover {
+  background: #218838;
+}
+
+.tech-issue-add-btn .material-icons {
+  font-size: 18px;
+}
+
+/* Responsive design */
+@media (max-width: 1200px) {
+  .tech-issue-filters {
+    flex-direction: column;
+  }
+  
+  .tech-issue-filter-item {
+    min-width: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .comp-dashboard-layout {
+    padding: 10px;
+  }
+  
+  .tech-issue-th,
+  .tech-issue-td {
+    padding: 8px 6px;
+    font-size: 12px;
+  }
+  
+  .tech-issue-comment {
+    max-width: 150px;
+  }
+}
+
+/* Scrollbar styling */
+.tech-issue-table-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.tech-issue-table-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.tech-issue-table-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.tech-issue-table-container::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
+
+/* Add New Issue Modal Styles */
+.tech-issue-add-modal {
+  position: absolute;
+  top: 0;
+  left: 20px;
+  right: 20px;
+  background: white;
+  border-bottom: 2px solid #007bff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tech-issue-add-modal-content {
+  padding: 20px;
+}
+
+.tech-issue-add-modal-header {
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  /* margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e9ecef; */
+}
+
+.tech-issue-add-modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.tech-issue-add-modal-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.tech-issue-add-modal-close:hover {
+  background: #f8f9fa;
+}
+
+.tech-issue-add-modal-close .material-icons {
+  font-size: 20px;
+  color: #6c757d;
+}
+
+/* Form Styles */
+.tech-issue-add-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.tech-issue-form-row {
+  display: flex;
+  gap: 15px;
+}
+
+.tech-issue-form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.tech-issue-form-group-full {
+  width: 100%;
+}
+
+.tech-issue-form-group label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #495057;
+  margin-bottom: 5px;
+}
+
+.tech-issue-form-group input,
+.tech-issue-form-group select,
+.tech-issue-form-group textarea {
+  padding: 10px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.tech-issue-form-group input:focus,
+.tech-issue-form-group select:focus,
+.tech-issue-form-group textarea:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.tech-issue-form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+  max-height: 160px;
+}
+
+.tech-issue-form-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #e9ecef;
+}
+
+.tech-issue-cancel-btn,
+.tech-issue-submit-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.tech-issue-cancel-btn {
+  background: #6c757d;
+  color: white;
+}
+
+.tech-issue-cancel-btn:hover {
+  background: #545b62;
+}
+
+.tech-issue-submit-btn {
+  background: #007bff;
+  color: white;
+}
+
+.tech-issue-submit-btn:hover {
+  background: #0056b3;
+}
+
+/* Responsive modal */
+@media (max-width: 768px) {
+  .tech-issue-form-row {
+    flex-direction: column;
+  }
+  
+  .tech-issue-add-modal-content {
+    padding: 15px;
+  }
+  
+  .tech-issue-form-actions {
+    flex-direction: column;
+  }
+  
+  .tech-issue-cancel-btn,
+  .tech-issue-submit-btn {
+    width: 100%;
+  }
+}

@@ -328,6 +328,7 @@ function initInventoryDashboard() {
   function loadInventoryTable() {
     if (window.inventoryData) {
       renderInventoryTable(window.inventoryData);
+      updateInventoryStats(window.inventoryData);
     }
   }
   
@@ -406,6 +407,7 @@ function initInventoryDashboard() {
   // Initialize view modal
   initInventoryViewModal();
   
+  
   function filterInventory() {
     const atcValue = atcFilter ? atcFilter.value : '';
     const floorValue = floorFilter ? floorFilter.value : '';
@@ -413,7 +415,19 @@ function initInventoryDashboard() {
     
     const filteredData = window.inventoryData.filter(item => {
       const atcMatch = !atcValue || item.atc === atcValue;
-      const floorMatch = !floorValue || item.floor === floorValue;
+      
+      // Handle floor filtering with special case for "rooms"
+      let floorMatch = true;
+      if (floorValue) {
+        if (floorValue === 'rooms') {
+          // Show only items where floor is NOT a number (i.e., room names)
+          floorMatch = isNaN(parseInt(item.floor));
+        } else {
+          // Regular floor number matching
+          floorMatch = item.floor === floorValue;
+        }
+      }
+      
       const searchMatch = !searchValue || 
         item.ip.toLowerCase().includes(searchValue) ||
         item.tableNumber.toLowerCase().includes(searchValue);
@@ -840,8 +854,45 @@ function initInventoryDashboard() {
     
     console.log('🎯 Creating selector for type:', type, 'with', availableEquipment.length, 'available items');
     
+    // Add remove equipment option at the top
+    const removeOption = document.createElement('div');
+    removeOption.className = 'equipment-option remove-option';
+    removeOption.dataset.equipmentName = '-';
+    removeOption.dataset.equipmentId = '';
+    removeOption.innerHTML = `
+      <span class="equipment-name" style="color: #dc2626; font-weight: 500;">❌ Удалить оборудование</span>
+      <span class="equipment-quantity" style="color: #dc2626;">(освободить)</span>
+    `;
+    
+    removeOption.addEventListener('click', function() {
+      const selector = this.closest('.equipment-selector');
+      const cell = selector.closest('.editable-cell');
+      const input = cell.querySelector('.cell-editor');
+      if (input && currentValue && currentValue !== '-') {
+        // Return equipment to warehouse before removing
+        returnEquipmentToWarehouse(currentValue, type, input.getAttribute('data-equipment-id'));
+      }
+      if (input) {
+        input.value = '-';
+        input.removeAttribute('data-equipment-id');
+        console.log('✅ Equipment removed and returned to warehouse');
+      }
+      selector.remove();
+    });
+    
+    container.appendChild(removeOption);
+    
+    // Add separator
+    const separator = document.createElement('div');
+    separator.className = 'equipment-separator';
+    separator.innerHTML = '<hr style="margin: 5px 0; border-color: #e5e7eb;">';
+    container.appendChild(separator);
+    
     if (allEquipment.length === 0) {
-      container.innerHTML = '<div class="equipment-option disabled">Нет оборудования данного типа</div>';
+      const noEquipmentOption = document.createElement('div');
+      noEquipmentOption.className = 'equipment-option disabled';
+      noEquipmentOption.innerHTML = '<div class="equipment-option disabled">Нет оборудования данного типа</div>';
+      container.appendChild(noEquipmentOption);
       return container;
     }
     
@@ -869,6 +920,19 @@ function initInventoryDashboard() {
             const cell = selector.closest('.editable-cell');
             const input = cell.querySelector('.cell-editor');
             if (input) {
+              // Return previous equipment to warehouse if it's being replaced
+              const previousValue = input.value;
+              const previousId = input.getAttribute('data-equipment-id');
+              if (previousValue && previousValue !== '-' && previousValue !== this.dataset.equipmentName) {
+                returnEquipmentToWarehouse(previousValue, type, previousId);
+              }
+              
+              // Assign new equipment from warehouse (reduce stock)
+              if (this.dataset.equipmentName !== '-') {
+                assignEquipmentFromWarehouse(this.dataset.equipmentName, type, this.dataset.equipmentId);
+              }
+              
+              // Set new equipment
               input.value = this.dataset.equipmentName;
               input.setAttribute('data-equipment-id', this.dataset.equipmentId);
               console.log('✅ Selected equipment:', this.dataset.equipmentName, 'ID:', this.dataset.equipmentId);
@@ -1463,6 +1527,28 @@ function initInventoryModal() {
       saveInventoryItem();
     });
   }
+  
+  // Handle floor selection change to show/hide room input
+  const floorSelect = document.getElementById('inventory-floor');
+  const roomSection = document.getElementById('inventory-room-section');
+  const roomInput = document.getElementById('inventory-room-name');
+  
+  if (floorSelect && roomSection && roomInput) {
+    floorSelect.addEventListener('change', function() {
+      if (this.value === 'room') {
+        // Show room input when "Комната" is selected
+        roomSection.style.display = 'block';
+        roomInput.required = true;
+        console.log('📍 Room input shown');
+      } else {
+        // Hide room input when floor number is selected
+        roomSection.style.display = 'none';
+        roomInput.required = false;
+        roomInput.value = ''; // Clear room name when hiding
+        console.log('📍 Room input hidden');
+      }
+    });
+  }
 }
 
 // Populate inventory equipment selects with warehouse data
@@ -1520,6 +1606,8 @@ function openInventoryModal(itemId = null) {
   const modal = document.getElementById('inventory-modal');
   const title = document.getElementById('inventory-modal-title');
   const form = document.getElementById('inventory-form');
+  const roomSection = document.getElementById('inventory-room-section');
+  const roomInput = document.getElementById('inventory-room-name');
   
   if (modal && title && form) {
     if (itemId) {
@@ -1528,6 +1616,14 @@ function openInventoryModal(itemId = null) {
     } else {
       title.textContent = 'Добавить запись инвентаризации';
       form.reset();
+      
+      // Reset room input visibility
+      if (roomSection && roomInput) {
+        roomSection.style.display = 'none';
+        roomInput.required = false;
+        roomInput.value = '';
+      }
+      
       // Populate equipment selects with warehouse data
       populateInventoryEquipmentSelects();
     }
@@ -1550,7 +1646,30 @@ function saveInventoryItem() {
   const formData = new FormData(form);
   
   // Validate required fields
+  const atc = formData.get('atc');
+  const floor = formData.get('floor');
+  const roomName = formData.get('roomName');
   const tableNumber = formData.get('tableNumber');
+  
+  // Validate ATC selection
+  if (!atc || atc.trim() === '') {
+    showNotification('Пожалуйста, выберите АТС', 'error');
+    return;
+  }
+  
+  // Validate Floor/Room selection
+  if (!floor || floor.trim() === '') {
+    showNotification('Пожалуйста, выберите этаж или комнату', 'error');
+    return;
+  }
+  
+  // If room is selected but no room name provided
+  if (floor === 'room' && (!roomName || roomName.trim() === '')) {
+    showNotification('Пожалуйста, укажите название комнаты', 'error');
+    return;
+  }
+  
+  // Validate table number
   if (!tableNumber || tableNumber.trim() === '') {
     showNotification('Пожалуйста, укажите номер стола', 'error');
     return;
@@ -1623,10 +1742,18 @@ function saveInventoryItem() {
     return;
   }
   
+  // Handle floor vs room name logic
+  let floorValue = floor; // Use the already validated floor value
+  
+  // If "room" option is selected, use the room name as the floor value
+  if (floorValue === 'room' && roomName && roomName.trim() !== '') {
+    floorValue = roomName.trim();
+  }
+  
   const newItem = {
     id: Date.now(), // Simple ID generation
     atc: formData.get('atc'),
-    floor: formData.get('floor'),
+    floor: floorValue, // Use processed floor value (either floor number or room name)
     tableNumber: tableNumber,
     ip: formData.get('ip'),
     // Use selected equipment from dropdowns
@@ -1647,7 +1774,7 @@ function saveInventoryItem() {
       filterInventory();
     }
   }
-  
+
   closeInventoryModal();
   
   // Show success notification
@@ -1911,18 +2038,36 @@ function handleEquipmentEdit(equipmentType) {
     'earphone': 'earphone'
   };
   const mappedType = equipmentTypeMapping[equipmentType] || equipmentType;
-  const availableModels = window.getAllEquipmentByType(mappedType);
+  let availableModels;
+  
+  // Try to get equipment models using direct function call
+  try {
+    availableModels = getAllEquipmentByType(mappedType);
+  } catch (error) {
+    console.warn('⚠️ Error calling getAllEquipmentByType directly, trying window object:', error);
+    try {
+      availableModels = window.getAllEquipmentByType(mappedType);
+    } catch (windowError) {
+      console.error('❌ Error calling getAllEquipmentByType from window:', windowError);
+      availableModels = [];
+    }
+  }
   
   console.log(`🔍 Available ${equipmentType} models with quantities:`, availableModels);
   console.log(`🔧 Type mapping: ${equipmentType} -> ${mappedType}`);
   
+  // Ensure availableModels is an array, even if empty
+  const modelsArray = Array.isArray(availableModels) ? availableModels : [];
+  console.log('📦 Models array length:', modelsArray.length);
+  
   // Enable inline editing for this equipment card
-  enableInlineEditing(equipmentType, availableModels, currentInventoryId);
+  enableInlineEditing(equipmentType, modelsArray, currentInventoryId);
 }
 
 // Enable inline editing for equipment card
 function enableInlineEditing(equipmentType, availableModels, inventoryId) {
   console.log('🎯 Enabling inline editing for:', equipmentType);
+  console.log('🔧 Available models received:', availableModels);
   
   // Find the equipment card
   const editButton = document.querySelector(`[data-equipment-type="${equipmentType}"]`);
@@ -1981,7 +2126,8 @@ function enableInlineEditing(equipmentType, availableModels, inventoryId) {
         <span class="inventory-equipment-label">Модель:</span>
         <select class="inventory-equipment-edit-select" id="edit-${equipmentType}-model">
           <option value="">Выберите модель</option>
-          ${availableModels.map(model => {
+          <option value="-" style="color: #dc2626; font-weight: 500;">❌ Удалить оборудование</option>
+          ${availableModels && availableModels.length > 0 ? availableModels.map(model => {
             const isAvailable = model.quantity > 0;
             const isCurrentlySelected = model.name === currentName;
             const disabled = !isAvailable && !isCurrentlySelected ? 'disabled' : '';
@@ -1992,7 +2138,7 @@ function enableInlineEditing(equipmentType, availableModels, inventoryId) {
                 ${model.name} ${quantityText}
               </option>
             `;
-          }).join('')}
+          }).join('') : '<option disabled>Нет доступного оборудования</option>'}
         </select>
       </div>
       <div class="inventory-equipment-item">
@@ -2015,6 +2161,50 @@ function enableInlineEditing(equipmentType, availableModels, inventoryId) {
   // Replace card content with editable form
   equipmentCard.innerHTML = editableContent;
   equipmentCard.classList.add('editing-mode');
+  
+  // Ensure the select element has the remove option - add it manually if needed
+  const modelSelect = equipmentCard.querySelector(`#edit-${equipmentType}-model`);
+  if (modelSelect) {
+    console.log('🔧 Checking model select options...', modelSelect.options.length);
+    
+    // Clear all options and rebuild to ensure consistency
+    modelSelect.innerHTML = '';
+    
+    // Add default option
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.textContent = 'Выберите модель';
+    modelSelect.appendChild(defaultOption);
+    
+    // Add remove option
+    const removeOption = document.createElement('option');
+    removeOption.value = '-';
+    removeOption.textContent = '❌ Удалить оборудование';
+    removeOption.style.color = '#dc2626';
+    removeOption.style.fontWeight = '500';
+    modelSelect.appendChild(removeOption);
+    
+    // Add available models
+    if (availableModels && availableModels.length > 0) {
+      availableModels.forEach(model => {
+        const isAvailable = model.quantity > 0;
+        const isCurrentlySelected = model.name === currentName;
+        const option = document.createElement('option');
+        option.value = model.name;
+        option.textContent = `${model.name} (${model.quantity} шт.)`;
+        option.disabled = !isAvailable && !isCurrentlySelected;
+        option.selected = isCurrentlySelected;
+        modelSelect.appendChild(option);
+      });
+    } else {
+      const noModelsOption = document.createElement('option');
+      noModelsOption.disabled = true;
+      noModelsOption.textContent = 'Нет доступного оборудования';
+      modelSelect.appendChild(noModelsOption);
+    }
+    
+    console.log('📋 Final select options:', Array.from(modelSelect.options).map(opt => opt.textContent));
+  }
   
   // Add event listeners for save and cancel
   const saveBtn = equipmentCard.querySelector('.inventory-equipment-save-btn');
@@ -2063,6 +2253,63 @@ function saveInlineEdit(equipmentType, inventoryId, equipmentCard) {
     return;
   }
   
+  // Handle equipment removal
+  if (newModel === '-') {
+    console.log('🗑️ Removing equipment:', equipmentType);
+    
+    // Get current equipment data to return to warehouse
+    const currentItem = window.inventoryData.find(item => item.id == inventoryId);
+    if (currentItem && currentItem[equipmentType] && currentItem[equipmentType].name && currentItem[equipmentType].name !== '-') {
+      // Return current equipment to warehouse
+      returnEquipmentToWarehouse(currentItem[equipmentType].name, equipmentType, currentItem[equipmentType].id);
+    }
+    
+    // Update equipment data to empty/missing
+    const removedEquipment = {
+      name: '-',
+      id: '-',
+      status: 'missing'
+    };
+    
+    updateEquipmentInInventory(inventoryId, equipmentType, removedEquipment);
+    
+    // Exit editing mode and refresh equipment card with missing state
+    equipmentCard.classList.remove('editing-mode');
+    
+    // Update the equipment card display with removed state
+    const displayName = getEquipmentDisplayName(equipmentType);
+    
+    equipmentCard.innerHTML = `
+      <div class="inventory-equipment-header">
+        <span class="material-icons">${getEquipmentIcon(equipmentType)}</span>
+        <h4>${displayName}</h4>
+        <button class="inventory-equipment-edit-btn" data-equipment-type="${equipmentType}" title="Добавить ${displayName.toLowerCase()}">
+          <span class="material-icons">edit</span>
+        </button>
+      </div>
+      <div class="inventory-equipment-details">
+        <div class="inventory-equipment-item">
+          <span class="inventory-equipment-label">Модель:</span>
+          <span class="inventory-equipment-value missing" id="view-${equipmentType === 'processor' ? 'case' : equipmentType}-name">-</span>
+        </div>
+        <div class="inventory-equipment-item">
+          <span class="inventory-equipment-label">Статус:</span>
+          <span class="inventory-equipment-status missing" id="view-${equipmentType === 'processor' ? 'case' : equipmentType}-status">Отсутствует</span>
+        </div>
+        <div class="inventory-equipment-item">
+          <span class="inventory-equipment-label">ID:</span>
+          <span class="inventory-equipment-value missing" id="view-${equipmentType === 'processor' ? 'case' : equipmentType}-id">-</span>
+        </div>
+      </div>
+    `;
+    
+    // Re-initialize edit button
+    initEquipmentEditButtons();
+    
+    showNotification(`${displayName} удалено и возвращено на склад`, 'success');
+    return;
+  }
+  
   if (!newModel || newModel === '' || newModel === 'none') {
     showNotification('Пожалуйста, выберите модель оборудования из списка', 'error');
     // Focus on the model select element
@@ -2075,6 +2322,19 @@ function saveInlineEdit(equipmentType, inventoryId, equipmentCard) {
     // Focus on the ID input element
     if (idInput) idInput.focus();
     return;
+  }
+  
+  // Handle equipment replacement - return old equipment to warehouse
+  const currentItem = window.inventoryData.find(item => item.id == inventoryId);
+  if (currentItem && currentItem[equipmentType] && currentItem[equipmentType].name && 
+      currentItem[equipmentType].name !== '-' && currentItem[equipmentType].name !== newModel) {
+    // Return previous equipment to warehouse
+    returnEquipmentToWarehouse(currentItem[equipmentType].name, equipmentType, currentItem[equipmentType].id);
+  }
+  
+  // Assign new equipment from warehouse (reduce stock)
+  if (newModel && newModel !== '-') {
+    assignEquipmentFromWarehouse(newModel, equipmentType, newId);
   }
   
   // Update equipment data
@@ -2362,4 +2622,111 @@ function getStatusText(status) {
 // Helper function to generate equipment IDs
 function generateEquipmentId(prefix, itemId) {
   return `${prefix}-${String(itemId).padStart(3, '0')}`;
+}
+
+// Warehouse Management Functions - Global Scope
+
+// Function to return equipment to warehouse when removed from inventory
+function returnEquipmentToWarehouse(equipmentName, equipmentType, equipmentId) {
+  console.log('🔄 Returning equipment to warehouse:', equipmentName, 'Type:', equipmentType, 'ID:', equipmentId);
+  
+  try {
+    const warehouseData = getWarehouseEquipmentData();
+    
+    // Map equipment types to warehouse types
+    const typeMapping = {
+      'mouse': 'mouse',
+      'keyboard': 'keyboard', 
+      'case': 'case-component',
+      'processor': 'processor',
+      'monitor': 'monitor',
+      'earphone': 'earphone'
+    };
+    
+    const warehouseType = typeMapping[equipmentType] || equipmentType;
+    
+    // Find the equipment in warehouse data
+    const warehouseItem = warehouseData.find(item => 
+      item.name === equipmentName && item.type === warehouseType
+    );
+    
+    if (warehouseItem) {
+      // Increase the quantity by 1
+      warehouseItem.quantity = (warehouseItem.quantity || 0) + 1;
+      console.log('✅ Equipment returned to warehouse. New quantity:', warehouseItem.quantity);
+      
+      // Update the warehouse display if the function exists
+      if (typeof window.updateWarehouseDisplay === 'function') {
+        window.updateWarehouseDisplay();
+      }
+      
+      // Show notification
+      if (typeof showNotification === 'function') {
+        showNotification(`Оборудование "${equipmentName}" возвращено на склад`, 'success');
+      }
+      
+      // Update inventory statistics
+      if (typeof updateInventoryStats === 'function' && window.inventoryData) {
+        updateInventoryStats(window.inventoryData);
+      }
+      
+      return true;
+    } else {
+      console.warn('⚠️ Equipment not found in warehouse data:', equipmentName, warehouseType);
+      return false;
+    }
+  } catch (error) {
+    console.error('❌ Error returning equipment to warehouse:', error);
+    return false;
+  }
+}
+
+// Function to reduce equipment quantity in warehouse when assigned
+function assignEquipmentFromWarehouse(equipmentName, equipmentType, equipmentId) {
+  console.log('📦 Assigning equipment from warehouse:', equipmentName, 'Type:', equipmentType, 'ID:', equipmentId);
+  
+  try {
+    const warehouseData = getWarehouseEquipmentData();
+    
+    // Map equipment types to warehouse types
+    const typeMapping = {
+      'mouse': 'mouse',
+      'keyboard': 'keyboard', 
+      'case': 'case-component',
+      'processor': 'processor',
+      'monitor': 'monitor',
+      'earphone': 'earphone'
+    };
+    
+    const warehouseType = typeMapping[equipmentType] || equipmentType;
+    
+    // Find the equipment in warehouse data
+    const warehouseItem = warehouseData.find(item => 
+      item.name === equipmentName && item.type === warehouseType
+    );
+    
+    if (warehouseItem && warehouseItem.quantity > 0) {
+      // Decrease the quantity by 1
+      warehouseItem.quantity = Math.max(0, warehouseItem.quantity - 1);
+      console.log('✅ Equipment assigned from warehouse. New quantity:', warehouseItem.quantity);
+      
+      // Update the warehouse display if the function exists
+      if (typeof window.updateWarehouseDisplay === 'function') {
+        window.updateWarehouseDisplay();
+      }
+      
+      // Update inventory statistics
+      if (typeof updateInventoryStats === 'function' && window.inventoryData) {
+        updateInventoryStats(window.inventoryData);
+      }
+      
+      return true;
+    } else {
+      console.warn('⚠️ Equipment not available in warehouse:', equipmentName, warehouseType);
+      return false;
+    }
+  } catch (error) {
+    console.error('❌ Error assigning equipment from warehouse:', error);
+    return false;
+  }
 }

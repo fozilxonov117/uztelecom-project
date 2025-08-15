@@ -1097,6 +1097,26 @@
   color: #6b7280;
 }
 
+/* Equipment selector remove option */
+.equipment-option.remove-option {
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  transition: all 0.2s ease;
+}
+
+.equipment-option.remove-option:hover {
+  background-color: #fee2e2;
+  border-color: #fca5a5;
+  cursor: pointer;
+}
+
+.equipment-separator {
+  margin: 5px 0;
+  opacity: 0.3;
+}
+
 .inventory-equipment-card.editing-mode .inventory-equipment-item {
   margin-bottom: 12px;
 }

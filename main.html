@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="css/warehouse-dashboard.css" />
     <link rel="stylesheet" href="css/warehouse-modal.css" />
     <link rel="stylesheet" href="css/inventory-dashboard.css" />
+    <link rel="stylesheet" href="css/tech-issue-dashboard.css" />
     <link
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet"
@@ -144,7 +145,7 @@
             </a>
             <a id="tech-comp" class="sidebar-sub-item">
               <span class="material-icons">computer</span>
-              <span class="sidebar-label">Комп</span>
+              <span class="sidebar-label">Тех сбой</span>
             </a>
           </div>
           <a
@@ -2283,6 +2284,7 @@
                         <option value="2">2 этаж</option>
                         <option value="3">3 этаж</option>
                         <option value="4">4 этаж</option>
+                        <option value="rooms">Комната</option>
                       </select>
                     </div>
                     <div class="inventory-filter-item">
@@ -2303,7 +2305,7 @@
                         <tr>
                           <th>АТС</th>
                           <th>Этаж</th>
-                          <th>Номер стола</th>
+                          <th>Стол №</th>
                           <th>IP адрес</th>
                           <th>Мышь</th>
                           <th>Клавиатура</th>
@@ -2323,16 +2325,120 @@
               </div>
             </div>
 
-            <!-- Computer (Комп) Management Dashboard Layout -->
+            <!-- Tech Issue (Тех сбой) Management Dashboard Layout -->
             <div id="comp-dashboard" class="comp-dashboard-layout" style="display: none;">
-              <div class="comp-header">
-                <h1 class="comp-title">Комп</h1>
-                <p class="comp-subtitle">Управление компьютерами (в разработке)</p>
-              </div>
-              <div class="comp-content">
-                <div class="coming-soon">
-                  <span class="material-icons">construction</span>
-                  <p>Этот раздел находится в разработке</p>
+              <!-- <div class="tech-issue-header">
+                <h1 class="tech-issue-title">Тех сбой</h1>
+                <p class="tech-issue-subtitle">Журнал технических сбоев и проблем</p>
+              </div> -->
+              
+              <div class="tech-issue-content">
+                <!-- Filters Section -->
+                <div class="tech-issue-filters">
+                  <div class="tech-issue-filter-item">
+                    <input type="text" id="operator-name-filter" class="tech-issue-filter-input" placeholder="Filter by Operator Name...">
+                  </div>
+                  <div class="tech-issue-filter-item">
+                    <input type="text" id="problem-type-filter" class="tech-issue-filter-input" placeholder="Filter by Problem Type...">
+                  </div>
+                  <div class="tech-issue-filter-item">
+                    <input type="date" id="date-filter" class="tech-issue-filter-input" placeholder="Filter by Date...">
+                  </div>
+                </div>
+
+                <!-- Main Table -->
+                <div class="tech-issue-table-container">
+                  <table class="tech-issue-table">
+                    <thead>
+                      <tr class="tech-issue-table-header">
+                        <th class="tech-issue-th">Date</th>
+                        <th class="tech-issue-th">Operator Family Name</th>
+                        <th class="tech-issue-th">Timestamps</th>
+                        <th class="tech-issue-th">Type of Problem</th>
+                        <th class="tech-issue-th">Floor</th>
+                        <th class="tech-issue-th">Room Number</th>
+                        <th class="tech-issue-th">Comment</th>
+                        <th class="tech-issue-th">Supervisor Name</th>
+                        <th class="tech-issue-th">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tech-issue-table-body" class="tech-issue-table-body">
+                      <!-- Sample data will be populated by JavaScript -->
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Add New Issue Modal (appears below table header) -->
+                <div id="tech-issue-add-modal" class="tech-issue-add-modal" style="display: none;">
+                  <div class="tech-issue-add-modal-content">
+                    <div class="tech-issue-add-modal-header">
+                      <!-- <h3>Добавить новый технический сбой</h3> -->
+                      <button class="tech-issue-add-modal-close" id="tech-issue-add-modal-close">
+                        <span class="material-icons">close</span>
+                      </button>
+                    </div>
+                    
+                    <form id="tech-issue-add-form" class="tech-issue-add-form">
+                      <div class="tech-issue-form-row">
+                        <div class="tech-issue-form-group">
+                          <label for="tech-operator-name">Имя оператора</label>
+                          <input type="text" id="tech-operator-name" name="operatorName" required 
+                                 placeholder="Имя оператора">
+                        </div>
+                        <div class="tech-issue-form-group">
+                          <label for="tech-problem-type">Тип проблемы</label>
+                          <select id="tech-problem-type" name="problemType" required>
+                            <option value="">Выберите тип проблемы</option>
+                            <option value="РМОДа носадник">РМОДа носозлик</option>
+                            <option value="Техник носадник">Техник носозлик</option>
+                            <option value="Наушникидат носадник">Наушникидат носозлик</option>
+                          </select>
+                        </div>
+                        <div class="tech-issue-form-group">
+                          <label for="tech-timestamp">Время</label>
+                          <input type="time" id="tech-timestamp" name="timestamp" required>
+                        </div>
+                        <div class="tech-issue-form-group">
+                          <label for="tech-floor">Этаж</label>
+                          <select id="tech-floor" name="floor" required>
+                            <option value="">Выберите этаж</option>
+                            <option value="1">1 этаж</option>
+                            <option value="2">2 этаж</option>
+                            <option value="3">3 этаж</option>
+                            <option value="4">4 этаж</option>
+                          </select>
+                        </div>
+                        <div class="tech-issue-form-group">
+                          <label for="tech-table-number">Номер стола</label>
+                          <input type="text" id="tech-table-number" name="tableNumber" required 
+                                 placeholder="например, 20">
+                        </div>
+                      </div>
+                      
+                      <div class="tech-issue-form-group tech-issue-form-group-full">
+                        <label for="tech-comment">Комментарий</label>
+                        <textarea id="tech-comment" name="comment" rows="3" required 
+                                  placeholder="Опишите проблему подробно..."></textarea>
+                      </div>
+                      
+                      <div class="tech-issue-form-actions">
+                        <button type="button" class="tech-issue-cancel-btn" id="tech-issue-cancel-btn">
+                          Отмена
+                        </button>
+                        <button type="submit" class="tech-issue-submit-btn">
+                          Добавить сбой
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+
+                <!-- Add New Issue Button -->
+                <div class="tech-issue-actions">
+                  <button class="tech-issue-add-btn" id="tech-issue-add-btn">
+                    <span class="material-icons">add</span>
+                    Добавить сбой
+                  </button>
                 </div>
               </div>
             </div>
@@ -2583,11 +2689,18 @@
                 <option value="2">2 этаж</option>
                 <option value="3">3 этаж</option>
                 <option value="4">4 этаж</option>
+                <option value="room">Комната</option>
               </select>
             </div>
             
+            <!-- Room Name Input - Hidden by default -->
+            <div class="warehouse-form-section" id="inventory-room-section" style="display: none;">
+              <label class="warehouse-form-label" for="inventory-room-name">Название комнаты</label>
+              <input type="text" id="inventory-room-name" name="roomName" class="warehouse-form-input" placeholder="например, Переговорная 1">
+            </div>
+            
             <div class="warehouse-form-section">
-              <label class="warehouse-form-label" for="inventory-table-number">Номер стола/Комната</label>
+              <label class="warehouse-form-label" for="inventory-table-number">Номер стола</label>
               <input type="text" id="inventory-table-number" name="tableNumber" class="warehouse-form-input" placeholder="например, 001" required>
             </div>
             
@@ -2838,6 +2951,7 @@
     <script src="js/chat-modal-open-fixed.js"></script>
     <script src="js/warehouse-dashboard.js"></script>
     <script src="js/technical-navigation.js"></script>
+    <script src="js/tech-issue-dashboard.js"></script>
     <!-- Filter Modal -->
     <div id="filter-modal" class="warehouse-modal filter-modal" style="display: none;">
       <div class="warehouse-modal-content filter-modal-content">
