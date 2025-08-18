@@ -2344,6 +2344,11 @@
                   <div class="tech-issue-filter-item">
                     <input type="date" id="date-filter" class="tech-issue-filter-input" placeholder="Filter by Date...">
                   </div>
+                  <div class="tech-issue-filter-item">
+                    <button class="tech-issue-settings-btn" id="tech-issue-settings-btn" title="Настройки таблицы">
+                      <span class="material-icons">settings</span>
+                    </button>
+                  </div>
                 </div>
 
                 <!-- Main Table -->
@@ -2351,15 +2356,15 @@
                   <table class="tech-issue-table">
                     <thead>
                       <tr class="tech-issue-table-header">
-                        <th class="tech-issue-th">Date</th>
-                        <th class="tech-issue-th">Operator Family Name</th>
-                        <th class="tech-issue-th">Timestamps</th>
-                        <th class="tech-issue-th">Type of Problem</th>
-                        <th class="tech-issue-th">Floor</th>
-                        <th class="tech-issue-th">Room Number</th>
-                        <th class="tech-issue-th">Comment</th>
-                        <th class="tech-issue-th">Supervisor Name</th>
-                        <th class="tech-issue-th">Action</th>
+                        <th class="tech-issue-th" data-column="date">Date</th>
+                        <th class="tech-issue-th" data-column="operator">Operator Family Name</th>
+                        <th class="tech-issue-th" data-column="start-time">Start Time</th>
+                        <th class="tech-issue-th" data-column="problem-type">Type of Problem</th>
+                        <th class="tech-issue-th" data-column="floor">Floor</th>
+                        <th class="tech-issue-th" data-column="room">Room Number</th>
+                        <th class="tech-issue-th" data-column="comment">Comment</th>
+                        <th class="tech-issue-th" data-column="supervisor">Supervisor Name</th>
+                        <th class="tech-issue-th" data-column="action">Action</th>
                       </tr>
                     </thead>
                     <tbody id="tech-issue-table-body" class="tech-issue-table-body">
@@ -2382,8 +2387,23 @@
                       <div class="tech-issue-form-row">
                         <div class="tech-issue-form-group">
                           <label for="tech-operator-name">Имя оператора</label>
-                          <input type="text" id="tech-operator-name" name="operatorName" required 
-                                 placeholder="Имя оператора">
+                          <div class="custom-searchable-select" id="operator-searchable-select">
+                            <div class="select-header" id="operator-select-header">
+                              <span class="select-placeholder">Выберите оператора...</span>
+                              <span class="select-arrow">▼</span>
+                            </div>
+                            <div class="select-dropdown" id="operator-dropdown">
+                              <div class="search-container">
+                                <input type="text" id="operator-search-input" placeholder="Поиск по имени или ID..." autocomplete="off">
+                              </div>
+                              <div class="options-container" id="operator-options">
+                                <!-- Options will be populated dynamically -->
+                              </div>
+                            </div>
+                            <select id="tech-operator-name" name="operatorName" required style="display: none;">
+                              <option value="">Выберите оператора...</option>
+                            </select>
+                          </div>
                         </div>
                         <div class="tech-issue-form-group">
                           <label for="tech-problem-type">Тип проблемы</label>
@@ -2430,6 +2450,87 @@
                         </button>
                       </div>
                     </form>
+                  </div>
+                </div>
+
+                <!-- Tech Issue Table Settings Modal -->
+                <div id="tech-issue-table-settings-modal" class="table-settings-modal" style="display: none;">
+                  <div class="table-settings-modal-content">
+                    <div class="table-settings-modal-header">
+                      <h3>Настройки столбцов - Тех сбои</h3>
+                      <button class="table-settings-modal-close" id="tech-issue-table-settings-close">
+                        <span class="material-icons">close</span>
+                      </button>
+                    </div>
+                    <div class="table-settings-modal-body">
+                      <div class="table-settings-instructions">
+                        Перетащите столбцы для изменения порядка. Снимите галочку для скрытия столбца.
+                      </div>
+                      <div id="tech-issue-column-list" class="column-list">
+                        <div class="column-item" data-column="date">
+                          <div class="drag-handle">⋮⋮</div>
+                          <label>
+                            <input type="checkbox" checked> Дата
+                          </label>
+                        </div>
+                        <div class="column-item" data-column="operator">
+                          <div class="drag-handle">⋮⋮</div>
+                          <label>
+                            <input type="checkbox" checked> Фамилия оператора
+                          </label>
+                        </div>
+                        <div class="column-item" data-column="start-time">
+                          <div class="drag-handle">⋮⋮</div>
+                          <label>
+                            <input type="checkbox" checked> Время начала
+                          </label>
+                        </div>
+                        <div class="column-item" data-column="problem-type">
+                          <div class="drag-handle">⋮⋮</div>
+                          <label>
+                            <input type="checkbox" checked> Тип проблемы
+                          </label>
+                        </div>
+                        <div class="column-item" data-column="floor">
+                          <div class="drag-handle">⋮⋮</div>
+                          <label>
+                            <input type="checkbox" checked> Этаж
+                          </label>
+                        </div>
+                        <div class="column-item" data-column="room">
+                          <div class="drag-handle">⋮⋮</div>
+                          <label>
+                            <input type="checkbox" checked> Номер комнаты
+                          </label>
+                        </div>
+                        <div class="column-item" data-column="comment">
+                          <div class="drag-handle">⋮⋮</div>
+                          <label>
+                            <input type="checkbox" checked> Комментарий
+                          </label>
+                        </div>
+                        <div class="column-item" data-column="supervisor">
+                          <div class="drag-handle">⋮⋮</div>
+                          <label>
+                            <input type="checkbox" checked> Имя супервайзера
+                          </label>
+                        </div>
+                        <div class="column-item" data-column="action">
+                          <div class="drag-handle">⋮⋮</div>
+                          <label>
+                            <input type="checkbox" checked> Действие
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="table-settings-modal-footer">
+                      <button class="table-settings-reset" id="tech-issue-table-settings-reset">
+                        Сбросить по умолчанию
+                      </button>
+                      <button class="table-settings-apply" id="tech-issue-table-settings-apply">
+                        Применить
+                      </button>
+                    </div>
                   </div>
                 </div>
 
