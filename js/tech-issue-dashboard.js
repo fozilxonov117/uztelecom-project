@@ -395,7 +395,7 @@ function initTechIssueDashboard() {
   const techIssueData = [
     {
       id: 1,
-      date: '13.08',
+      date: '13.08.2025',
       operatorName: 'Abdumarova Yasmina Yasetovna',
       operatorCode: '(539)',
       startTime: '11:37',
@@ -408,7 +408,7 @@ function initTechIssueDashboard() {
     },
     {
       id: 2,
-      date: '13.08',
+      date: '13.08.2025',
       operatorName: 'Fayzullayeva Nodira Fayzulla qizi',
       operatorCode: '(0562)',
       startTime: '11:50',
@@ -421,7 +421,7 @@ function initTechIssueDashboard() {
     },
     {
       id: 3,
-      date: '13.08',
+      date: '13.08.2025',
       operatorName: 'Baxtiyaraliyev Abbos Arslan',
       operatorCode: '(043)',
       startTime: '10:22',
@@ -434,7 +434,7 @@ function initTechIssueDashboard() {
     },
     {
       id: 4,
-      date: '13.08',
+      date: '13.08.2025',
       operatorName: 'Ergasheva Sevara Gayrat qizi',
       operatorCode: '(0574)',
       startTime: '12:32',
@@ -447,7 +447,7 @@ function initTechIssueDashboard() {
     },
     {
       id: 5,
-      date: '13.08',
+      date: '13.08.2025',
       operatorName: 'Gulnomorova Saida Abdulloh qizi',
       operatorCode: '(0631)',
       startTime: '13:00',
@@ -460,7 +460,7 @@ function initTechIssueDashboard() {
     },
     {
       id: 6,
-      date: '13.08',
+      date: '13.08.2025',
       operatorName: 'Mamakulova Gulshan Nallovna',
       operatorCode: '(0541)',
       startTime: '13:26',
@@ -473,7 +473,7 @@ function initTechIssueDashboard() {
     },
     {
       id: 7,
-      date: '13.08',
+      date: '13.08.2025',
       operatorName: 'Israiljonova Gulhumor Samirjonovna',
       operatorCode: '(1906)',
       startTime: '13:25',
@@ -486,7 +486,7 @@ function initTechIssueDashboard() {
     },
     {
       id: 8,
-      date: '13.08',
+      date: '13.08.2025',
       operatorName: 'Mallikova Aziza Rakhimovna',
       operatorCode: '(0134)',
       startTime: '13:35',
@@ -499,7 +499,7 @@ function initTechIssueDashboard() {
     },
     {
       id: 9,
-      date: '13.08',
+      date: '13.08.2025',
       operatorName: 'Xamidov Farrud Faxriddinovich',
       operatorCode: '(0216)',
       startTime: '14:12',
@@ -512,7 +512,7 @@ function initTechIssueDashboard() {
     },
     {
       id: 10,
-      date: '13.08',
+      date: '13.08.2025',
       operatorName: 'Tashmatova Diloora Raximurat qizi',
       operatorCode: '(0361)',
       startTime: '14:27',
@@ -525,7 +525,7 @@ function initTechIssueDashboard() {
     },
     {
       id: 11,
-      date: '13.08',
+      date: '13.08.2025',
       operatorName: 'Azizakova Gulchehra Margatmonovna',
       operatorCode: '(238)',
       startTime: '14:41',
@@ -638,7 +638,8 @@ function handleTechIssueFormSubmit() {
   const now = new Date();
   const day = String(now.getDate()).padStart(2, '0');
   const month = String(now.getMonth() + 1).padStart(2, '0');
-  const currentDate = `${day}.${month}`;
+  const year = now.getFullYear();
+  const currentDate = `${day}.${month}.${year}`;
   
   // Get floor and table number as separate fields
   const floor = formData.get('floor');
