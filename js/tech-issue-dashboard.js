@@ -402,7 +402,7 @@ function initTechIssueDashboard() {
       problemType: 'РМОДа носозлик',
       floor: '2 этаж',
       roomNumber: '№20',
-      comment: 'Клиент заброшан дополнительные настройки для РМО.',
+      comment: 'Клиент заброшан дополнительные настройки для РМО. Клиент заброшан дополнительные настройки для РМО. Клиент заброшан дополнительные настройки для РМО. Клиент заброшан дополнительные настройки для РМО. Клиент заброшан дополнительные настройки для РМО. Клиент заброшан дополнительные настройки для РМО.',
       supervisor: 'Aliyeva',
       action: 'Submit Data'
     },
@@ -695,52 +695,161 @@ function getCurrentUserName() {
   return 'Рискиев Б.'; // Fallback supervisor name
 }
 
+function initModernFilterDropdown() {
+  const dropdown = document.getElementById('filter-type-dropdown');
+  const button = document.getElementById('filter-type-button');
+  const menu = document.getElementById('filter-type-menu');
+  const selectText = button.querySelector('.select-text');
+  const selectArrow = button.querySelector('.select-arrow');
+  const options = menu.querySelectorAll('.dropdown-option');
+  
+  let isOpen = false;
+  let selectedValue = 'operator';
+  
+  // Toggle dropdown
+  button.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleDropdown();
+  });
+  
+  // Handle option selection
+  options.forEach(option => {
+    option.addEventListener('click', (e) => {
+      e.stopPropagation();
+      selectOption(option);
+    });
+  });
+  
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!dropdown.contains(e.target)) {
+      closeDropdown();
+    }
+  });
+  
+  // Close on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isOpen) {
+      closeDropdown();
+    }
+  });
+  
+  function toggleDropdown() {
+    if (isOpen) {
+      closeDropdown();
+    } else {
+      openDropdown();
+    }
+  }
+  
+  function openDropdown() {
+    isOpen = true;
+    dropdown.classList.add('open');
+    button.classList.add('active');
+    
+    // Add subtle animation to options
+    options.forEach((option, index) => {
+      option.style.animationDelay = `${index * 30}ms`;
+      option.style.animation = 'fadeInUp 0.3s ease forwards';
+    });
+  }
+  
+  function closeDropdown() {
+    isOpen = false;
+    dropdown.classList.remove('open');
+    button.classList.remove('active');
+  }
+  
+  function selectOption(option) {
+    const value = option.dataset.value;
+    const text = option.querySelector('.option-text').textContent;
+    
+    // Update selected state
+    options.forEach(opt => opt.classList.remove('selected'));
+    option.classList.add('selected');
+    
+    // Update button text
+    selectText.textContent = text;
+    selectedValue = value;
+    
+    // Close dropdown
+    closeDropdown();
+    
+    // Trigger filter type change
+    handleFilterTypeChange(value);
+    
+    console.log('Filter type selected:', value);
+  }
+  
+  function handleFilterTypeChange(selectedType) {
+    const primaryFilterInput = document.getElementById('primary-filter-input');
+    const dateFilterInput = document.getElementById('date-filter-input');
+    
+    if (selectedType === 'date') {
+      primaryFilterInput.style.display = 'none';
+      dateFilterInput.style.display = 'block';
+      dateFilterInput.placeholder = 'Select date...';
+    } else {
+      primaryFilterInput.style.display = 'block';
+      dateFilterInput.style.display = 'none';
+      
+      // Update placeholder based on selected filter type
+      const placeholders = {
+        'operator': 'Enter operator name or ID...',
+        'problem-type': 'Enter problem type...',
+        'floor': 'Enter floor number...',
+        'room': 'Enter room number...',
+        'supervisor': 'Enter supervisor name...'
+      };
+      
+      primaryFilterInput.placeholder = placeholders[selectedType] || 'Enter filter value...';
+    }
+    
+    // Clear current filters when type changes
+    if (primaryFilterInput) primaryFilterInput.value = '';
+    if (dateFilterInput) dateFilterInput.value = '';
+    
+    // Reapply filters
+    applyEnhancedFilter();
+  }
+  
+  // Set default option as selected
+  const defaultOption = menu.querySelector('[data-value="operator"]');
+  if (defaultOption) {
+    defaultOption.classList.add('selected');
+  }
+}
+
 function initializeEnhancedFilters() {
-  const filterTypeSelector = document.getElementById('filter-type-selector');
+  // Initialize modern dropdown
+  initModernFilterDropdown();
+  
   const primaryFilterInput = document.getElementById('primary-filter-input');
   const dateFilterInput = document.getElementById('date-filter-input');
   const clearFilterBtn = document.getElementById('clear-filter-btn');
-
-  // Handle filter type change
-  if (filterTypeSelector) {
-    filterTypeSelector.addEventListener('change', (e) => {
-      const selectedType = e.target.value;
-      
-      if (selectedType === 'date') {
-        primaryFilterInput.style.display = 'none';
-        dateFilterInput.style.display = 'block';
-        dateFilterInput.placeholder = 'Select date...';
-      } else {
-        primaryFilterInput.style.display = 'block';
-        dateFilterInput.style.display = 'none';
-        
-        // Update placeholder based on selected filter type
-        const placeholders = {
-          'operator': 'Enter operator name or ID...',
-          'problem-type': 'Enter problem type...',
-          'floor': 'Enter floor (e.g., 1 этаж, 2 этаж)...',
-          'room': 'Enter room number (e.g., №45, №113)...',
-          'supervisor': 'Enter supervisor name...'
-        };
-        
-        primaryFilterInput.placeholder = placeholders[selectedType] || 'Enter filter value...';
-      }
-      
-      // Clear previous filter values
-      primaryFilterInput.value = '';
-      dateFilterInput.value = '';
-      
-      // Auto-apply filter on type change to show all data
-      applyEnhancedFilter();
-    });
-  }
 
   // Handle clear filter button
   if (clearFilterBtn) {
     clearFilterBtn.addEventListener('click', () => {
       primaryFilterInput.value = '';
       dateFilterInput.value = '';
-      filterTypeSelector.value = 'operator';
+      
+      // Reset modern dropdown to default
+      const dropdown = document.getElementById('filter-type-dropdown');
+      const selectText = dropdown.querySelector('.select-text');
+      const options = dropdown.querySelectorAll('.dropdown-option');
+      const defaultOption = dropdown.querySelector('[data-value="operator"]');
+      
+      if (defaultOption && selectText) {
+        options.forEach(opt => opt.classList.remove('selected'));
+        defaultOption.classList.add('selected');
+        selectText.textContent = 'Filter by Operator';
+        
+        // Show primary input, hide date input
+        primaryFilterInput.style.display = 'block';
+        dateFilterInput.style.display = 'none';
+        primaryFilterInput.placeholder = 'Enter operator name or ID...';
+      }
       primaryFilterInput.style.display = 'block';
       dateFilterInput.style.display = 'none';
       primaryFilterInput.placeholder = 'Enter operator name or ID...';
@@ -761,11 +870,14 @@ function initializeEnhancedFilters() {
 }
 
 function applyEnhancedFilter() {
-  const filterTypeSelector = document.getElementById('filter-type-selector');
+  // Get filter type from modern dropdown
+  const dropdown = document.getElementById('filter-type-dropdown');
+  const selectedOption = dropdown?.querySelector('.dropdown-option.selected');
+  const filterType = selectedOption?.dataset.value || 'operator';
+  
   const primaryFilterInput = document.getElementById('primary-filter-input');
   const dateFilterInput = document.getElementById('date-filter-input');
 
-  const filterType = filterTypeSelector ? filterTypeSelector.value : 'operator';
   const primaryValue = primaryFilterInput ? primaryFilterInput.value.toLowerCase().trim() : '';
   const dateValue = dateFilterInput ? dateFilterInput.value : '';
 
@@ -851,7 +963,9 @@ function renderTechIssueTable(data) {
       </td>
       <td class="tech-issue-td tech-issue-floor" data-column="floor">${item.floor}</td>
       <td class="tech-issue-td tech-issue-room-number" data-column="room">${item.roomNumber}</td>
-      <td class="tech-issue-td tech-issue-comment" data-column="comment">${item.comment}</td>
+      <td class="tech-issue-td" data-column="comment">
+        <div class="tech-issue-comment">${item.comment}</div>
+      </td>
       <td class="tech-issue-td tech-issue-supervisor" data-column="supervisor">${item.supervisor}</td>
       <td class="tech-issue-td" data-column="action">
         <button class="tech-issue-action-btn" onclick="handleSubmitData(${item.id})">

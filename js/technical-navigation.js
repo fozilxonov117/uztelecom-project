@@ -126,6 +126,23 @@ function initTechnicalNavigation() {
   } else {
     console.error('❌ tech-comp element not found!');
   }
+
+  // Handle tech-report sub-item click
+  const techReport = document.getElementById('tech-report');
+  if (techReport) {
+    console.log('✅ Tech Report click handler attached to element:', techReport);
+    techReport.addEventListener('click', function(e) {
+      console.log('🔥 TECH REPORT CLICKED! Event:', e);
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('Setting active sub-item...');
+      setActiveSubItem(this);
+      console.log('Calling showTechReportDashboard...');
+      showTechReportDashboard();
+    });
+  } else {
+    console.error('❌ tech-report element not found!');
+  }
   
   function setActiveSubItem(activeItem) {
     console.log('Setting active sub-item:', activeItem);
@@ -193,16 +210,31 @@ function initTechnicalNavigation() {
       compElement.style.display = 'block';
     }
   }
+
+  function showTechReportDashboard() {
+    console.log('Showing tech report dashboard...');
+    hideAllDashboards();
+    
+    const techReportElement = document.getElementById('tech-report-dashboard');
+    if (techReportElement) {
+      techReportElement.style.display = 'block';
+      console.log('Tech report dashboard displayed successfully');
+    } else {
+      console.error('Tech report dashboard element not found!');
+    }
+  }
   
   function hideAllDashboards() {
     // Hide all technical dashboards using direct element references
     const warehouseElement = document.getElementById('warehouse-dashboard');
     const inventoryElement = document.getElementById('inventory-dashboard');
     const compElement = document.getElementById('comp-dashboard');
+    const techReportElement = document.getElementById('tech-report-dashboard');
     
     if (warehouseElement) warehouseElement.style.display = 'none';
     if (inventoryElement) inventoryElement.style.display = 'none';
     if (compElement) compElement.style.display = 'none';
+    if (techReportElement) techReportElement.style.display = 'none';
     
     console.log('All technical dashboards hidden');
   }

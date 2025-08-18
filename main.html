@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="css/warehouse-modal.css" />
     <link rel="stylesheet" href="css/inventory-dashboard.css" />
     <link rel="stylesheet" href="css/tech-issue-dashboard.css" />
+    <link rel="stylesheet" href="css/tech-report-dashboard.css" />
     <link
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet"
@@ -146,6 +147,10 @@
             <a id="tech-comp" class="sidebar-sub-item">
               <span class="material-icons">computer</span>
               <span class="sidebar-label">Тех сбой</span>
+            </a>
+            <a id="tech-report" class="sidebar-sub-item">
+              <span class="material-icons">analytics</span>
+              <span class="sidebar-label">Тех отчёт</span>
             </a>
           </div>
           <a
@@ -2336,14 +2341,55 @@
                 <!-- Filters Section -->
                 <div class="tech-issue-filters">
                   <div class="tech-issue-filter-item">
-                    <select id="filter-type-selector" class="tech-issue-filter-input">
-                      <option value="operator">Filter by Operator</option>
-                      <option value="problem-type">Filter by Problem Type</option>
-                      <option value="floor">Filter by Floor</option>
-                      <option value="room">Filter by Room Number</option>
-                      <option value="supervisor">Filter by Supervisor</option>
-                      <option value="date">Filter by Date</option>
-                    </select>
+                    <div class="modern-select-dropdown" id="filter-type-dropdown">
+                      <div class="select-button" id="filter-type-button">
+                        <span class="select-icon">
+                          <span class="material-icons">filter_alt</span>
+                        </span>
+                        <span class="select-text">Filter by Operator</span>
+                        <span class="select-arrow">
+                          <span class="material-icons">expand_more</span>
+                        </span>
+                      </div>
+                      <div class="select-dropdown-menu" id="filter-type-menu">
+                        <div class="dropdown-option" data-value="operator">
+                          <span class="option-icon">
+                            <span class="material-icons">supervisor_account</span>
+                          </span>
+                          <span class="option-text">Filter by Operator</span>
+                        </div>
+                        <div class="dropdown-option" data-value="problem-type">
+                          <span class="option-icon">
+                            <span class="material-icons">bug_report</span>
+                          </span>
+                          <span class="option-text">Filter by Problem Type</span>
+                        </div>
+                        <div class="dropdown-option" data-value="floor">
+                          <span class="option-icon">
+                            <span class="material-icons">layers</span>
+                          </span>
+                          <span class="option-text">Filter by Floor</span>
+                        </div>
+                        <div class="dropdown-option" data-value="room">
+                          <span class="option-icon">
+                            <span class="material-icons">room</span>
+                          </span>
+                          <span class="option-text">Filter by Room Number</span>
+                        </div>
+                        <div class="dropdown-option" data-value="supervisor">
+                          <span class="option-icon">
+                            <span class="material-icons">person</span>
+                          </span>
+                          <span class="option-text">Filter by Supervisor</span>
+                        </div>
+                        <div class="dropdown-option" data-value="date">
+                          <span class="option-icon">
+                            <span class="material-icons">date_range</span>
+                          </span>
+                          <span class="option-text">Filter by Date</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <div class="tech-issue-filter-item">
                     <input type="text" id="primary-filter-input" class="tech-issue-filter-input" placeholder="Enter filter value...">
@@ -2548,6 +2594,232 @@
                     <span class="material-icons">add</span>
                     Добавить сбой
                   </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tech Report (Тех отчёт) Dashboard Layout -->
+            <div id="tech-report-dashboard" class="tech-report-dashboard-layout" style="display: none;">
+              <div class="tech-report-content">
+                <!-- Filters Section -->
+                <div class="tech-report-filters">
+                  <div class="tech-report-filter-item">
+                    <input type="text" id="tech-report-filter-input" class="tech-report-filter-input" placeholder="Filter issues...">
+                  </div>
+                  <div class="tech-report-filter-item">
+                    <select id="tech-report-filter-type" class="tech-report-filter-input">
+                      <option value="">All Types</option>
+                      <option value="Network Access">Network Access</option>
+                      <option value="Web Application">Web Application</option>
+                      <option value="Remote Desktop">Remote Desktop</option>
+                      <option value="User Authentication">User Authentication</option>
+                      <option value="System Health">System Health</option>
+                      <option value="Database Service">Database Service</option>
+                      <option value="Power Supply">Power Supply</option>
+                      <option value="Network Connectivity">Network Connectivity</option>
+                      <option value="User Profile Management">User Profile Management</option>
+                      <option value="Switch Configuration">Switch Configuration</option>
+                      <option value="Authentication Service">Authentication Service</option>
+                      <option value="Emergency Power">Emergency Power</option>
+                      <option value="Internet Access">Internet Access</option>
+                      <option value="ISP Service">ISP Service</option>
+                      <option value="Hardware Reset">Hardware Reset</option>
+                      <option value="Building Power">Building Power</option>
+                    </select>
+                  </div>
+                  <div class="tech-report-filter-item">
+                    <button id="tech-report-clear-filter-btn" class="tech-report-filter-btn tech-report-filter-btn-clear">
+                      <span class="material-icons">clear</span>
+                      Clear
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Table Container -->
+                <div class="tech-report-table-container">
+                  <table class="tech-report-table">
+                    <thead>
+                      <tr class="tech-report-table-header">
+                        <th class="tech-report-th" data-column="date">
+                          <div class="tech-report-th-content">
+                            <span>DATE</span>
+                          </div>
+                        </th>
+                        <th class="tech-report-th" data-column="supervisor">
+                          <div class="tech-report-th-content">
+                            <span>SUPERVISOR NAME</span>
+                          </div>
+                        </th>
+                        <th class="tech-report-th" data-column="startTime">
+                          <div class="tech-report-th-content">
+                            <span>START TIME</span>
+                          </div>
+                        </th>
+                        <th class="tech-report-th" data-column="endTime">
+                          <div class="tech-report-th-content">
+                            <span>END TIME</span>
+                          </div>
+                        </th>
+                        <th class="tech-report-th" data-column="notes">
+                          <div class="tech-report-th-content">
+                            <span>NOTES</span>
+                          </div>
+                        </th>
+                        <th class="tech-report-th" data-column="comments">
+                          <div class="tech-report-th-content">
+                            <span>COMMENTS</span>
+                          </div>
+                        </th>
+                        <th class="tech-report-th" data-column="atcType">
+                          <div class="tech-report-th-content">
+                            <span>ATC TYPE</span>
+                          </div>
+                        </th>
+                        <th class="tech-report-th" data-column="serviceName">
+                          <div class="tech-report-th-content">
+                            <span>SERVICE NAME</span>
+                          </div>
+                        </th>
+                        <th class="tech-report-settings-column">
+                          <button class="tech-report-settings-btn" title="Table Settings">
+                            <span class="material-icons">settings</span>
+                          </button>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody id="tech-report-table-body" class="tech-report-table-body">
+                      <!-- Sample data rows will be populated by JavaScript -->
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Actions Section -->
+                <div class="tech-report-actions">
+                  <button id="tech-report-add-btn" class="tech-report-add-btn">
+                    <span class="material-icons">add</span>
+                    Add New Technical Issue Report
+                  </button>
+                </div>
+              </div>
+
+              <!-- Add New Tech Report Modal -->
+              <div id="tech-report-add-modal" class="tech-report-add-modal" style="display: none;">
+                <div class="tech-report-add-modal-content">
+                  <div class="tech-report-add-modal-header">
+                    <button class="tech-report-add-modal-close">
+                      <span class="material-icons">close</span>
+                    </button>
+                  </div>
+                  
+                  <form class="tech-report-add-form">
+                    <div class="tech-report-form-row">
+                      <div class="tech-report-form-group">
+                        <label for="tech-report-date">Date *</label>
+                        <input type="date" id="tech-report-date" name="date" required>
+                      </div>
+                      <div class="tech-report-form-group">
+                        <label for="tech-report-supervisor">Supervisor Name *</label>
+                        <div class="custom-searchable-select" id="tech-report-supervisor-select">
+                          <div class="select-header">
+                            <span class="select-placeholder">Select supervisor</span>
+                            <span class="select-arrow">▼</span>
+                          </div>
+                          <div class="select-dropdown">
+                            <div class="search-container">
+                              <input type="text" placeholder="Search supervisors..." class="supervisor-search">
+                            </div>
+                            <div class="options-container" id="tech-report-supervisor-options">
+                              <!-- Supervisor options will be populated by JavaScript -->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="tech-report-form-row">
+                      <div class="tech-report-form-group">
+                        <label for="tech-report-start-time">Start Time *</label>
+                        <input type="time" id="tech-report-start-time" name="startTime" required>
+                      </div>
+                      <div class="tech-report-form-group">
+                        <label for="tech-report-end-time">End Time *</label>
+                        <input type="time" id="tech-report-end-time" name="endTime" required>
+                      </div>
+                    </div>
+
+                    <div class="tech-report-form-row">
+                      <div class="tech-report-form-group">
+                        <label for="tech-report-atc-type">ATC Type *</label>
+                        <select id="tech-report-atc-type" name="atcType" required>
+                          <option value="">Select ATC Type</option>
+                          <option value="255">255</option>
+                          <option value="229">229</option>
+                        </select>
+                      </div>
+                      <div class="tech-report-form-group">
+                        <label for="tech-report-service-name">Service Name *</label>
+                        <select id="tech-report-service-name" name="serviceName" required>
+                          <option value="">Select Service</option>
+                          <option value="Network Access">Network Access</option>
+                          <option value="Web Application">Web Application</option>
+                          <option value="Remote Desktop">Remote Desktop</option>
+                          <option value="User Authentication">User Authentication</option>
+                          <option value="System Health">System Health</option>
+                          <option value="Database Service">Database Service</option>
+                          <option value="Power Supply">Power Supply</option>
+                          <option value="Network Connectivity">Network Connectivity</option>
+                          <option value="User Profile Management">User Profile Management</option>
+                          <option value="Switch Configuration">Switch Configuration</option>
+                          <option value="Authentication Service">Authentication Service</option>
+                          <option value="Emergency Power">Emergency Power</option>
+                          <option value="Internet Access">Internet Access</option>
+                          <option value="ISP Service">ISP Service</option>
+                          <option value="Hardware Reset">Hardware Reset</option>
+                          <option value="Building Power">Building Power</option>
+                        </select>
+                      </div>
+                    </div>
+                    
+                    <div class="tech-report-form-row">
+                      <div class="tech-report-form-group">
+                        <label for="tech-report-notes">Notes *</label>
+                        <textarea id="tech-report-notes" name="notes" placeholder="Describe the technical issue..." required></textarea>
+                      </div>
+                      <div class="tech-report-form-group">
+                        <label for="tech-report-comments">Comments</label>
+                        <textarea id="tech-report-comments" name="comments" placeholder="Additional comments..."></textarea>
+                      </div>
+                    </div>
+                    
+                    <div class="tech-report-form-actions">
+                      <button type="button" class="tech-report-cancel-btn">Cancel</button>
+                      <button type="submit" class="tech-report-submit-btn">Add Report</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+
+              <!-- Table Settings Modal -->
+              <div id="tech-report-table-settings-modal" class="table-settings-modal" style="display: none;">
+                <div class="table-settings-modal-content">
+                  <div class="table-settings-modal-header">
+                    <h3>Column Settings</h3>
+                    <button class="table-settings-modal-close">
+                      <span class="material-icons">close</span>
+                    </button>
+                  </div>
+                  <div class="table-settings-modal-body">
+                    <p class="table-settings-instructions">Drag columns to reorder. Toggle visibility with checkboxes.</p>
+                    <div class="column-list" id="tech-report-column-list">
+                      <!-- Column items will be populated by JavaScript -->
+                    </div>
+                  </div>
+                  <div class="table-settings-modal-footer">
+                    <button class="table-settings-apply" id="tech-report-apply-settings">
+                      <span class="material-icons">check</span>
+                      Apply Settings
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -3061,6 +3333,7 @@
     <script src="js/warehouse-dashboard.js"></script>
     <script src="js/technical-navigation.js"></script>
     <script src="js/tech-issue-dashboard.js"></script>
+    <script src="js/tech-report-dashboard.js"></script>
     <!-- Filter Modal -->
     <div id="filter-modal" class="warehouse-modal filter-modal" style="display: none;">
       <div class="warehouse-modal-content filter-modal-content">
