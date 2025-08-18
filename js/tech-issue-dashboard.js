@@ -232,7 +232,7 @@ function initTableSettings() {
   let columnSettings = {
     'date': { visible: true, order: 0 },
     'operator': { visible: true, order: 1 },
-    'timestamp': { visible: true, order: 2 },
+    'timestamp': { visible: true, order: 2 }, 
     'problem-type': { visible: true, order: 3 },
     'floor': { visible: true, order: 4 },
     'room-number': { visible: true, order: 5 },
@@ -541,22 +541,8 @@ function initTechIssueDashboard() {
   // Store data globally
   window.techIssueData = techIssueData;
 
-  // Initialize filters
-  const operatorNameFilter = document.getElementById('operator-name-filter');
-  const problemTypeFilter = document.getElementById('problem-type-filter');
-  const dateFilter = document.getElementById('date-filter');
-
-  if (operatorNameFilter) {
-    operatorNameFilter.addEventListener('input', filterTechIssues);
-  }
-
-  if (problemTypeFilter) {
-    problemTypeFilter.addEventListener('input', filterTechIssues);
-  }
-
-  if (dateFilter) {
-    dateFilter.addEventListener('change', filterTechIssues);
-  }
+  // Initialize enhanced filters
+  initializeEnhancedFilters();
 
   // Initialize add button
   const addBtn = document.getElementById('tech-issue-add-btn');
@@ -673,7 +659,7 @@ function handleTechIssueFormSubmit() {
     date: currentDate,
     operatorName: operatorName,
     operatorCode: operatorCode,
-    timestamp: formData.get('timestamp'),
+    startTime: formData.get('timestamp'),
     problemType: formData.get('problemType'),
     floor: floor,
     roomNumber: `№${tableNumber}`,
@@ -709,36 +695,133 @@ function getCurrentUserName() {
   return 'Рискиев Б.'; // Fallback supervisor name
 }
 
-function filterTechIssues() {
-  const operatorNameFilter = document.getElementById('operator-name-filter');
-  const problemTypeFilter = document.getElementById('problem-type-filter');
-  const dateFilter = document.getElementById('date-filter');
+function initializeEnhancedFilters() {
+  const filterTypeSelector = document.getElementById('filter-type-selector');
+  const primaryFilterInput = document.getElementById('primary-filter-input');
+  const dateFilterInput = document.getElementById('date-filter-input');
+  const clearFilterBtn = document.getElementById('clear-filter-btn');
 
-  const operatorValue = operatorNameFilter ? operatorNameFilter.value.toLowerCase() : '';
-  const problemValue = problemTypeFilter ? problemTypeFilter.value.toLowerCase() : '';
-  const dateValue = dateFilter ? dateFilter.value : '';
+  // Handle filter type change
+  if (filterTypeSelector) {
+    filterTypeSelector.addEventListener('change', (e) => {
+      const selectedType = e.target.value;
+      
+      if (selectedType === 'date') {
+        primaryFilterInput.style.display = 'none';
+        dateFilterInput.style.display = 'block';
+        dateFilterInput.placeholder = 'Select date...';
+      } else {
+        primaryFilterInput.style.display = 'block';
+        dateFilterInput.style.display = 'none';
+        
+        // Update placeholder based on selected filter type
+        const placeholders = {
+          'operator': 'Enter operator name or ID...',
+          'problem-type': 'Enter problem type...',
+          'floor': 'Enter floor (e.g., 1 этаж, 2 этаж)...',
+          'room': 'Enter room number (e.g., №45, №113)...',
+          'supervisor': 'Enter supervisor name...'
+        };
+        
+        primaryFilterInput.placeholder = placeholders[selectedType] || 'Enter filter value...';
+      }
+      
+      // Clear previous filter values
+      primaryFilterInput.value = '';
+      dateFilterInput.value = '';
+      
+      // Auto-apply filter on type change to show all data
+      applyEnhancedFilter();
+    });
+  }
+
+  // Handle clear filter button
+  if (clearFilterBtn) {
+    clearFilterBtn.addEventListener('click', () => {
+      primaryFilterInput.value = '';
+      dateFilterInput.value = '';
+      filterTypeSelector.value = 'operator';
+      primaryFilterInput.style.display = 'block';
+      dateFilterInput.style.display = 'none';
+      primaryFilterInput.placeholder = 'Enter operator name or ID...';
+      
+      // Show all data
+      renderTechIssueTable(window.techIssueData);
+    });
+  }
+
+  // Handle real-time filtering on input
+  if (primaryFilterInput) {
+    primaryFilterInput.addEventListener('input', applyEnhancedFilter);
+  }
+
+  if (dateFilterInput) {
+    dateFilterInput.addEventListener('change', applyEnhancedFilter);
+  }
+}
+
+function applyEnhancedFilter() {
+  const filterTypeSelector = document.getElementById('filter-type-selector');
+  const primaryFilterInput = document.getElementById('primary-filter-input');
+  const dateFilterInput = document.getElementById('date-filter-input');
+
+  const filterType = filterTypeSelector ? filterTypeSelector.value : 'operator';
+  const primaryValue = primaryFilterInput ? primaryFilterInput.value.toLowerCase().trim() : '';
+  const dateValue = dateFilterInput ? dateFilterInput.value : '';
+
+  // If no filter value is provided, show all data
+  if (!primaryValue && !dateValue) {
+    renderTechIssueTable(window.techIssueData);
+    return;
+  }
 
   const filteredData = window.techIssueData.filter(item => {
-    const operatorMatch = !operatorValue || 
-      item.operatorName.toLowerCase().includes(operatorValue) ||
-      item.operatorCode.toLowerCase().includes(operatorValue);
-    
-    const problemMatch = !problemValue || 
-      item.problemType.toLowerCase().includes(problemValue);
-    
-    const dateMatch = !dateValue || item.date === formatDateForFilter(dateValue);
-
-    return operatorMatch && problemMatch && dateMatch;
+    switch (filterType) {
+      case 'operator':
+        return !primaryValue || 
+          item.operatorName.toLowerCase().includes(primaryValue) ||
+          item.operatorCode.toLowerCase().includes(primaryValue);
+      
+      case 'problem-type':
+        return !primaryValue || 
+          item.problemType.toLowerCase().includes(primaryValue);
+      
+      case 'floor':
+        return !primaryValue || 
+          item.floor.toLowerCase().includes(primaryValue);
+      
+      case 'room':
+        return !primaryValue || 
+          item.roomNumber.toLowerCase().includes(primaryValue);
+      
+      case 'supervisor':
+        return !primaryValue || 
+          item.supervisor.toLowerCase().includes(primaryValue);
+      
+      case 'date':
+        return !dateValue || item.date === formatDateForFilter(dateValue);
+      
+      default:
+        return true;
+    }
   });
 
   renderTechIssueTable(filteredData);
+}
+
+// Legacy function kept for backward compatibility
+function filterTechIssues() {
+  // This function is now handled by the enhanced filter system
+  // but kept for any legacy references
+  console.log('Using enhanced filter system instead');
 }
 
 function formatDateForFilter(dateString) {
   const date = new Date(dateString);
   const day = String(date.getDate()).padStart(2, '0');
   const month = String(date.getMonth() + 1).padStart(2, '0');
-  return `${day}.${month}`;
+  const year = date.getFullYear();
+  return `${day}.${month}.${year}`;
 }
 
 function renderTechIssueTable(data) {
@@ -775,6 +858,7 @@ function renderTechIssueTable(data) {
           ${item.action}
         </button>
       </td>
+      <td class="tech-issue-td tech-issue-settings-cell"></td>
     `;
 
     tableBody.appendChild(row);
@@ -821,10 +905,9 @@ function initTechIssueTableSettings() {
   const modal = document.getElementById('tech-issue-table-settings-modal');
   const closeBtn = document.getElementById('tech-issue-table-settings-close');
   const applyBtn = document.getElementById('tech-issue-table-settings-apply');
-  const resetBtn = document.getElementById('tech-issue-table-settings-reset');
   const columnList = document.getElementById('tech-issue-column-list');
 
-  if (!settingsBtn || !modal || !closeBtn || !applyBtn || !resetBtn || !columnList) {
+  if (!settingsBtn || !modal || !closeBtn || !applyBtn || !columnList) {
     console.warn('Tech issue table settings elements not found');
     return;
   }
@@ -834,6 +917,12 @@ function initTechIssueTableSettings() {
     e.stopPropagation();
     modal.style.display = 'flex';
     loadTechIssueColumnSettings();
+    
+    // Re-initialize drag and drop after modal opens and settings are loaded
+    setTimeout(() => {
+      console.log('Re-initializing drag and drop for modal');
+      initTechIssueColumnDragDrop();
+    }, 200);
   });
 
   // Close modal
@@ -855,16 +944,16 @@ function initTechIssueTableSettings() {
     modal.style.display = 'none';
   });
 
-  // Reset settings
-  resetBtn.addEventListener('click', () => {
-    resetTechIssueColumnSettings();
-  });
-
   // Make column list sortable
   initTechIssueColumnDragDrop();
   
   // Load saved settings on init
   loadTechIssueColumnSettings();
+  
+  // Re-initialize drag drop after loading settings
+  setTimeout(() => {
+    initTechIssueColumnDragDrop();
+  }, 100);
   
   // Apply any saved settings to the table
   applyTechIssueColumnSettings();
@@ -922,146 +1011,218 @@ function saveTechIssueColumnSettings() {
 
 function applyTechIssueColumnSettings() {
   try {
-    const savedSettings = localStorage.getItem('techIssueColumnSettings');
-    if (!savedSettings) {
-      console.log('No saved tech issue column settings found');
-      return;
-    }
-    
-    const settings = JSON.parse(savedSettings);
-    console.log('Applying tech issue column settings:', settings);
-    
+    const columnList = document.getElementById('tech-issue-column-list');
     const table = document.querySelector('.tech-issue-table-container .tech-issue-table');
-    if (!table) {
-      console.error('Tech issue table not found');
+    
+    if (!columnList || !table) {
+      console.error('Column list or table not found');
       return;
     }
+
+    const thead = table.querySelector('thead tr');
+    const tbody = table.querySelector('tbody');
     
-    const headers = table.querySelectorAll('thead th');
-    const rows = table.querySelectorAll('tbody tr');
+    if (!thead || !tbody) {
+      console.error('Table head or body not found');
+      return;
+    }
+
+    // Get current column order and visibility from the modal
+    const columnItems = columnList.querySelectorAll('.column-item');
+    const newColumnOrder = Array.from(columnItems).map(item => {
+      const checkbox = item.querySelector('input[type="checkbox"]');
+      return {
+        column: item.dataset.column,
+        visible: checkbox.checked
+      };
+    });
     
-    console.log('Found headers:', headers.length, 'Found rows:', rows.length);
+    console.log('Applying column order:', newColumnOrder);
+
+    // Store original headers and their settings button
+    const originalHeaders = Array.from(thead.querySelectorAll('th[data-column]'));
+    const settingsHeader = thead.querySelector('.tech-issue-settings-column');
     
-    // Apply visibility and reorder columns
-    Object.keys(settings.visibility).forEach(columnKey => {
-      const isVisible = settings.visibility[columnKey];
-      
-      // Find header by data-column attribute
-      const header = table.querySelector(`thead th[data-column="${columnKey}"]`);
+    // Create a map of original headers for quick lookup
+    const headerMap = {};
+    originalHeaders.forEach(header => {
+      headerMap[header.dataset.column] = header;
+    });
+    
+    // Clear current headers (except settings)
+    originalHeaders.forEach(header => header.remove());
+    
+    // Reorder and show/hide headers according to modal order
+    newColumnOrder.forEach(({column, visible}) => {
+      const header = headerMap[column];
       if (header) {
-        header.style.display = isVisible ? '' : 'none';
-        console.log(`Column ${columnKey}: ${isVisible ? 'visible' : 'hidden'}`);
+        // Set visibility
+        header.style.display = visible ? '' : 'none';
         
-        // Find corresponding cells in all rows
-        const columnIndex = Array.from(headers).indexOf(header);
-        if (columnIndex >= 0) {
-          rows.forEach(row => {
-            const cell = row.children[columnIndex];
-            if (cell) {
-              cell.style.display = isVisible ? '' : 'none';
-            }
-          });
-        }
-      } else {
-        console.warn(`Header not found for column: ${columnKey}`);
+        // Insert in new order before settings column
+        thead.insertBefore(header, settingsHeader);
       }
     });
+
+    // Reorder table body cells to match new header order
+    const rows = tbody.querySelectorAll('tr');
+    rows.forEach(row => {
+      const originalCells = Array.from(row.querySelectorAll('td[data-column]'));
+      const settingsCell = row.querySelector('.tech-issue-settings-cell');
+      
+      // Create a map of original cells for quick lookup
+      const cellMap = {};
+      originalCells.forEach(cell => {
+        cellMap[cell.dataset.column] = cell;
+      });
+      
+      // Remove original cells (except settings)
+      originalCells.forEach(cell => cell.remove());
+      
+      // Reorder and show/hide cells according to new order
+      newColumnOrder.forEach(({column, visible}) => {
+        const cell = cellMap[column];
+        if (cell) {
+          // Set visibility
+          cell.style.display = visible ? '' : 'none';
+          
+          // Insert in new order before settings cell
+          row.insertBefore(cell, settingsCell);
+        }
+      });
+    });
+
+    console.log('Column order and visibility applied successfully');
   } catch (error) {
     console.error('Error applying tech issue column settings:', error);
   }
 }
 
-function resetTechIssueColumnSettings() {
-  try {
-    const columnList = document.getElementById('tech-issue-column-list');
-    const columnItems = columnList.querySelectorAll('.column-item');
-    
-    // Reset all checkboxes to checked
-    columnItems.forEach(item => {
-      const checkbox = item.querySelector('input[type="checkbox"]');
-      checkbox.checked = true;
-    });
-    
-    // Reset order to default
-    const defaultOrder = ['date', 'operator', 'start-time', 'problem-type', 
-                         'floor', 'room', 'comment', 'supervisor', 'action'];
-    
-    defaultOrder.forEach(columnKey => {
-      const item = columnList.querySelector(`[data-column="${columnKey}"]`);
-      if (item) {
-        columnList.appendChild(item);
-      }
-    });
-    
-    // Clear saved settings
-    localStorage.removeItem('techIssueColumnSettings');
-    
-    // Show all columns (reset visibility)
-    const table = document.querySelector('.tech-issue-table-container .tech-issue-table');
-    if (table) {
-      const headers = table.querySelectorAll('thead th');
-      const rows = table.querySelectorAll('tbody tr');
-      
-      headers.forEach((header, index) => {
-        header.style.display = '';
-        rows.forEach(row => {
-          const cell = row.children[index];
-          if (cell) {
-            cell.style.display = '';
-          }
-        });
-      });
-    }
-  } catch (error) {
-    console.error('Error resetting tech issue column settings:', error);
-  }
-}
-
 function initTechIssueColumnDragDrop() {
   const columnList = document.getElementById('tech-issue-column-list');
-  if (!columnList) return;
+  if (!columnList) {
+    console.warn('Column list not found for drag and drop');
+    return;
+  }
   
+  console.log('Initializing drag and drop...');
+  
+  // Simple sortable implementation
   let draggedElement = null;
+  let placeholder = null;
   
-  columnList.addEventListener('dragstart', (e) => {
-    if (e.target.classList.contains('column-item')) {
-      draggedElement = e.target;
-      e.target.style.opacity = '0.5';
-    }
-  });
+  // Create placeholder element
+  function createPlaceholder() {
+    placeholder = document.createElement('div');
+    placeholder.className = 'drag-placeholder';
+    placeholder.style.height = '50px';
+    placeholder.style.border = '2px dashed #003f7d';
+    placeholder.style.borderRadius = '8px';
+    placeholder.style.backgroundColor = 'rgba(0, 63, 125, 0.1)';
+    placeholder.style.margin = '5px 0';
+    return placeholder;
+  }
   
-  columnList.addEventListener('dragend', (e) => {
-    if (e.target.classList.contains('column-item')) {
-      e.target.style.opacity = '';
-      draggedElement = null;
-    }
-  });
-  
-  columnList.addEventListener('dragover', (e) => {
-    e.preventDefault();
-  });
-  
-  columnList.addEventListener('drop', (e) => {
-    e.preventDefault();
-    const target = e.target.closest('.column-item');
+  function handleDragStart(e) {
+    draggedElement = e.target;
+    e.target.style.opacity = '0.5';
     
-    if (target && draggedElement && target !== draggedElement) {
-      const rect = target.getBoundingClientRect();
-      const midpoint = rect.top + rect.height / 2;
+    // Create and insert placeholder
+    placeholder = createPlaceholder();
+    draggedElement.parentNode.insertBefore(placeholder, draggedElement.nextSibling);
+    
+    console.log('Drag started for:', draggedElement.dataset.column);
+  }
+  
+  function handleDragEnd(e) {
+    e.target.style.opacity = '';
+    
+    // Replace placeholder with dragged element
+    if (placeholder && placeholder.parentNode) {
+      placeholder.parentNode.insertBefore(draggedElement, placeholder);
+      placeholder.parentNode.removeChild(placeholder);
+    }
+    
+    draggedElement = null;
+    placeholder = null;
+    
+    console.log('Drag ended');
+  }
+  
+  function handleDragOver(e) {
+    e.preventDefault();
+    
+    if (!draggedElement || !placeholder) return;
+    
+    const afterElement = getDragAfterElement(columnList, e.clientY);
+    
+    if (afterElement == null) {
+      columnList.appendChild(placeholder);
+    } else {
+      columnList.insertBefore(placeholder, afterElement);
+    }
+  }
+  
+  function handleDrop(e) {
+    e.preventDefault();
+    console.log('Drop event fired');
+  }
+  
+  // Clear existing listeners
+  const existingItems = columnList.querySelectorAll('.column-item');
+  existingItems.forEach(item => {
+    item.removeEventListener('dragstart', handleDragStart);
+    item.removeEventListener('dragend', handleDragEnd);
+  });
+  
+  columnList.removeEventListener('dragover', handleDragOver);
+  columnList.removeEventListener('drop', handleDrop);
+  
+  // Add event listeners to container
+  columnList.addEventListener('dragover', handleDragOver);
+  columnList.addEventListener('drop', handleDrop);
+  
+  // Setup draggable items
+  const columnItems = columnList.querySelectorAll('.column-item');
+  console.log('Found', columnItems.length, 'column items to make draggable');
+  
+  columnItems.forEach((item, index) => {
+    // Make item draggable
+    item.draggable = true;
+    item.addEventListener('dragstart', handleDragStart);
+    item.addEventListener('dragend', handleDragEnd);
+    
+    console.log(`Item ${index}: ${item.dataset.column} - made draggable`);
+    
+    // Style the drag handle
+    const dragHandle = item.querySelector('.drag-handle');
+    if (dragHandle) {
+      dragHandle.style.cursor = 'grab';
+      dragHandle.title = 'Drag to reorder';
       
-      if (e.clientY < midpoint) {
-        columnList.insertBefore(draggedElement, target);
-      } else {
-        columnList.insertBefore(draggedElement, target.nextSibling);
-      }
+      console.log(`Drag handle found for ${item.dataset.column}`);
+    } else {
+      console.warn(`No drag handle found for ${item.dataset.column}`);
     }
   });
   
-  // Make column items draggable
-  const columnItems = columnList.querySelectorAll('.column-item');
-  columnItems.forEach(item => {
-    item.draggable = true;
-  });
+  console.log('Drag and drop setup completed');
+}
+
+// Helper function to determine where to insert the dragged element
+function getDragAfterElement(container, y) {
+  const draggableElements = [...container.querySelectorAll('.column-item:not([style*="opacity"])')];
+  
+  return draggableElements.reduce((closest, child) => {
+    const box = child.getBoundingClientRect();
+    const offset = y - box.top - box.height / 2;
+    
+    if (offset < 0 && offset > closest.offset) {
+      return { offset: offset, element: child };
+    } else {
+      return closest;
+    }
+  }, { offset: Number.NEGATIVE_INFINITY }).element;
 }
 
 // Make functions globally available

@@ -2336,17 +2336,23 @@
                 <!-- Filters Section -->
                 <div class="tech-issue-filters">
                   <div class="tech-issue-filter-item">
-                    <input type="text" id="operator-name-filter" class="tech-issue-filter-input" placeholder="Filter by Operator Name...">
+                    <select id="filter-type-selector" class="tech-issue-filter-input">
+                      <option value="operator">Filter by Operator</option>
+                      <option value="problem-type">Filter by Problem Type</option>
+                      <option value="floor">Filter by Floor</option>
+                      <option value="room">Filter by Room Number</option>
+                      <option value="supervisor">Filter by Supervisor</option>
+                      <option value="date">Filter by Date</option>
+                    </select>
                   </div>
                   <div class="tech-issue-filter-item">
-                    <input type="text" id="problem-type-filter" class="tech-issue-filter-input" placeholder="Filter by Problem Type...">
+                    <input type="text" id="primary-filter-input" class="tech-issue-filter-input" placeholder="Enter filter value...">
+                    <input type="date" id="date-filter-input" class="tech-issue-filter-input" placeholder="Select date..." style="display: none;">
                   </div>
                   <div class="tech-issue-filter-item">
-                    <input type="date" id="date-filter" class="tech-issue-filter-input" placeholder="Filter by Date...">
-                  </div>
-                  <div class="tech-issue-filter-item">
-                    <button class="tech-issue-settings-btn" id="tech-issue-settings-btn" title="Настройки таблицы">
-                      <span class="material-icons">settings</span>
+                    <button id="clear-filter-btn" class="tech-issue-filter-btn tech-issue-filter-btn-clear">
+                      <span class="material-icons">clear</span>
+                      Clear
                     </button>
                   </div>
                 </div>
@@ -2365,6 +2371,11 @@
                         <th class="tech-issue-th" data-column="comment">Comment</th>
                         <th class="tech-issue-th" data-column="supervisor">Supervisor Name</th>
                         <th class="tech-issue-th" data-column="action">Action</th>
+                        <th class="tech-issue-th tech-issue-settings-column">
+                          <button class="tech-issue-settings-btn" id="tech-issue-settings-btn" title="Настройки таблицы">
+                            <span class="material-icons">settings</span>
+                          </button>
+                        </th>
                       </tr>
                     </thead>
                     <tbody id="tech-issue-table-body" class="tech-issue-table-body">
@@ -2524,9 +2535,6 @@
                       </div>
                     </div>
                     <div class="table-settings-modal-footer">
-                      <button class="table-settings-reset" id="tech-issue-table-settings-reset">
-                        Сбросить по умолчанию
-                      </button>
                       <button class="table-settings-apply" id="tech-issue-table-settings-apply">
                         Применить
                       </button>

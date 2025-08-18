@@ -31,11 +31,14 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   height: 90vh;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Filters Section */
 .tech-issue-filters {
   display: flex;
+  align-items: center;
   gap: 15px;
   padding: 20px;
   background: #f8f9fa;
@@ -68,10 +71,47 @@
   color: #adb5bd;
 }
 
+/* Filter Button Styles */
+.tech-issue-filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  color: white;
+  margin-right: 8px;
+}
+
+.tech-issue-filter-btn:hover {
+  background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+  /* transform: translateY(-1px); */
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+.tech-issue-filter-btn-clear {
+  background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+}
+
+.tech-issue-filter-btn-clear:hover {
+  background: linear-gradient(135deg, #495057 0%, #343a40 100%);
+  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+.tech-issue-filter-btn .material-icons {
+  font-size: 18px;
+}
+
 /* Table Styles */
 .tech-issue-table-container {
   overflow-x: auto;
-  max-height: calc(100vh - 257px);
+  flex: 1;
+  overflow-y: auto;
 }
 
 .tech-issue-table {
@@ -209,6 +249,8 @@
   padding: 20px;
   border-top: 1px solid #e9ecef;
   background: #f8f9fa;
+  flex-shrink: 0;
+  margin-top: auto;
 }
 
 .tech-issue-add-btn {
@@ -804,10 +846,26 @@
   font-size: 21px;
 }
 
+/* Settings column styles */
+.tech-issue-settings-column {
+  width: 60px !important;
+  min-width: 60px;
+  text-align: center;
+  padding: 8px 4px !important;
+  border-left: 1px solid #e5e7eb;
+}
+
+.tech-issue-settings-cell {
+  width: 60px !important;
+  text-align: center;
+  padding: 8px 4px !important;
+  border-left: 1px solid #e5e7eb;
+}
+
 .drag-handle {
   color: #94a3b8;
   font-family: monospace;
-  font-size: 0px;
+  font-size: 14px;
   font-weight: bold;
   cursor: grab;
   padding: 4px;
@@ -824,6 +882,34 @@
 
 .column-item:active .drag-handle {
   cursor: grabbing;
+}
+
+.column-item.drag-over {
+  background: rgba(0, 63, 125, 0.1);
+  border: 2px dashed #003f7d;
+  border-radius: 8px;
+}
+
+.column-item[draggable="true"] {
+  transition: all 0.2s ease;
+}
+
+.column-item[draggable="true"]:hover {
+  background: rgba(0, 63, 125, 0.05);
+  border-radius: 8px;
+}
+
+.drag-placeholder {
+  height: 50px;
+  border: 2px dashed #003f7d;
+  border-radius: 8px;
+  background-color: rgba(0, 63, 125, 0.1);
+  margin: 5px 0;
+  opacity: 0.7;
+}
+
+.column-item[draggable="true"] {
+  cursor: move;
 }
 
 .column-item label {
@@ -864,29 +950,6 @@
   background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
   border-top: 1px solid rgba(148, 163, 184, 0.2);
   border-radius: 0 0 16px 16px;
-}
-
-.table-settings-reset {
-  background: #ffffff;
-  color: #64748b;
-  border: 1.5px solid rgba(148, 163, 184, 0.3);
-  padding: 10px 20px;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.table-settings-reset:hover {
-  background: #f1f5f9;
-  border-color: #94a3b8;
-  color: #475569;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(148, 163, 184, 0.2);
 }
 
 .table-settings-apply {
@@ -955,7 +1018,6 @@
     gap: 8px;
   }
 
-  .table-settings-reset,
   .table-settings-apply {
     width: 100%;
     justify-content: center;
