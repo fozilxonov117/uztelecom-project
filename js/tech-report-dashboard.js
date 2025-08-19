@@ -170,8 +170,12 @@ function populateTechReportTable() {
       <td class="tech-report-td tech-report-supervisor" data-column="supervisor">${report.supervisor}</td>
       <td class="tech-report-td tech-report-time" data-column="startTime">${report.startTime}</td>
       <td class="tech-report-td tech-report-time" data-column="endTime">${report.endTime}</td>
-      <td class="tech-report-td tech-report-notes" data-column="notes">${report.notes}</td>
-      <td class="tech-report-td tech-report-comments" data-column="comments">${report.comments}</td>
+      <td class="tech-report-td tech-report-notes" data-column="notes">
+        <div class="cell-scroll cell-notes">${report.notes}</div>
+      </td>
+      <td class="tech-report-td tech-report-comments" data-column="comments">
+        <div class="cell-scroll cell-comments">${report.comments}</div>
+      </td>
       <td class="tech-report-td" data-column="atcType">
         <span class="tech-report-atc-type">${report.atcType}</span>
       </td>

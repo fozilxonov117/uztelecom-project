@@ -199,6 +199,22 @@
   color: #6c757d;
 }
 
+/* Scrollable cell content for long Notes and Comments */
+.cell-scroll {
+  max-height: 56px; /* limit height to ~2-3 lines depending on font-size */
+  overflow-y: auto;
+  padding-right: 6px; /* give space for scrollbar */
+  line-height: 1.3;
+}
+
+.cell-notes { max-width: 250px; }
+.cell-comments { max-width: 200px; }
+
+/* Thin custom scrollbar for scrollable cells */
+.cell-scroll::-webkit-scrollbar { width: 8px; }
+.cell-scroll::-webkit-scrollbar-thumb { background: #e1e8ff; border-radius: 6px; }
+.cell-scroll::-webkit-scrollbar-thumb:hover { background: #cfe0ff; }
+
 .tech-report-atc-type {
   display: inline-block;
   padding: 4px 8px;
