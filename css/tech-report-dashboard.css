@@ -49,13 +49,14 @@
 .tech-report-filter-item {
   flex: 1;
   min-width: 200px;
+  max-width: 300px;
 }
 
 .tech-report-filter-input {
   width: 100%;
   padding: 10px 15px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  border: 2px solid #e1e5f2;
+  border-radius: 12px;
   font-size: 14px;
   background: white;
   transition: border-color 0.3s ease;
@@ -255,6 +256,145 @@
   border-left: 1px solid #e5e7eb;
 }
 
+/* Compact modern edit button used in table rows */
+.tech-report-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(180deg, #1e90ff 0%, #007bff 100%);
+  color: #fff;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,123,255,0.18);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.tech-report-action-btn .material-icons {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.tech-report-action-btn:hover {
+  /* transform: translateY(-1px); */
+  box-shadow: 0 6px 18px rgba(0,123,255,0.22);
+}
+
+/* Make the button more compact on very small screens */
+@media (max-width: 420px) {
+  .tech-report-action-btn { padding: 6px; border-radius: 8px; }
+  .tech-report-action-btn .btn-label { display: none; }
+}
+
+/* Modern select styles for ATC and Service in add-modal */
+#tech-report-atc-container,
+#tech-report-service-container {
+  position: relative;
+}
+
+#tech-report-atc-container .modern-select-display,
+#tech-report-service-container .modern-select-display {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  min-height: 40px;
+  transition: box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+#tech-report-atc-container .modern-select-display:hover,
+#tech-report-service-container .modern-select-display:hover {
+  border-color: #9fc5ff;
+  box-shadow: 0 4px 14px rgba(59,130,246,0.08);
+}
+
+#tech-report-atc-container .modern-select-placeholder,
+#tech-report-service-container .modern-select-placeholder {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+#tech-report-atc-container .modern-select-arrow,
+#tech-report-service-container .modern-select-arrow {
+  color: #6b7280;
+  margin-left: 8px;
+}
+
+#tech-report-atc-container .modern-select-dropdown,
+#tech-report-service-container .modern-select-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #e6edf8;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(11, 33, 71, 0.08);
+  z-index: 1200;
+  max-height: 280px;
+  overflow: hidden;
+}
+
+#tech-report-service-container .modern-select-search {
+  padding: 10px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+#tech-report-service-container .modern-select-search input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #e6eefc;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+#tech-report-atc-container .modern-select-options,
+#tech-report-service-container .modern-select-options {
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+#tech-report-atc-container .modern-select-option,
+#tech-report-service-container .modern-select-option {
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: background 0.14s ease;
+  border-bottom: 1px solid #f6f9fc;
+  font-size: 14px;
+  color: #1f2937;
+}
+
+#tech-report-atc-container .modern-select-option:hover,
+#tech-report-service-container .modern-select-option:hover {
+  background: linear-gradient(90deg, #f8fafc, #eef6ff);
+  color: #0366d6;
+}
+
+/* Scrollbar */
+#tech-report-atc-container .modern-select-options::-webkit-scrollbar,
+#tech-report-service-container .modern-select-options::-webkit-scrollbar {
+  width: 8px;
+}
+#tech-report-atc-container .modern-select-options::-webkit-scrollbar-thumb,
+#tech-report-service-container .modern-select-options::-webkit-scrollbar-thumb {
+  background: #dbeafe;
+  border-radius: 999px;
+}
+
+/* small caret positioning for display */
+#tech-report-atc-container .modern-select-display .modern-select-arrow,
+#tech-report-service-container .modern-select-display .modern-select-arrow {
+  display: inline-block;
+  transform: translateY(-1px);
+}
+
 /* Actions Section */
 .tech-report-actions {
   padding: 20px;
@@ -291,8 +431,8 @@
 .tech-report-add-modal {
   position: absolute;
   top: 0;
-  left: 20px;
-  right: 20px;
+  left: 550px;
+  right: 550px;
   background: white;
   border-bottom: 2px solid #007bff;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);

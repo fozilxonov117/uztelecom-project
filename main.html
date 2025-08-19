@@ -2457,19 +2457,86 @@
                                 <!-- Options will be populated dynamically -->
                               </div>
                             </div>
-                            <select id="tech-operator-name" name="operatorName" required style="display: none;">
+                            <select id="tech-operator-name" name="operatorName" style="display: none;">
                               <option value="">Выберите оператора...</option>
                             </select>
                           </div>
                         </div>
                         <div class="tech-issue-form-group">
                           <label for="tech-problem-type">Тип проблемы</label>
-                          <select id="tech-problem-type" name="problemType" required>
-                            <option value="">Выберите тип проблемы</option>
-                            <option value="РМОДа носадник">РМОДа носозлик</option>
-                            <option value="Техник носадник">Техник носозлик</option>
-                            <option value="Наушникидат носадник">Наушникидат носозлик</option>
-                          </select>
+                          <div class="modern-select-container" id="tech-problem-type-container">
+                            <div class="modern-select-display" id="tech-problem-type-display">
+                              <span class="modern-select-placeholder">Выберите тип проблемы</span>
+                              <span class="modern-select-arrow">
+                                <span class="material-icons">expand_more</span>
+                              </span>
+                            </div>
+                            <div class="modern-select-dropdown" id="tech-problem-type-dropdown">
+                              <div class="modern-select-search">
+                                <input type="text" placeholder="Поиск типа проблемы..." id="tech-problem-type-search">
+                              </div>
+                              <div class="modern-select-options" id="tech-problem-type-options">
+                                <div class="modern-select-option" data-value="РМОДа носозлик">
+                                  <span class="problem-type-icon">🖥️</span>
+                                  <span class="problem-type-text">РМОДа носозлик</span>
+                                </div>
+                                <div class="modern-select-option" data-value="Техник носозлик">
+                                  <span class="problem-type-icon">⚙️</span>
+                                  <span class="problem-type-text">Техник носозлик</span>
+                                </div>
+                                <div class="modern-select-option" data-value="Наушникдаги носозлик">
+                                  <span class="problem-type-icon">🎧</span>
+                                  <span class="problem-type-text">Наушникдаги носозлик</span>
+                                </div>
+                                <div class="modern-select-option" data-value="Компютер ўчиб қолиши">
+                                  <span class="problem-type-icon">💻</span>
+                                  <span class="problem-type-text">Компютер ўчиб қолиши</span>
+                                </div>
+                                <div class="modern-select-option" data-value="РМО ёқилиб кетган">
+                                  <span class="problem-type-icon">🔥</span>
+                                  <span class="problem-type-text">РМО ёқилиб кетган</span>
+                                </div>
+                                <div class="modern-select-option" data-value="Пропущенный">
+                                  <span class="problem-type-icon">⏰</span>
+                                  <span class="problem-type-text">Пропущенный</span>
+                                </div>
+                                <div class="modern-select-option" data-value="отключения электроэнергии">
+                                  <span class="problem-type-icon">⚡</span>
+                                  <span class="problem-type-text">отключения электроэнергии(Удалёнка)</span>
+                                </div>
+                                <div class="modern-select-option" data-value="Кейсдаги носозлик">
+                                  <span class="problem-type-icon">📦</span>
+                                  <span class="problem-type-text">Кейсдаги носозлик</span>
+                                </div>
+                                <div class="modern-select-option" data-value="Монитордаги носозлик">
+                                  <span class="problem-type-icon">📺</span>
+                                  <span class="problem-type-text">Монитордаги носозлик</span>
+                                </div>
+                                <div class="modern-select-option" data-value="Клавиатурадаги носозлик">
+                                  <span class="problem-type-icon">⌨️</span>
+                                  <span class="problem-type-text">Клавиатурадаги носозлик</span>
+                                </div>
+                                <div class="modern-select-option" data-value="Мышкадаги носозлик">
+                                  <span class="problem-type-icon">🖱️</span>
+                                  <span class="problem-type-text">Мышкадаги носозлик</span>
+                                </div>
+                              </div>
+                            </div>
+                            <select id="tech-problem-type" name="problemType" style="display: none;">
+                              <option value="">Выберите тип проблемы</option>
+                              <option value="РМОДа носозлик">РМОДа носозлик</option>
+                              <option value="Техник носозлик">Техник носозлик</option>
+                              <option value="Наушникдаги носозлик">Наушникдаги носозлик</option>
+                              <option value="Компютер ўчиб қолиши">Компютер ўчиб қолиши</option>
+                              <option value="РМО ёқилиб кетган">РМО ёқилиб кетган</option>
+                              <option value="Пропущенный">Пропущенный</option>
+                              <option value="отключения электроэнергии">отключения электроэнергии(Удалёнка)</option>
+                              <option value="Кейсдаги носозлик">Кейсдаги носозлик</option>
+                              <option value="Монитордаги носозлик">Монитордаги носозлик</option>
+                              <option value="Клавиатурадаги носозлик">Клавиатурадаги носозлик</option>
+                              <option value="Мышкадаги носозлик">Мышкадаги носозлик</option>
+                            </select>
+                          </div>
                         </div>
                         <div class="tech-issue-form-group">
                           <label for="tech-timestamp">Время</label>
@@ -2477,13 +2544,37 @@
                         </div>
                         <div class="tech-issue-form-group">
                           <label for="tech-floor">Этаж</label>
-                          <select id="tech-floor" name="floor" required>
-                            <option value="">Выберите этаж</option>
-                            <option value="1">1 этаж</option>
-                            <option value="2">2 этаж</option>
-                            <option value="3">3 этаж</option>
-                            <option value="4">4 этаж</option>
-                          </select>
+                          <div class="modern-select-container" id="tech-floor-container">
+                            <div class="modern-select-display" id="tech-floor-display">
+                              <span class="modern-select-placeholder">Выберите этаж</span>
+                              <span class="modern-select-arrow">
+                                <span class="material-icons">expand_more</span>
+                              </span>
+                            </div>
+                            <div class="modern-select-dropdown" id="tech-floor-dropdown">
+                              <div class="modern-select-options" id="tech-floor-options">
+                                <div class="modern-select-option" data-value="1">
+                                  <span class="floor-text">1 этаж</span>
+                                </div>
+                                <div class="modern-select-option" data-value="2">
+                                  <span class="floor-text">2 этаж</span>
+                                </div>
+                                <div class="modern-select-option" data-value="3">
+                                  <span class="floor-text">3 этаж</span>
+                                </div>
+                                <div class="modern-select-option" data-value="4">
+                                  <span class="floor-text">4 этаж</span>
+                                </div>
+                              </div>
+                            </div>
+                            <select id="tech-floor" name="floor" style="display: none;">
+                              <option value="">Выберите этаж</option>
+                              <option value="1">1 этаж</option>
+                              <option value="2">2 этаж</option>
+                              <option value="3">3 этаж</option>
+                              <option value="4">4 этаж</option>
+                            </select>
+                          </div>
                         </div>
                         <div class="tech-issue-form-group">
                           <label for="tech-table-number">Номер стола</label>
@@ -2607,25 +2698,40 @@
                     <input type="text" id="tech-report-filter-input" class="tech-report-filter-input" placeholder="Filter issues...">
                   </div>
                   <div class="tech-report-filter-item">
-                    <select id="tech-report-filter-type" class="tech-report-filter-input">
-                      <option value="">All Types</option>
-                      <option value="Network Access">Network Access</option>
-                      <option value="Web Application">Web Application</option>
-                      <option value="Remote Desktop">Remote Desktop</option>
-                      <option value="User Authentication">User Authentication</option>
-                      <option value="System Health">System Health</option>
-                      <option value="Database Service">Database Service</option>
-                      <option value="Power Supply">Power Supply</option>
-                      <option value="Network Connectivity">Network Connectivity</option>
-                      <option value="User Profile Management">User Profile Management</option>
-                      <option value="Switch Configuration">Switch Configuration</option>
-                      <option value="Authentication Service">Authentication Service</option>
-                      <option value="Emergency Power">Emergency Power</option>
-                      <option value="Internet Access">Internet Access</option>
-                      <option value="ISP Service">ISP Service</option>
-                      <option value="Hardware Reset">Hardware Reset</option>
-                      <option value="Building Power">Building Power</option>
-                    </select>
+                    <div class="modern-select-dropdown" id="tech-report-filter-dropdown">
+                      <div class="select-button" id="tech-report-filter-button">
+                        <span class="select-icon"><span class="material-icons">filter_alt</span></span>
+                        <span class="select-text" id="tech-report-filter-text">Filter by</span>
+                        <span class="select-arrow"><span class="material-icons">expand_more</span></span>
+                      </div>
+                      <div class="select-dropdown-menu" id="tech-report-filter-menu" style="display: none;">
+                        <div class="dropdown-option" data-value="">
+                          <span class="option-icon"><span class="material-icons">search</span></span>
+                          <span class="option-text">All fields</span>
+                        </div>
+                        <div class="dropdown-option" data-value="date">
+                          <span class="option-icon"><span class="material-icons">calendar_today</span></span>
+                          <span class="option-text">Date</span>
+                        </div>
+                        <div class="dropdown-option" data-value="supervisor">
+                          <span class="option-icon"><span class="material-icons">person</span></span>
+                          <span class="option-text">Supervisor Name</span>
+                        </div>
+                        <div class="dropdown-option" data-value="notes">
+                          <span class="option-icon"><span class="material-icons">note</span></span>
+                          <span class="option-text">Notes</span>
+                        </div>
+                        <div class="dropdown-option" data-value="atcType">
+                          <span class="option-icon"><span class="material-icons">settings_input_component</span></span>
+                          <span class="option-text">ATC Type</span>
+                        </div>
+                        <div class="dropdown-option" data-value="serviceName">
+                          <span class="option-icon"><span class="material-icons">design_services</span></span>
+                          <span class="option-text">Service Name</span>
+                        </div>
+                      </div>
+                    </div>
+                    <input type="hidden" id="tech-report-filter-type" value="">
                   </div>
                   <div class="tech-report-filter-item">
                     <button id="tech-report-clear-filter-btn" class="tech-report-filter-btn tech-report-filter-btn-clear">
@@ -2750,15 +2856,27 @@
                     <div class="tech-report-form-row">
                       <div class="tech-report-form-group">
                         <label for="tech-report-atc-type">ATC Type *</label>
-                        <select id="tech-report-atc-type" name="atcType" required>
+                        <select id="tech-report-atc-type" name="atcType" required style="display:none;">
                           <option value="">Select ATC Type</option>
                           <option value="255">255</option>
                           <option value="229">229</option>
                         </select>
+                        <div class="modern-select-container" id="tech-report-atc-container">
+                          <div class="modern-select-display" id="tech-report-atc-display">
+                            <span class="modern-select-placeholder">Select ATC Type</span>
+                            <span class="modern-select-arrow">▾</span>
+                          </div>
+                          <div class="modern-select-dropdown" id="tech-report-atc-dropdown" style="display:none;">
+                            <div class="modern-select-options" id="tech-report-atc-options">
+                              <div class="modern-select-option" data-value="255">255</div>
+                              <div class="modern-select-option" data-value="229">229</div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                       <div class="tech-report-form-group">
                         <label for="tech-report-service-name">Service Name *</label>
-                        <select id="tech-report-service-name" name="serviceName" required>
+                        <select id="tech-report-service-name" name="serviceName" required style="display:none;">
                           <option value="">Select Service</option>
                           <option value="Network Access">Network Access</option>
                           <option value="Web Application">Web Application</option>
@@ -2777,6 +2895,35 @@
                           <option value="Hardware Reset">Hardware Reset</option>
                           <option value="Building Power">Building Power</option>
                         </select>
+                        <div class="modern-select-container" id="tech-report-service-container">
+                          <div class="modern-select-display" id="tech-report-service-display">
+                            <span class="modern-select-placeholder">Select Service</span>
+                            <span class="modern-select-arrow">▾</span>
+                          </div>
+                          <div class="modern-select-dropdown" id="tech-report-service-dropdown" style="display:none;">
+                            <div class="modern-select-search">
+                              <input type="text" id="tech-report-service-search" placeholder="Search services...">
+                            </div>
+                            <div class="modern-select-options" id="tech-report-service-options">
+                              <div class="modern-select-option" data-value="Network Access">Network Access</div>
+                              <div class="modern-select-option" data-value="Web Application">Web Application</div>
+                              <div class="modern-select-option" data-value="Remote Desktop">Remote Desktop</div>
+                              <div class="modern-select-option" data-value="User Authentication">User Authentication</div>
+                              <div class="modern-select-option" data-value="System Health">System Health</div>
+                              <div class="modern-select-option" data-value="Database Service">Database Service</div>
+                              <div class="modern-select-option" data-value="Power Supply">Power Supply</div>
+                              <div class="modern-select-option" data-value="Network Connectivity">Network Connectivity</div>
+                              <div class="modern-select-option" data-value="User Profile Management">User Profile Management</div>
+                              <div class="modern-select-option" data-value="Switch Configuration">Switch Configuration</div>
+                              <div class="modern-select-option" data-value="Authentication Service">Authentication Service</div>
+                              <div class="modern-select-option" data-value="Emergency Power">Emergency Power</div>
+                              <div class="modern-select-option" data-value="Internet Access">Internet Access</div>
+                              <div class="modern-select-option" data-value="ISP Service">ISP Service</div>
+                              <div class="modern-select-option" data-value="Hardware Reset">Hardware Reset</div>
+                              <div class="modern-select-option" data-value="Building Power">Building Power</div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                     

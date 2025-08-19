@@ -144,6 +144,11 @@ function initTechReportDashboard() {
   
   // Initialize filtering
   initTechReportFiltering();
+  // Initialize modern dropdown for filter type
+  initTechReportFilterDropdown();
+  // Initialize modern dropdowns inside add-modal
+  initTechReportATCDropdown();
+  initTechReportServiceDropdown();
   
   // Initialize table settings
   initTechReportTableSettings();
@@ -172,7 +177,10 @@ function populateTechReportTable() {
       </td>
       <td class="tech-report-td tech-report-service" data-column="serviceName">${report.serviceName}</td>
       <td class="tech-report-settings-cell">
-        <button class="tech-report-action-btn" onclick="editTechReport(${report.id})">Edit</button>
+        <button class="tech-report-action-btn" onclick="editTechReport(${report.id})">
+          <span class="material-icons">edit</span>
+          <span class="btn-label">Edit</span>
+        </button>
       </td>
     `;
     tableBody.appendChild(row);
@@ -319,7 +327,13 @@ function showTechReportAddModal() {
     const dateInput = document.getElementById('tech-report-date');
     if (dateInput) {
       const today = new Date().toISOString().split('T')[0];
-      dateInput.value = today;
+      // If editing, we don't override the date; otherwise set default
+      if (!window.currentEditingReportId) dateInput.value = today;
+    }
+    // Update submit button text based on edit/create mode
+    const submitBtn = modal.querySelector('.tech-report-submit-btn');
+    if (submitBtn) {
+      submitBtn.textContent = window.currentEditingReportId ? 'Save Changes' : 'Add Report';
     }
   }
 }
@@ -343,7 +357,28 @@ function hideTechReportAddModal() {
         supervisorSelect.removeAttribute('data-selected-value');
       }
     }
+    // Clear edit state and reset submit button text
+    window.currentEditingReportId = null;
+    const submitBtn = modal.querySelector('.tech-report-submit-btn');
+    if (submitBtn) submitBtn.textContent = 'Add Report';
   }
+}
+
+function convertDateToInputValue(dateStr) {
+  // Expects dateStr in DD.MM.YYYY or DD.MM format; returns YYYY-MM-DD or empty
+  if (!dateStr) return '';
+  const parts = dateStr.split('.');
+  if (parts.length === 3) {
+    const [d, m, y] = parts;
+    return `${y.padStart(4,'0')}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
+  }
+  // If only DD.MM provided, assume current year
+  if (parts.length === 2) {
+    const [d, m] = parts;
+    const y = new Date().getFullYear();
+    return `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
+  }
+  return '';
 }
 
 function handleTechReportSubmit(e) {
@@ -359,8 +394,7 @@ function handleTechReportSubmit(e) {
     return;
   }
 
-  const newReport = {
-    id: Date.now(), // Simple ID generation
+  const reportData = {
     date: formatDateToDDMMYYYY(formData.get('date')),
     supervisor: supervisorSelect.querySelector('.select-placeholder').textContent,
     startTime: formData.get('startTime'),
@@ -371,17 +405,23 @@ function handleTechReportSubmit(e) {
     serviceName: formData.get('serviceName')
   };
 
-  // Add to data
-  window.techReportData.unshift(newReport);
+  // If editing an existing report
+  if (window.currentEditingReportId) {
+    const idx = window.techReportData.findIndex(r => r.id === window.currentEditingReportId);
+    if (idx !== -1) {
+      window.techReportData[idx] = Object.assign({ id: window.currentEditingReportId }, reportData);
+      console.log('Tech report updated:', window.techReportData[idx]);
+    }
+    window.currentEditingReportId = null;
+  } else {
+    const newReport = Object.assign({ id: Date.now() }, reportData);
+    window.techReportData.unshift(newReport);
+    console.log('New tech report added:', newReport);
+  }
+
   window.filteredTechReportData = [...window.techReportData];
-  
-  // Refresh table
   populateTechReportTable();
-  
-  // Hide modal
   hideTechReportAddModal();
-  
-  console.log('New tech report added:', newReport);
 }
 
 function formatDateToDDMMYYYY(dateString) {
@@ -402,7 +442,35 @@ function initTechReportFiltering() {
   }
 
   if (filterType) {
-    filterType.addEventListener('change', applyTechReportFilters);
+    // Populate filter type options per user's request: date, supervisor name, notes, ATC type, service name
+    filterType.innerHTML = `
+      <option value="">All fields</option>
+      <option value="date">Date</option>
+      <option value="supervisor">Supervisor Name</option>
+      <option value="notes">Notes</option>
+      <option value="atcType">ATC Type</option>
+      <option value="serviceName">Service Name</option>
+    `;
+
+    const placeholderMap = {
+      '': 'Enter filter value... (search all fields)',
+      'date': 'Search by date (e.g. 04.06 or 04.06.2021)',
+      'supervisor': "Search by supervisor's name",
+      'notes': 'Search by notes',
+      'atcType': 'Search by ATC type (e.g. 255)',
+      'serviceName': 'Search by service name'
+    };
+
+    // initialize placeholder to default (all fields)
+    if (filterInput) filterInput.placeholder = placeholderMap[''];
+
+    filterType.addEventListener('change', function() {
+      const selected = filterType.value;
+      if (filterInput) {
+        filterInput.placeholder = placeholderMap[selected] || 'Search';
+        applyTechReportFilters();
+      }
+    });
   }
 
   if (clearBtn) {
@@ -412,18 +480,42 @@ function initTechReportFiltering() {
 
 function applyTechReportFilters() {
   const filterText = document.getElementById('tech-report-filter-input')?.value.toLowerCase() || '';
-  const filterServiceType = document.getElementById('tech-report-filter-type')?.value || '';
+  const selectedField = document.getElementById('tech-report-filter-type')?.value || '';
+
+  // Helper to map UI filter type to actual report field(s)
+  function getFieldValue(report, type) {
+    switch (type) {
+      case 'date':
+        return (report.date || '').toString().toLowerCase();
+      case 'supervisor':
+        return (report.supervisor || '').toString().toLowerCase();
+      case 'notes':
+        return (report.notes || report.comments || '').toString().toLowerCase();
+      case 'atcType':
+        return (report.atcType || '').toString().toLowerCase();
+      case 'serviceName':
+        return (report.serviceName || '').toString().toLowerCase();
+      default:
+        return '';
+    }
+  }
 
   window.filteredTechReportData = window.techReportData.filter(report => {
-    const matchesText = !filterText || 
-      report.supervisor.toLowerCase().includes(filterText) ||
-      report.notes.toLowerCase().includes(filterText) ||
-      report.comments.toLowerCase().includes(filterText) ||
-      report.serviceName.toLowerCase().includes(filterText);
+    if (!selectedField) {
+      if (!filterText) return true;
+      // Search across a reasonable set of fields when 'All fields' is selected
+      return (
+        (report.date || '').toString().toLowerCase().includes(filterText) ||
+        (report.supervisor || '').toString().toLowerCase().includes(filterText) ||
+        (report.notes || report.comments || '').toString().toLowerCase().includes(filterText) ||
+        (report.atcType || '').toString().toLowerCase().includes(filterText) ||
+        (report.serviceName || '').toString().toLowerCase().includes(filterText)
+      );
+    }
 
-    const matchesType = !filterServiceType || report.serviceName === filterServiceType;
-
-    return matchesText && matchesType;
+    if (!filterText) return true;
+    const value = getFieldValue(report, selectedField);
+    return value.includes(filterText);
   });
 
   populateTechReportTable();
@@ -434,7 +526,11 @@ function clearTechReportFilters() {
   const filterInput = document.getElementById('tech-report-filter-input');
   const filterType = document.getElementById('tech-report-filter-type');
 
-  if (filterInput) filterInput.value = '';
+  if (filterInput) {
+    filterInput.value = '';
+    // reset placeholder to default
+    filterInput.placeholder = 'Enter filter value... (search all fields)';
+  }
   if (filterType) filterType.value = '';
 
   window.filteredTechReportData = [...window.techReportData];
@@ -443,8 +539,74 @@ function clearTechReportFilters() {
 
 function editTechReport(id) {
   console.log('Edit tech report:', id);
-  // TODO: Implement edit functionality
-  alert(`Edit functionality for report ${id} will be implemented`);
+  const report = window.techReportData.find(r => r.id === id);
+  if (!report) {
+    console.warn('Report not found for editing:', id);
+    return;
+  }
+
+  // Set global editing id
+  window.currentEditingReportId = id;
+
+  // Populate modal fields
+  const modal = document.getElementById('tech-report-add-modal');
+  if (!modal) return;
+
+  const dateInput = document.getElementById('tech-report-date');
+  const startTime = document.getElementById('tech-report-start-time');
+  const endTime = document.getElementById('tech-report-end-time');
+  const atcType = document.getElementById('tech-report-atc-type');
+  const serviceName = document.getElementById('tech-report-service-name');
+  const notes = document.getElementById('tech-report-notes');
+  const comments = document.getElementById('tech-report-comments');
+
+  if (dateInput) dateInput.value = convertDateToInputValue(report.date);
+    if (startTime) startTime.value = convertTimeToInputValue(report.startTime || '');
+    if (endTime) endTime.value = convertTimeToInputValue(report.endTime || '');
+
+function convertTimeToInputValue(timeStr) {
+  // Accepts formats like H:MM, HH:MM, H.MM and returns HH:MM for input[type=time]
+  if (!timeStr) return '';
+  // Replace dots with colon if present
+  const normalized = timeStr.replace('.', ':');
+  const parts = normalized.split(':');
+  if (parts.length < 2) return '';
+  let h = parts[0].trim();
+  let m = parts[1].trim();
+  if (!h) h = '00';
+  if (!m) m = '00';
+  h = h.padStart(2, '0');
+  m = m.padStart(2, '0');
+  // Ensure minutes are max two digits
+  m = m.slice(0,2);
+  return `${h}:${m}`;
+}
+  if (atcType) atcType.value = report.atcType || '';
+  const atcDisplay = document.getElementById('tech-report-atc-display');
+  if (atcDisplay) {
+    const ph = atcDisplay.querySelector('.modern-select-placeholder');
+    if (ph) ph.textContent = report.atcType || 'Select ATC Type';
+  }
+  if (serviceName) serviceName.value = report.serviceName || '';
+  const svcDisplay = document.getElementById('tech-report-service-display');
+  if (svcDisplay) {
+    const ph = svcDisplay.querySelector('.modern-select-placeholder');
+    if (ph) ph.textContent = report.serviceName || 'Select Service';
+  }
+  if (notes) notes.value = report.notes || '';
+  if (comments) comments.value = report.comments || '';
+
+  // Populate supervisor select display (custom searchable select)
+  const supervisorSelect = document.getElementById('tech-report-supervisor-select');
+  const placeholder = supervisorSelect?.querySelector('.select-placeholder');
+  if (placeholder) {
+    placeholder.textContent = report.supervisor || 'Select supervisor';
+    placeholder.classList.add('has-value');
+    supervisorSelect.dataset.selectedValue = report.supervisor || '';
+  }
+
+  // Show modal
+  showTechReportAddModal();
 }
 
 function initTechReportTableSettings() {
@@ -475,23 +637,200 @@ function initTechReportTableSettings() {
   }
 }
 
+// ATC type modern dropdown
+function initTechReportATCDropdown() {
+  const container = document.getElementById('tech-report-atc-container');
+  const display = document.getElementById('tech-report-atc-display');
+  const dropdown = document.getElementById('tech-report-atc-dropdown');
+  const optionsContainer = document.getElementById('tech-report-atc-options');
+  const hiddenSelect = document.getElementById('tech-report-atc-type');
+
+  if (!container || !display || !dropdown || !optionsContainer || !hiddenSelect) return;
+
+  let open = false;
+  display.addEventListener('click', function(e) {
+    e.stopPropagation();
+    open = !open;
+    dropdown.style.display = open ? 'block' : 'none';
+    container.classList.toggle('open', open);
+  });
+
+  optionsContainer.querySelectorAll('.modern-select-option').forEach(opt => {
+    opt.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const val = this.dataset.value;
+      hiddenSelect.value = val;
+      display.querySelector('.modern-select-placeholder').textContent = val;
+      open = false;
+      dropdown.style.display = 'none';
+      container.classList.remove('open');
+    });
+  });
+
+  document.addEventListener('click', function(e) {
+    if (!container.contains(e.target)) {
+      open = false;
+      dropdown.style.display = 'none';
+      container.classList.remove('open');
+    }
+  });
+}
+
+// Service name modern dropdown with search
+function initTechReportServiceDropdown() {
+  const container = document.getElementById('tech-report-service-container');
+  const display = document.getElementById('tech-report-service-display');
+  const dropdown = document.getElementById('tech-report-service-dropdown');
+  const optionsContainer = document.getElementById('tech-report-service-options');
+  const hiddenSelect = document.getElementById('tech-report-service-name');
+  const searchInput = document.getElementById('tech-report-service-search');
+
+  if (!container || !display || !dropdown || !optionsContainer || !hiddenSelect) return;
+
+  let open = false;
+  display.addEventListener('click', function(e) {
+    e.stopPropagation();
+    open = !open;
+    dropdown.style.display = open ? 'block' : 'none';
+    container.classList.toggle('open', open);
+    if (open && searchInput) searchInput.focus();
+  });
+
+  // Option click
+  optionsContainer.querySelectorAll('.modern-select-option').forEach(opt => {
+    opt.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const val = this.dataset.value;
+      hiddenSelect.value = val;
+      display.querySelector('.modern-select-placeholder').textContent = val;
+      open = false;
+      dropdown.style.display = 'none';
+      container.classList.remove('open');
+    });
+  });
+
+  // Search
+  if (searchInput) {
+    searchInput.addEventListener('input', function() {
+      const term = this.value.toLowerCase();
+      optionsContainer.querySelectorAll('.modern-select-option').forEach(opt => {
+        const txt = opt.textContent.toLowerCase();
+        opt.style.display = txt.includes(term) ? '' : 'none';
+      });
+    });
+  }
+
+  document.addEventListener('click', function(e) {
+    if (!container.contains(e.target)) {
+      open = false;
+      dropdown.style.display = 'none';
+      container.classList.remove('open');
+    }
+  });
+}
+
+// Modern dropdown for Tech Report filter type (right-side selector)
+function initTechReportFilterDropdown() {
+  const container = document.getElementById('tech-report-filter-dropdown');
+  const button = document.getElementById('tech-report-filter-button');
+  const menu = document.getElementById('tech-report-filter-menu');
+  const text = document.getElementById('tech-report-filter-text');
+  const hidden = document.getElementById('tech-report-filter-type');
+
+  if (!container || !button || !menu || !text || !hidden) {
+    console.warn('Tech report filter dropdown elements not found');
+    return;
+  }
+
+  // Toggle menu
+  let open = false;
+  button.addEventListener('click', function(e) {
+    e.stopPropagation();
+    open = !open;
+    menu.style.display = open ? 'block' : 'none';
+    container.classList.toggle('open', open);
+  });
+
+  // Option click
+  menu.querySelectorAll('.dropdown-option').forEach(opt => {
+    opt.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const val = this.dataset.value || '';
+      const label = this.querySelector('.option-text')?.textContent || '';
+      hidden.value = val;
+      text.textContent = label || 'Filter by';
+
+      // Close
+      open = false;
+      menu.style.display = 'none';
+      container.classList.remove('open');
+
+      // Update the placeholder for the input to help the user
+      const filterInput = document.getElementById('tech-report-filter-input');
+      const placeholderMap = {
+        '': 'Enter filter value... (search all fields)',
+        'date': 'Search by date (e.g. 04.06 or 04.06.2021)',
+        'supervisor': "Search by supervisor's name",
+        'notes': 'Search by notes',
+        'atcType': 'Search by ATC type (e.g. 255)',
+        'serviceName': 'Search by service name'
+      };
+      if (filterInput) filterInput.placeholder = placeholderMap[val] || 'Search';
+
+      // Trigger filtering
+      applyTechReportFilters();
+    });
+  });
+
+  // Close when clicking outside
+  document.addEventListener('click', function(e) {
+    if (!container.contains(e.target)) {
+      open = false;
+      menu.style.display = 'none';
+      container.classList.remove('open');
+    }
+  });
+}
+
 function showTechReportTableSettings() {
   const modal = document.getElementById('tech-report-table-settings-modal');
   const columnList = document.getElementById('tech-report-column-list');
   
   if (!modal || !columnList) return;
 
-  // Get current column configuration
-  const columns = [
-    { key: 'date', label: 'Date', visible: true },
-    { key: 'supervisor', label: 'Supervisor Name', visible: true },
-    { key: 'startTime', label: 'Start Time', visible: true },
-    { key: 'endTime', label: 'End Time', visible: true },
-    { key: 'notes', label: 'Notes', visible: true },
-    { key: 'comments', label: 'Comments', visible: true },
-    { key: 'atcType', label: 'ATC Type', visible: true },
-    { key: 'serviceName', label: 'Service Name', visible: true }
+  // Column definitions (labels kept here) and detection of current visibility
+  const columnDefs = [
+    { key: 'date', label: 'Date' },
+    { key: 'supervisor', label: 'Supervisor Name' },
+    { key: 'startTime', label: 'Start Time' },
+    { key: 'endTime', label: 'End Time' },
+    { key: 'notes', label: 'Notes' },
+    { key: 'comments', label: 'Comments' },
+    { key: 'atcType', label: 'ATC Type' },
+    { key: 'serviceName', label: 'Service Name' }
   ];
+
+  // Build columns with current visibility detected from DOM (th or td having 'hidden' class)
+  const columns = columnDefs.map(col => {
+    const th = document.querySelector(`th[data-column="${col.key}"]`);
+    let visible = true;
+    if (th) {
+      const thHiddenClass = th.classList.contains('hidden');
+      const thComputedHidden = window.getComputedStyle(th).display === 'none';
+      visible = !(thHiddenClass || thComputedHidden);
+    } else {
+      // fall back to checking one data cell
+      const td = document.querySelector(`td[data-column="${col.key}"]`);
+      if (td) {
+        const tdHiddenClass = td.classList.contains('hidden');
+        const tdComputedHidden = window.getComputedStyle(td).display === 'none';
+        visible = !(tdHiddenClass || tdComputedHidden);
+      } else {
+        visible = true;
+      }
+    }
+    return { key: col.key, label: col.label, visible };
+  });
 
   // Populate column list
   columnList.innerHTML = '';

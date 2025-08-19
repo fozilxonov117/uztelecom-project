@@ -468,7 +468,7 @@ function initTechIssueDashboard() {
       floor: '2 этаж',
       roomNumber: '№15',
       comment: 'Некорректная работа сенсорного экрана РМО.',
-      supervisor: 'Abdullajev',
+      supervisor: 'Abdullayev',
       action: 'Submit Data'
     },
     {
@@ -590,6 +590,10 @@ function openTechIssueAddModal() {
     
     // Load operators when modal opens (in case data wasn't loaded initially)
     loadOperators();
+    
+    // Initialize modern dropdowns
+    initProblemTypeDropdown();
+    initFloorDropdown();
     
     // Set current time as default
     const timeInput = document.getElementById('tech-timestamp');
@@ -1339,6 +1343,285 @@ function getDragAfterElement(container, y) {
   }, { offset: Number.NEGATIVE_INFINITY }).element;
 }
 
+// Modern Problem Type Dropdown Functionality
+function initProblemTypeDropdown() {
+  const container = document.getElementById('tech-problem-type-container');
+  const display = document.getElementById('tech-problem-type-display');
+  const dropdown = document.getElementById('tech-problem-type-dropdown');
+  const searchInput = document.getElementById('tech-problem-type-search');
+  const optionsContainer = document.getElementById('tech-problem-type-options');
+  const hiddenSelect = document.getElementById('tech-problem-type');
+  const placeholder = display.querySelector('.modern-select-placeholder');
+  const arrow = display.querySelector('.modern-select-arrow');
+
+  if (!container || !display || !dropdown || !searchInput || !optionsContainer || !hiddenSelect) {
+    console.warn('Problem type dropdown elements not found');
+    return;
+  }
+
+  let isOpen = false;
+  let filteredOptions = [];
+  let highlightedIndex = -1;
+
+  // Problem type data
+  const problemTypes = [
+    { value: 'РМОДа носозлик', text: 'РМОДа носозлик', icon: '🖥️' },
+    { value: 'Техник носозлик', text: 'Техник носозлик', icon: '⚙️' },
+    { value: 'Наушникдаги носозлик', text: 'Наушникдаги носозлик', icon: '🎧' },
+    { value: 'Компютер ўчиб қолиши', text: 'Компютер ўчиб қолиши', icon: '💻' },
+    { value: 'РМО ёқилиб кетган', text: 'РМО ёқилиб кетган', icon: '🔥' },
+    { value: 'Пропущенный', text: 'Пропущенный', icon: '⏰' },
+    { value: 'отключения электроэнергии', text: 'отключения электроэнергии(Удалёнка)', icon: '⚡' },
+    { value: 'Кейсдаги носозлик', text: 'Кейсдаги носозлик', icon: '📦' },
+    { value: 'Монитордаги носозлик', text: 'Монитордаги носозлик', icon: '📺' },
+    { value: 'Клавиатурадаги носозлик', text: 'Клавиатурадаги носозлик', icon: '⌨️' },
+    { value: 'Мышкадаги носозлик', text: 'Мышкадаги носозлик', icon: '🖱️' }
+  ];
+
+  // Initialize options
+  function initOptions() {
+    const options = optionsContainer.querySelectorAll('.modern-select-option');
+    options.forEach((option, index) => {
+      option.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const problemType = problemTypes[index];
+        selectProblemType(problemType);
+      });
+    });
+    filteredOptions = Array.from(options);
+  }
+
+  // Open dropdown
+  function openDropdown() {
+    if (isOpen) return;
+    
+    isOpen = true;
+    dropdown.classList.add('show');
+    display.classList.add('active');
+    arrow.classList.add('rotated');
+    searchInput.focus();
+    filterOptions('');
+    
+    // Close other dropdowns
+    document.querySelectorAll('.modern-select-dropdown.show').forEach(dd => {
+      if (dd !== dropdown) {
+        dd.classList.remove('show');
+      }
+    });
+  }
+
+  // Close dropdown
+  function closeDropdown() {
+    if (!isOpen) return;
+    
+    isOpen = false;
+    dropdown.classList.remove('show');
+    display.classList.remove('active');
+    arrow.classList.remove('rotated');
+    highlightedIndex = -1;
+    searchInput.value = '';
+    filterOptions('');
+  }
+
+  // Select problem type
+  function selectProblemType(problemType) {
+    placeholder.textContent = problemType.text;
+    placeholder.classList.add('has-value');
+    hiddenSelect.value = problemType.value;
+    
+    // Trigger change event for form validation
+    hiddenSelect.dispatchEvent(new Event('change', { bubbles: true }));
+    
+    closeDropdown();
+  }
+
+  // Filter options based on search
+  function filterOptions(searchTerm) {
+    const term = searchTerm.toLowerCase();
+    filteredOptions = [];
+    highlightedIndex = -1;
+
+    Array.from(optionsContainer.children).forEach((option, index) => {
+      const problemType = problemTypes[index];
+      const textMatch = problemType.text.toLowerCase().includes(term);
+      const valueMatch = problemType.value.toLowerCase().includes(term);
+      
+      if (textMatch || valueMatch || term === '') {
+        option.classList.remove('hidden');
+        option.classList.remove('highlighted');
+        filteredOptions.push(option);
+      } else {
+        option.classList.add('hidden');
+        option.classList.remove('highlighted');
+      }
+    });
+  }
+
+  // Highlight option
+  function highlightOption(index) {
+    // Remove previous highlight
+    filteredOptions.forEach(option => option.classList.remove('highlighted'));
+    
+    if (index >= 0 && index < filteredOptions.length) {
+      highlightedIndex = index;
+      filteredOptions[index].classList.add('highlighted');
+      
+      // Scroll to highlighted option
+      const optionElement = filteredOptions[index];
+      optionElement.scrollIntoView({ block: 'nearest' });
+    }
+  }
+
+  // Event listeners
+  display.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (isOpen) {
+      closeDropdown();
+    } else {
+      openDropdown();
+    }
+  });
+
+  searchInput.addEventListener('input', (e) => {
+    filterOptions(e.target.value);
+  });
+
+  searchInput.addEventListener('keydown', (e) => {
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        highlightOption(Math.min(highlightedIndex + 1, filteredOptions.length - 1));
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        highlightOption(Math.max(highlightedIndex - 1, 0));
+        break;
+      case 'Enter':
+        e.preventDefault();
+        if (highlightedIndex >= 0 && filteredOptions[highlightedIndex]) {
+          const optionIndex = Array.from(optionsContainer.children).indexOf(filteredOptions[highlightedIndex]);
+          selectProblemType(problemTypes[optionIndex]);
+        }
+        break;
+      case 'Escape':
+        e.preventDefault();
+        closeDropdown();
+        break;
+    }
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!container.contains(e.target)) {
+      closeDropdown();
+    }
+  });
+
+  // Initialize
+  initOptions();
+}
+
+// Modern Floor Dropdown Functionality
+function initFloorDropdown() {
+  const container = document.getElementById('tech-floor-container');
+  const display = document.getElementById('tech-floor-display');
+  const dropdown = document.getElementById('tech-floor-dropdown');
+  const optionsContainer = document.getElementById('tech-floor-options');
+  const hiddenSelect = document.getElementById('tech-floor');
+  const placeholder = display.querySelector('.modern-select-placeholder');
+  const arrow = display.querySelector('.modern-select-arrow');
+
+  if (!container || !display || !dropdown || !optionsContainer || !hiddenSelect) {
+    console.warn('Floor dropdown elements not found');
+    return;
+  }
+
+  let isOpen = false;
+  let filteredOptions = [];
+  let highlightedIndex = -1;
+
+  // Floor data
+  const floors = [
+    { value: '1', text: '1 этаж', icon: '1️⃣' },
+    { value: '2', text: '2 этаж', icon: '2️⃣' },
+    { value: '3', text: '3 этаж', icon: '3️⃣' },
+    { value: '4', text: '4 этаж', icon: '4️⃣' }
+  ];
+
+  // Initialize options
+  function initOptions() {
+    const options = optionsContainer.querySelectorAll('.modern-select-option');
+    options.forEach((option, index) => {
+      option.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const floor = floors[index];
+        selectFloor(floor);
+      });
+    });
+    filteredOptions = Array.from(options);
+  }
+
+  // Open dropdown
+  function openDropdown() {
+    if (isOpen) return;
+    
+    isOpen = true;
+    dropdown.classList.add('show');
+    display.classList.add('active');
+    arrow.classList.add('rotated');
+    
+    // Close other dropdowns
+    document.querySelectorAll('.modern-select-dropdown.show').forEach(dd => {
+      if (dd !== dropdown) {
+        dd.classList.remove('show');
+      }
+    });
+  }
+
+  // Close dropdown
+  function closeDropdown() {
+    if (!isOpen) return;
+    
+    isOpen = false;
+    dropdown.classList.remove('show');
+    display.classList.remove('active');
+    arrow.classList.remove('rotated');
+    highlightedIndex = -1;
+  }
+
+  // Select floor
+  function selectFloor(floor) {
+    placeholder.textContent = floor.text;
+    placeholder.classList.add('has-value');
+    hiddenSelect.value = floor.value;
+    
+    // Trigger change event for form validation
+    hiddenSelect.dispatchEvent(new Event('change', { bubbles: true }));
+    
+    closeDropdown();
+  }
+
+  // Event listeners
+  display.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (isOpen) {
+      closeDropdown();
+    } else {
+      openDropdown();
+    }
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!container.contains(e.target)) {
+      closeDropdown();
+    }
+  });
+
+  // Initialize
+  initOptions();
+}
+
 // Make functions globally available
 window.initTechIssueDashboard = initTechIssueDashboard;
 window.filterTechIssues = filterTechIssues;
@@ -1346,3 +1629,5 @@ window.handleSubmitData = handleSubmitData;
 window.openTechIssueAddModal = openTechIssueAddModal;
 window.closeTechIssueAddModal = closeTechIssueAddModal;
 window.initTechIssueTableSettings = initTechIssueTableSettings;
+window.initProblemTypeDropdown = initProblemTypeDropdown;
+window.initFloorDropdown = initFloorDropdown;
